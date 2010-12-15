@@ -44,12 +44,12 @@ COPY /Y /V "..\regshot.ini" "temp_zip\"
 COPY /Y /V "..\%1\Regshot.exe" "temp_zip\"
 
 PUSHD "temp_zip"
-START "" /B /WAIT "..\7za.exe" a -tzip -mx=9 "Regshot.%REGSHOTVER%_%2.zip" >NUL
+START "" /B /WAIT "..\7za.exe" a -tzip -mx=9 "Regshot_%REGSHOTVER%_%2.zip" >NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
-CALL :SUBMSG "INFO" "Regshot.%REGSHOTVER%_%2.zip created successfully!"
+CALL :SUBMSG "INFO" "Regshot_%REGSHOTVER%_%2.zip created successfully!"
 
-MOVE /Y "Regshot.%REGSHOTVER%_%2.zip" "..\" >NUL 2>&1
+MOVE /Y "Regshot_%REGSHOTVER%_%2.zip" "..\" >NUL 2>&1
 POPD
 RD /S /Q "temp_zip" >NUL 2>&1
 EXIT /B
