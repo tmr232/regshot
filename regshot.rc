@@ -1,0 +1,134 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG1 DIALOG DISCARDABLE  0, 0, 194, 166
+STYLE DS_SETFOREGROUND | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Regshot"
+FONT 8, "Tahoma"
+BEGIN
+    DEFPUSHBUTTON   "&1st shot",IDC_1STSHOT,137,10,49,13
+    PUSHBUTTON      "&2nd shot",IDC_2NDSHOT,137,27,49,13,WS_DISABLED
+    PUSHBUTTON      "c&Ompare",IDC_COMPARE,137,45,49,13,WS_DISABLED
+    PUSHBUTTON      "&Clear",IDC_CLEAR1,137,63,49,13,WS_DISABLED
+    PUSHBUTTON      "&Quit",IDC_CANCEL1,137,81,49,13
+    PUSHBUTTON      "&About",IDC_ABOUT,137,99,49,13
+    COMBOBOX        IDC_COMBOLANGUAGE,137,134,50,55,CBS_DROPDOWNLIST | 
+                    CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Plain &TXT",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON,11,
+                    19,46,10
+    CONTROL         "&HTML document",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,
+                    60,19,66,10
+    CONTROL         "&Scan dir1[;dir2;dir3;...;dir nn]:",IDC_CHECKDIR,"Button",
+                    BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,12,45,113,10
+    EDITTEXT        IDC_EDITDIR,11,58,94,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BROWSE1,108,58,18,13
+    EDITTEXT        IDC_EDITPATH,12,94,94,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BROWSE2,108,95,18,13
+    EDITTEXT        IDC_EDITCOMMENT,11,128,114,14,ES_AUTOHSCROLL
+    LTEXT           "",IDC_TEXTCOUNT1,8,153,54,8,NOT WS_VISIBLE
+    LTEXT           "",IDC_TEXTCOUNT2,69,153,59,8,NOT WS_VISIBLE
+    LTEXT           "",IDC_TEXTCOUNT3,134,153,55,8,NOT WS_VISIBLE
+    GROUPBOX        "Compare logs save as:",IDC_STATICSAVEFORMAT,6,7,125,27
+    GROUPBOX        "",IDC_STATIC,6,37,125,40
+    GROUPBOX        "Output path:",IDC_STATICOUTPUTPATH,6,82,125,31
+    GROUPBOX        "Add comment into the log:",IDC_STATICADDCOMMENT,6,117,
+                    125,31
+    CONTROL         "Progress1",IDC_PBCOMPARE,"msctls_progress32",NOT 
+                    WS_VISIBLE | WS_BORDER,7,153,180,9
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_DIALOG1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 187
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 163
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON    DISCARDABLE     "icon1.ico"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
