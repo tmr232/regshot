@@ -31,6 +31,7 @@ VOID	ErrMsg(char * note)
 	MessageBox(hWnd,note,lan_error,MB_ICONHAND);
 }
 
+
 //-------------------------------------------------------------
 //Routine to debug
 //-------------------------------------------------------------
@@ -78,7 +79,7 @@ BOOL ReplaceInValidFileName(LPSTR lpf)
 	for(i=0; i<nLen; i++) {
 		for(j=0; j<sizeof(lpInvalid)-1; j++) { //changed at 1.8.2 from 9 to sizeof()-1
 			if (*(lpf+i)==*(lpInvalid+j)) {
-				*(lpf+i)='-';    //0x2D; check for invalid chars and replace it (return FALSE;)
+				*(lpf+i)='-';					//0x2D; check for invalid chars and replace it (return FALSE;)
 			} else if(*(lpf+i)!=0x20&&*(lpf+i)!=0x09) { //At least one non-space,non-tab char needed!
 				bLegal=TRUE;
 			}
@@ -87,6 +88,7 @@ BOOL ReplaceInValidFileName(LPSTR lpf)
 	}
 	return bLegal;
 }
+
 
 //--------------------------------------------------
 // Find lp's position in lpMaster (like At(),but not limit to str)
@@ -134,5 +136,3 @@ LPSTR	AtPos(LPSTR lpMaster,LPSTR lp,DWORD size)
 	return lpMyHeap;
 }
  */
-
-

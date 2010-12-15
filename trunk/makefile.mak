@@ -74,7 +74,6 @@ OBJECTS= \
 	$(OBJDIR)\winmain.obj
 
 
-
 {src\}.c{$(OBJDIR)}.obj::
 	@$(CC) $(CXXFLAGS) /Tc $<
 
@@ -86,8 +85,6 @@ $(APP): $(OBJECTS)
 
 
 # Dependencies
-
-# src
 $(OBJDIR)\fileshot.obj: src\fileshot.c src\global.h
 $(OBJDIR)\language.obj: src\language.c src\global.h
 $(OBJDIR)\misc.obj: src\misc.c src\global.h

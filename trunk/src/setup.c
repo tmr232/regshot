@@ -32,6 +32,7 @@ LPSTR	INI_SKIPREGKEY		="SkipRegKey";
 LPSTR	INI_SKIPDIR			="SkipDir";
 LPSTR	INI_USELONGREGHEAD	="UseLongRegHead"; //1.8.1 tianwei for compatible to undoreg 1.46 again
 
+
 BOOL GetSnapRegs(HWND hDlg)
 {
 	int i;

@@ -51,6 +51,7 @@ extern u_char * lan_erroropenfile;
 extern char *str_prgname; // be careful of extern ref! must be the same when declare them,otherwise pointer would mis-point!
 extern char	str_CR[];
 
+
 //-------------------------------------------------------------
 //Routine to Get Whole Key Name from KEYCONTENT
 //-------------------------------------------------------------
@@ -111,6 +112,7 @@ LPSTR	GetWholeValueName(LPVALUECONTENT lpValueContent)
 	}
 	return lpName;
 }
+
 
 //-------------------------------------------------------------
 //Routine Trans VALUECONTENT.data[which in binary] into strings
@@ -223,7 +225,6 @@ LPSTR	GetWholeValueData(LPVALUECONTENT lpValueContent)
 //-------------------------------------------------------------
 //Routine to create new compare result,distribute to different lp???MODI
 //-------------------------------------------------------------
-
 VOID	CreateNewResult(DWORD actiontype,LPDWORD lpcount,LPSTR lpresult)
 {
 	LPCOMRESULT	lpnew;
@@ -339,6 +340,7 @@ VOID	GetAllSubName(
 	}
 }
 
+
 //-------------------------------------------------------------
 //Routine to walk through all values of current key
 //-------------------------------------------------------------
@@ -367,6 +369,7 @@ VOID	FreeAllCom(LPCOMRESULT lpComResult)
 	}
 
 }
+
 
 //-------------------------------------------------------------
 //Routine to Free All Keys and Values
@@ -416,6 +419,8 @@ VOID ClearKeyMatchTag(LPKEYCONTENT lpKey)
 		}
 	}
 }
+
+
 //-------------------------------------------------------------
 //Clear Filematch Flag (core)
 //-------------------------------------------------------------
@@ -429,6 +434,8 @@ VOID ClearFileContentMatchTag(LPFILECONTENT lpFC)
 		ClearFileContentMatchTag(lpFC->lpbrotherfile);
 	}
 }
+
+
 //-------------------------------------------------------------
 //Clear Filematch Flag previous made by Compare Routine for the next compare
 //-------------------------------------------------------------
@@ -458,6 +465,7 @@ VOID FreeAllKeyContent1(void)
 	*lpUserName1=0;
 
 }
+
 VOID FreeAllKeyContent2(void)
 {
 
@@ -475,6 +483,7 @@ VOID FreeAllKeyContent2(void)
 	*lpUserName2=0;
 
 }
+
 VOID FreeAllCompareResults(void)
 {
 	FreeAllCom(lpKEYADDHEAD);
@@ -518,7 +527,6 @@ VOID FreeAllCompareResults(void)
 //-------------------------------------------------------------
 //Registry Compare Engine
 //-------------------------------------------------------------
-
 VOID * CompareFirstSubKey(LPKEYCONTENT lpHead1,LPKEYCONTENT lpHead2)
 {
 	LPKEYCONTENT	lp1,lp2;
@@ -638,8 +646,6 @@ VOID * CompareFirstSubKey(LPKEYCONTENT lpHead1,LPKEYCONTENT lpHead2)
 	return NULL;
 }
 
-
-/**/
 
 //------------------------------------------------------------
 // Routine to call Registry/File Compare Engine
@@ -930,11 +936,7 @@ BOOL CompareShots(void)
 	return TRUE;
 }
 
-/**/
 
-
-
-/**/
 //------------------------------------------------------------
 //Registry Shot Engine
 //------------------------------------------------------------
@@ -1094,7 +1096,6 @@ VOID	GetRegistrySnap(HKEY hkey,LPKEYCONTENT lpFatherKeyContent)
 }
 
 
-
 //--------------------------------------------------
 //Registry Save Engine (It is rather stupid!)
 //--------------------------------------------------
@@ -1165,6 +1166,8 @@ VOID	SaveRegKey(LPKEYCONTENT lpKeyContent, DWORD nFPCurrentFatherKey,DWORD nFPCa
 		}
 
 }
+
+
 //--------------------------------------------------
 //Routine to call Registry Save Engine and file save engine
 //--------------------------------------------------
@@ -1273,6 +1276,7 @@ VOID	SaveHive(LPKEYCONTENT lpKeyHLM,LPKEYCONTENT lpKeyUSER,
 	}
 }
 
+
 //--------------------------------------------------
 //ReAlign key&value content after Loading from hive file
 //--------------------------------------------------
@@ -1330,6 +1334,7 @@ VOID ReAlignReg(LPKEYCONTENT lpKey,DWORD nBase)
 		ReAlignReg(lpKey->lpbrotherkey,nBase);
 	}
 }
+
 
 //----------------------------------------------------------------------------------------------------
 //Load Registry From HIVE file (After this,We should realign the data in memory)
@@ -1429,7 +1434,6 @@ BOOL LoadHive(LPKEYCONTENT FAR * lplpKeyHLM,LPKEYCONTENT FAR * lplpKeyUSER,
 				}
 
 
-
 				if(is1) {
 					//Use copymemory in 1.8,old version direct point to ,which is wrong
 					CopyMemory(lpComputerName1,*lpHive+32,COMPUTERNAMELEN);
@@ -1451,7 +1455,6 @@ BOOL LoadHive(LPKEYCONTENT FAR * lplpKeyHLM,LPKEYCONTENT FAR * lplpKeyUSER,
 			bRet=FALSE;
 		}
 
-
 	} else {
 		bRet=FALSE;
 	};
@@ -1463,4 +1466,3 @@ BOOL LoadHive(LPKEYCONTENT FAR * lplpKeyHLM,LPKEYCONTENT FAR * lplpKeyUSER,
 	return(bRet);
 
 }
-

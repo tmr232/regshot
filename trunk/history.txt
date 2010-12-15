@@ -5,7 +5,7 @@ History of Regshot
 *: Note you may interest
 !: Changes made
 +: Function added
--: Function deleted             
+-: Function deleted
 -------------------------------------------------
 
 V1.8.2 20071103
@@ -57,7 +57,7 @@ V1.61a,b,c,d,e,e+,e1-e5 2002/07/13-2003/01/01
 + Add Bulgarian language by Alex Simidchiev[e4]
 + Add Svenska language by joup@algonet.se[e5]
 
-V1.61	2002/03/30
+V1.61 2002/03/30
 + Clear shots separately
 + Show translators name in About Dialog
 + Add Nederlands, Türkçe ,Èeskylanguage support
@@ -66,16 +66,16 @@ V1.61	2002/03/30
 V1.60[test] 2002/03/25
 + Snapshots can be saved into "Hive" files
 
-V1.55	2002/03/11
+V1.55 2002/03/11
 - Cut off "Dynamic Monitor" Function
 + Compare log file are saved with the name of the
   comment you input!
 
-V1.54b	2002/02/28
+V1.54b 2002/02/28
 ! Fix bug that "rgst152.dat" was miss placed.
 + Add Deutsch language support.
 
-V1.54a	2002/02/22
+V1.54a 2002/02/22
 ! Fix bug that made in 1.54 [Can not save mask in
   Monitor window]
 + Minor changes,add Italian language strings.
@@ -83,26 +83,26 @@ V1.54a	2002/02/22
   up,but I have not encounter it myself, I will 
   debug later.
 
-V1.54	2002/01/27
+V1.54 2002/01/27
 + Multi Language interface and inner strings
 
-V1.53	2001/12/16
+V1.53 2001/12/16
 + Show progress during compare
 ! New counter refresh methord
 ! URL change to regshot.yeah.net
 
-V1.52c	2001/12/10
+V1.52c 2001/12/10
 + Browse button in static window
 
-V1.52b	2001/11/18
+V1.52b 2001/11/18
 + Pause "||" added in dynamic window
 + Save function added in dynamic window
 
-V1.52a	2001/11/16
+V1.52a 2001/11/16
 + Output-path in static window
 + Ring3TD name catch and filter in dynamic window
 
-V1.52	2001/11/10
+V1.52 2001/11/10
 + Dynamic monitor window under Win9x
   read readme.txt for detail!
 ! rgst150a.dat -> rgst152.dat
@@ -111,32 +111,32 @@ V1.51,1.51a 2001/10/25
 ! Fix crash bug in 1.50e when scan folders!!
 + Scan unlimited number of drivers[folders]
 
-V1.50e	2001/10/18
+V1.50e 2001/10/18
 + Scan up to 26 drivers[folders] separated with ";"
 - Text log don't wrap at too long data for the 
   3rd party software analysis 
 
-V1.50d	2001/09/29
+V1.50d 2001/09/29
 ! Deal with more non-standard(invalid) reg values
 
-V1.50c	2001/09/28
+V1.50c 2001/09/28
 ! Crash bug fixed when grab some non-standard value
 * Thanks firstk@21cn.com for testing debug version!
 
-V1.50b	2001/09/22
+V1.50b 2001/09/22
 ! NULL folder name minor bug fixed 
 
-V1.50a	2001/09/10
+V1.50a 2001/09/10
 * Teachers Day!
 + files and folders scan![maybe whole partition!]
 ! log filename fixed
 ! regshot.dat -> rgst150.dat
 
-V1.40c	2001/09/05
+V1.40c 2001/09/05
 + Comments field for compare log
 ! Due to HTML viewer's limit,some change made
  
-V1.40b	2001/09/04
+V1.40b 2001/09/04
 + Show keys and values counts during registry grab
 + Show elapse time during registry grab
 + Refresh dialog box during registry grab
@@ -144,7 +144,7 @@ V1.40b	2001/09/04
 ! New string api 
 ! Minor changes on memory allocation
 
-V1.40a	2001/09/01
+V1.40a 2001/09/01
 * This is a brandnew version!
 ! New data structure,more detailed output.
 + HTML document compare log output.
@@ -227,7 +227,6 @@ Version before 1.01c
 * I don't remember so much!:))
 
 -------------------------------------------------
-
 
 Download new version at:
 http://regshot.yeah.net/ 

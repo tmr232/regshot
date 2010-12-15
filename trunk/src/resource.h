@@ -4,7 +4,7 @@
 //
 #define IDD_DIALOG1                     100
 #define IDD_DIALOG2                     101
-#define IDI_ICON1                       111
+#define IDI_MAINICON                    111
 #define ID_BASE                         1000
 
 #define IDC_1STSHOT                     1003
@@ -60,7 +60,7 @@
 #define IDM_CLEARALLSHOTS               1052
 #define IDM_CLEARSHOT1                  1053
 #define IDM_CLEARSHOT2                  1054
-#define IDM_CLEARRESULT                 1055 //not used
+
 // Next default values for new objects
 //
 #ifdef APSTUDIO_INVOKED

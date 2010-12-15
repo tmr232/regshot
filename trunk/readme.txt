@@ -66,46 +66,46 @@ Do not compare shots saved with different "UseLongRegHead" option!
 Thanks:
 -----------------
 Special thanks:
-Alexander Romanenko	-- Former space provider! http://www.ist.md/
-Ivan                    -- Former space provider! http://www.digitalnuke.com/
-Toye			-- Release!
-zhangl			-- Debug!
-firstk			-- Debug!
-mssoft			-- Test!
-dreamtheater		-- Test!
-Gonzalo			-- Spainish
-ArLang°¢ÀÉ		-- Chinese
-Mikhail A.Medvedev	-- Russian[Thanks!]
-Kenneth Aarseth		-- Norsk
-Marcel Drappier		-- French
-Vittorio "Capoccione"	-- Italian
-Gnatix			-- Deutsch
-Murat KASABOGLU		-- Türkçe
-Paul Lowagie		-- Nederlands
-ondra			-- Èesky
-AVE7			-- Fixed Deutsch!
-Pau Bosch i Crespo	-- Catalan
-Michael Papadakis	-- Greek
-Per Bryldt		-- Danish
-Rajah			-- Latvian
-Leandro			-- Portuguese
-Roland Turcan		-- Slovak
-Kentaro Okude		-- Japanese
-Adam Mikusiñski		-- Polish
-Computer Wizard[Wiz]	-- Serbian
-Jack Gorji		-- Hebrew
+Alexander Romanenko   -- Former space provider! http://www.ist.md/
+Ivan                  -- Former space provider! http://www.digitalnuke.com/
+Toye                  -- Release!
+zhangl                -- Debug!
+firstk                -- Debug!
+mssoft                -- Test!
+dreamtheater          -- Test!
+Gonzalo               -- Spainish
+ArLang°¢ÀÉ            -- Chinese
+Mikhail A.Medvedev    -- Russian[Thanks!]
+Kenneth Aarseth       -- Norsk
+Marcel Drappier       -- French
+Vittorio "Capoccione" -- Italian
+Gnatix                -- Deutsch
+Murat KASABOGLU       -- Türkçe
+Paul Lowagie          -- Nederlands
+ondra                 -- Èesky
+AVE7                  -- Fixed Deutsch!
+Pau Bosch i Crespo    -- Catalan
+Michael Papadakis     -- Greek
+Per Bryldt            -- Danish
+Rajah                 -- Latvian
+Leandro               -- Portuguese
+Roland Turcan         -- Slovak
+Kentaro Okude         -- Japanese
+Adam Mikusiñski       -- Polish
+Computer Wizard[Wiz]  -- Serbian
+Jack Gorji             -- Hebrew
 Xos?Antón Vicente Rodríguez --Galego
-Obelix			-- Hrvatski
-Alex Simidchiev		-- Bulgarian
-joup@algonet.se		-- Svenska
-Bata György             -- Hungarian
-Dmitry P.               -- Ukrainian
-Mr Anonyme,Charles	-- French Update
-kazakh			-- Erzhan Erbolatuly
+Obelix                -- Hrvatski
+Alex Simidchiev       -- Bulgarian
+joup@algonet.se       -- Svenska
+Bata György           -- Hungarian
+Dmitry P.             -- Ukrainian
+Mr Anonyme,Charles    -- French Update
+kazakh                -- Erzhan Erbolatuly
 
-Nick Reid		-- Advice
-tongjiawang		-- Many help!
-Belogorokhov Youri	-- Coder
+Nick Reid             -- Advice
+tongjiawang           -- Many help!
+Belogorokhov Youri    -- Coder
 
 Franck Uberto, Patrick Whitted, Walter Bergner, Jim McMahon, Fred Bailey,
 Dchenka , itschy, HANDLE and all those we fogot to mention!!

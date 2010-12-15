@@ -152,6 +152,8 @@ BOOL	GetLanguageType(HWND hDlg)
 	return bRet;
 
 }
+
+
 //--------------------------------------------------
 // Routines that show multi language
 //--------------------------------------------------
@@ -195,6 +197,8 @@ VOID	GetDefaultStrings(VOID)
 
 
 }
+
+
 //--------------------------------------------------
 // Routines that show multi language
 //--------------------------------------------------
@@ -269,6 +273,7 @@ VOID	PointToNewStrings(VOID)
 	lan_menuclearshot2	=(u_char *)(*lp);
 
 }
+
 
 //--------------------------------------------------
 // Routines that show multi language

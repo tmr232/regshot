@@ -183,7 +183,7 @@
     <ClInclude Include="src\resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\icon1.ico" />
+    <None Include="src\regshot.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\regshot.rc" />
