@@ -130,7 +130,7 @@ BOOL	GetLanguageType(HWND hDlg)
 		bRet=TRUE;
 		for(lp=lpSectionNames;*lp!=0;lp=lp+strlen(lp)+1)
 		{
-			if(strcmpi(lp,str_SectionCurrent)!=0)
+			if(_strcmpi(lp,str_SectionCurrent)!=0)
 			SendDlgItemMessage(hDlg,IDC_COMBOLANGUAGE,CB_ADDSTRING,(WPARAM)0,(LPARAM)lp);
 		}
 		GetPrivateProfileString(str_SectionCurrent,str_SectionCurrent,

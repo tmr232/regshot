@@ -454,7 +454,7 @@ LPFILECONTENT SearchDirChain(LPSTR lpname,LPHEADFILE lpHF)
 	for(lphf=lpHF;lphf!=NULL;lphf=lphf->lpnextheadfile)
 	{
 		if(lphf->lpfilecontent!=NULL && lphf->lpfilecontent->lpfilename!=NULL)
-			if(strcmpi(lpname,lphf->lpfilecontent->lpfilename)==0)
+			if(_strcmpi(lpname,lphf->lpfilecontent->lpfilename)==0)
 				return lphf->lpfilecontent;
 	}
 	return NULL;
@@ -492,7 +492,7 @@ BOOL DirChainMatch(LPHEADFILE lphf1,LPHEADFILE lphf2)
 	ZeroMemory(lpDir2,sizeof(lpDir2));
 	FindDirChain(lphf1,lpDir1,EXTDIRLEN);
 	FindDirChain(lphf2,lpDir2,EXTDIRLEN);
-	if(strcmpi(lpDir1,lpDir2)!=0)
+	if(_strcmpi(lpDir1,lpDir2)!=0)
 		return FALSE;
 	else
 		return TRUE;

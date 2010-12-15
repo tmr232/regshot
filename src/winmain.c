@@ -26,7 +26,7 @@
 
 #include "global.h"
 
-char *str_prgname="Regshot 1.8.2"; //tfx 程序标题
+char *str_prgname="Regshot 1.8.2";
 char *str_aboutme="Regshot is a free and opensource registry compare utility.\n\n\
 http://regshot.yeah.net/\n\
 http://regshot.blog.googlepages.com/\n\n";
@@ -505,7 +505,7 @@ int		PASCAL WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,
 	
 	SetClassLong(hWnd,GCL_HICON,(LONG)LoadIcon(hInstance,MAKEINTRESOURCE(IDI_ICON1)));
 
-	SetWindowText(hWnd, str_prgname); //tfx 设置程序标题为str_prgname，避免修改资源文件
+	SetWindowText(hWnd, str_prgname);
 	ShowWindow(hWnd,nCmdShow);
 	UpdateWindow(hWnd);		   
 	//SetPriorityClass(hInstance,31);
