@@ -32,7 +32,7 @@ LPSTR	INI_SKIPREGKEY		="SkipRegKey";
 LPSTR	INI_SKIPDIR			="SkipDir";
 LPSTR	INI_USELONGREGHEAD	="UseLongRegHead"; //1.8.1 tianwei for compatible to undoreg 1.46 again
 
-BOOL GetSnapRegs(HWND hDlg) //tfx 取配置文件信息
+BOOL GetSnapRegs(HWND hDlg)
 {
 	int i;
 	BYTE nFlag;
@@ -103,7 +103,7 @@ BOOL GetSnapRegs(HWND hDlg) //tfx 取配置文件信息
 }
 
 
-BOOL SetSnapRegs(HWND hDlg) //tfx 保存信息到配置文件
+BOOL SetSnapRegs(HWND hDlg)
 {
 	BYTE nFlag;
 	LPSTR lpString;
@@ -153,7 +153,7 @@ BOOL SetSnapRegs(HWND hDlg) //tfx 保存信息到配置文件
 }
 
 
-BOOL IsInSkipList(LPSTR lpSnap, LPDWORD lpSkipList) //tfx 跳过黑名单
+BOOL IsInSkipList(LPSTR lpSnap, LPDWORD lpSkipList)
 {
 	int i;
 	for(i=0; (LPSTR)(*(lpSkipList+i))!=NULL && i<=MAXREGSHOT-1; i++) {
@@ -163,4 +163,3 @@ BOOL IsInSkipList(LPSTR lpSnap, LPDWORD lpSkipList) //tfx 跳过黑名单
 	}
 	return FALSE;
 }
-
