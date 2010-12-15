@@ -62,7 +62,7 @@
 #define IDM_CLEARSHOT2                  1054
 #define IDM_CLEARRESULT                 1055 //not used
 // Next default values for new objects
-// 
+//
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        120
