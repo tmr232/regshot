@@ -99,7 +99,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Manifest>
-      <AdditionalManifestFiles>src\RegShot.exe.manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>RegShot.exe.manifest</AdditionalManifestFiles>
     </Manifest>
     <ResourceCompile>
       <PreprocessorDefinitions>_UNICODE;UNICODE;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -121,7 +121,7 @@
       <PreprocessorDefinitions>_UNICODE;UNICODE;_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Manifest>
-      <AdditionalManifestFiles>src\RegShot.exe.manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>RegShot.exe.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -145,7 +145,7 @@
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <Manifest>
-      <AdditionalManifestFiles>src\RegShot.exe.manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>RegShot.exe.manifest</AdditionalManifestFiles>
     </Manifest>
     <ResourceCompile>
       <PreprocessorDefinitions>_UNICODE;UNICODE;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -175,28 +175,28 @@
       <PreprocessorDefinitions>_UNICODE;UNICODE;_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Manifest>
-      <AdditionalManifestFiles>src\RegShot.exe.manifest</AdditionalManifestFiles>
+      <AdditionalManifestFiles>RegShot.exe.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\global.h" />
-    <ClInclude Include="src\resource.h" />
+    <ClInclude Include="global.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\regshot.ico" />
+    <None Include="regshot.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="src\regshot.rc" />
+    <ResourceCompile Include="regshot.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\fileshot.c" />
-    <ClCompile Include="src\language.c" />
-    <ClCompile Include="src\misc.c" />
-    <ClCompile Include="src\output.c" />
-    <ClCompile Include="src\Regshot.c" />
-    <ClCompile Include="src\setup.c" />
-    <ClCompile Include="src\ui.c" />
-    <ClCompile Include="src\winmain.c" />
+    <ClCompile Include="fileshot.c" />
+    <ClCompile Include="language.c" />
+    <ClCompile Include="misc.c" />
+    <ClCompile Include="output.c" />
+    <ClCompile Include="Regshot.c" />
+    <ClCompile Include="setup.c" />
+    <ClCompile Include="ui.c" />
+    <ClCompile Include="winmain.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
