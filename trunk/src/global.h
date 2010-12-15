@@ -43,9 +43,7 @@
 
 #endif
 
-//Optimize program size by tulipfan
-//#define WIN32_LEAN_AND_MEAN //tfx ΌυΙΩ³ΜΠςΞΔΌώ΄σΠ΅
-//#pragma comment(linker,"/FILEALIGN:0x200 /MERGE:.data=.text /MERGE:.rdata=.text /SECTION:.text,EWR /IGNORE:4078")
+//#define WIN32_LEAN_AND_MEAN
 
 //#define DEBUGLOG
 //Some definations
@@ -218,7 +216,7 @@ LPSTR	lpKeyName,lpMESSAGE,lpExtDir,lpOutputpath,lpLastSaveDir,lpLastOpenDir,lpCu
 LPSTR	lpWindowsDirName,lpTempPath,lpStartDir,lpIni,lpFreeStrings,lpCurrentTranslator;
 
 //LPSTR	REGSHOTDATFILE		="rgst152.dat";
-LPSTR	lpProgramDir; //tfx ¶¨ε
+LPSTR	lpProgramDir;
 LPDWORD lpSnapRegs, lpSnapFiles;
 LPSTR	lpRegshotIni;
 LPSTR   lpSnapRegsStr,lpSnapFilesStr,lpSnapKey,lpSnapReturn;
