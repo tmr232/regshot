@@ -26,7 +26,11 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 IDD_DIALOG1 DIALOG 0, 0, 194, 166
 STYLE DS_SETFONT | DS_SETFOREGROUND | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU
+#if defined(_WIN64)
+CAPTION "Regshot x64"
+#elif defined(WIN32)
 CAPTION "Regshot"
+#endif
 FONT 8, "Tahoma"
 BEGIN
     DEFPUSHBUTTON   "&1st shot",IDC_1STSHOT,137,10,49,13
@@ -115,8 +119,8 @@ IDI_ICON1               ICON                    "icon1.ico"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,8,2,0
- PRODUCTVERSION 1,8,2,0
+ FILEVERSION 1,8,3,0
+ PRODUCTVERSION 1,8,3,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -132,13 +136,17 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "CompanyName", ""
+            #if defined(_WIN64)
+            VALUE "FileDescription", "Regshot x64"
+            #elif defined(WIN32)
             VALUE "FileDescription", "Regshot"
-            VALUE "FileVersion", "1.8.2.0"
+            #endif
+            VALUE "FileVersion", "1.8.3.0"
             VALUE "InternalName", "regshot.exe"
             VALUE "LegalCopyright", ""
             VALUE "OriginalFilename", "regshot.exe"
             VALUE "ProductName", "Regshot"
-            VALUE "ProductVersion", "1.8.2.0"
+            VALUE "ProductVersion", "1.8.3.0"
         END
     END
     BLOCK "VarFileInfo"

@@ -26,7 +26,11 @@
 
 #include "global.h"
 
-char *str_prgname="Regshot 1.8.2";
+#if defined(_WIN64)
+char *str_prgname="Regshot x64 1.8.3";
+#elif defined(WIN32)
+char *str_prgname="Regshot 1.8.3";
+#endif
 char *str_aboutme="Regshot is a free and opensource registry compare utility.\n\n\
 http://regshot.yeah.net/\n\
 http://regshot.blog.googlepages.com/\n\n";
