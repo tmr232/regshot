@@ -23,7 +23,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\icon1.ico">
+    <None Include="src\regshot.ico">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

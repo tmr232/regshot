@@ -54,6 +54,7 @@ int CALLBACK SelectBrowseFolder(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpDa
 	return 0;
 }
 
+
 //--------------------------------------------------
 //Main Dialog Proc
 //--------------------------------------------------
@@ -448,6 +449,7 @@ BOOL	CALLBACK	DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam)
 	}
 	return(FALSE);
 }
+
 /*
 BOOL	SetPrivilege(HANDLE hToken,LPCTSTR pString,BOOL bEnablePrivilege)
 {
@@ -472,9 +474,7 @@ BOOL	SetPrivilege(HANDLE hToken,LPCTSTR pString,BOOL bEnablePrivilege)
 		return FALSE;
 	return TRUE;
 }
-
 */
-
 
 //////////////////////////////////////////////////////////////////
 int		PASCAL WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,
@@ -496,7 +496,7 @@ int		PASCAL WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,
 	hHeap=GetProcessHeap(); //1.8.2
 	hWnd=CreateDialog(hInstance,MAKEINTRESOURCE(IDD_DIALOG1),NULL,(WNDPROC)DialogProc);
 
-	SetClassLongPtr(hWnd,GCLP_HICON,(LONG_PTR)LoadIcon(hInstance,MAKEINTRESOURCE(IDI_ICON1)));
+	SetClassLongPtr(hWnd,GCLP_HICON,(LONG_PTR)LoadIcon(hInstance,MAKEINTRESOURCE(IDI_MAINICON)));
 
 	SetWindowText(hWnd, str_prgname);
 	ShowWindow(hWnd,nCmdShow);
@@ -523,4 +523,3 @@ int		PASCAL WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,
 	}
 	return(msg.wParam);
 }
-
