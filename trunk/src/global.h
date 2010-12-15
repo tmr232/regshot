@@ -132,6 +132,7 @@ struct	_HEADFILE
 	struct _HEADFILE	FAR *	lpnextheadfile;	//Pointer to next headfile struc
 };
 */
+
 //Adjusted for filecontent saving. 1.8
 struct	_HEADFILE {
 	struct _HEADFILE	FAR *	lpnextheadfile;	//Pointer to next headfile struc

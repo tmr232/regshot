@@ -3,7 +3,7 @@
   <assemblyIdentity
     name="Regshot"
     processorArchitecture="*"
-    version="1.8.2.0"
+    version="1.8.3.0"
     type="win32"
   />
   <description>Regshot</description>
