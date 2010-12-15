@@ -40,27 +40,25 @@ VOID	DebugLog(LPSTR filename,LPSTR lpstr,HWND hDlg,BOOL bisCR)
 {
 	DWORD	length;
 	DWORD	nPos;
-	
+
 	hFile = CreateFile(filename,GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
-	if( hFile == INVALID_HANDLE_VALUE) 
+	if( hFile == INVALID_HANDLE_VALUE) {
 		ErrMsg(lan_errorcreatefile);
-	else
-	{
+	} else {
 		nPos=SetFilePointer(hFile,0,NULL,FILE_END);
-		if(nPos==0xFFFFFFFF)
+		if(nPos==0xFFFFFFFF) {
 			ErrMsg(lan_errormovefp);
-		else
-		{
-		
+		} else {
+
 			length=strlen(lpstr);
 			WriteFile(hFile,lpstr,length,&NBW,NULL);
-			if(NBW!=length)
-			{
+			if(NBW!=length) {
 				//ErrMsg(lan_errorwritefile);
-				
+
 			}
-			if(bisCR==TRUE)
-			WriteFile(hFile,str_CR,sizeof(str_CR)-1,&NBW,NULL);
+			if(bisCR==TRUE) {
+				WriteFile(hFile,str_CR,sizeof(str_CR)-1,&NBW,NULL);
+			}
 		}
 	}
 	CloseHandle(hFile);
@@ -77,15 +75,13 @@ BOOL ReplaceInValidFileName(LPSTR lpf)
 	DWORD	i,j,nLen;
 	BOOL	bLegal=FALSE;
 	nLen=strlen(lpf);
-	for(i=0;i<nLen;i++)
-	{
-		for(j=0;j<sizeof(lpInvalid)-1;j++) //changed at 1.8.2 from 9 to sizeof()-1
-		{
-			if (*(lpf+i)==*(lpInvalid+j))
-				*(lpf+i)='-'; //0x2D; check for invalid chars and replace it (return FALSE;)
-			else
-				if(*(lpf+i)!=0x20&&*(lpf+i)!=0x09) //At least one non-space,non-tab char needed!
-					bLegal=TRUE;
+	for(i=0; i<nLen; i++) {
+		for(j=0; j<sizeof(lpInvalid)-1; j++) { //changed at 1.8.2 from 9 to sizeof()-1
+			if (*(lpf+i)==*(lpInvalid+j)) {
+				*(lpf+i)='-';    //0x2D; check for invalid chars and replace it (return FALSE;)
+			} else if(*(lpf+i)!=0x20&&*(lpf+i)!=0x09) { //At least one non-space,non-tab char needed!
+				bLegal=TRUE;
+			}
 
 		}
 	}
@@ -99,25 +95,26 @@ LPSTR	AtPos(LPSTR lpMaster,LPSTR lp,DWORD size)
 {
 	DWORD	i,j,nsizelp;
 	nsizelp=strlen(lp);
-	if (size<=nsizelp||nsizelp<1)
+	if (size<=nsizelp||nsizelp<1) {
 		return NULL;
-	
-	for(i=0;i<size-nsizelp;i++)
-	{
-		for(j=0;j<nsizelp;j++)
-		{
-			if(*(lp+j)!=*(lpMaster+i+j))
+	}
+
+	for(i=0; i<size-nsizelp; i++) {
+		for(j=0; j<nsizelp; j++) {
+			if(*(lp+j)!=*(lpMaster+i+j)) {
 				break;
+			}
 		}
 		//_asm int 3;
-		if(j==nsizelp)
+		if(j==nsizelp) {
 			return lpMaster+i+nsizelp;
+		}
 	}
 	return NULL;
-		
+
 }
 
-				
+
 
 //-------------------------------------------------------------
 // Once, I think about to use own memory allocation method

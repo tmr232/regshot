@@ -35,47 +35,49 @@ LPSTR	GetWholeFileName(LPFILECONTENT lpFileContent)
 	LPSTR	lpName,lptail;
 	int	nLen=0;
 
-	for(lpf=lpFileContent;lpf!=NULL;lpf=lpf->lpfatherfile)
+	for(lpf=lpFileContent; lpf!=NULL; lpf=lpf->lpfatherfile) {
 		nLen+=strlen(lpf->lpfilename)+1;
-	if(nLen==0)
+	}
+	if(nLen==0) {
 		nLen++;
+	}
 	lpName=MYALLOC(nLen);
 
 	lptail=lpName+nLen-1;
 	*lptail=0x00;
-	
-	for(lpf=lpFileContent;lpf!=NULL;lpf=lpf->lpfatherfile)
-	{
+
+	for(lpf=lpFileContent; lpf!=NULL; lpf=lpf->lpfatherfile) {
 		nLen=strlen(lpf->lpfilename);
 		memcpy(lptail-=nLen,lpf->lpfilename,nLen);
-		if (lptail>lpName)
-			*--lptail='\\'; //0x5c;
+		if (lptail>lpName) {
+			*--lptail='\\';    //0x5c;
+		}
 	}
 	return lpName;
 }
-				
+
 
 //-------------------------------------------------------------
 // Routine to walk through all Sub tree of current Directory [File system]
 //-------------------------------------------------------------
 VOID	GetAllSubFile(
-					  BOOL needbrother,
-					  DWORD typedir,DWORD typefile,
-					  LPDWORD lpcountdir,LPDWORD lpcountfile,
-					  LPFILECONTENT lpFileContent
-					  )
+	BOOL needbrother,
+	DWORD typedir,DWORD typefile,
+	LPDWORD lpcountdir,LPDWORD lpcountfile,
+	LPFILECONTENT lpFileContent
+)
 {
 	LPSTR	lpTemp;
-	
-	if(ISDIR(lpFileContent->fileattr))
-	{
+
+	if(ISDIR(lpFileContent->fileattr)) {
 		lpTemp=lpFileContent->lpfilename;
 		//if(strcmp(lpFileContent->lpfilename,".")!=0 &&strcmp(lpFileContent->lpfilename,"..")!=0) //we should add here 1.8.0
-		if( *(unsigned short *)lpTemp!=0x002E && !( *(unsigned short *)lpTemp==0x2E2E && *(lpTemp+2)==0x00 )  ) //1.8.2
+		if( *(unsigned short *)lpTemp!=0x002E && !( *(unsigned short *)lpTemp==0x2E2E && *(lpTemp+2)==0x00 )  ) { //1.8.2
 			LogToMem(typedir,lpcountdir,lpFileContent);
-	}
-	else
+		}
+	} else {
 		LogToMem(typefile,lpcountfile,lpFileContent);
+	}
 
 	if(lpFileContent->lpfirstsubfile!=NULL) //"ºÍ".." added in 1.7.3 fixed at 1.8.0
 		//&&strcmp(lpFileContent->lpfirstsubfile->lpfilename,".")!=0 //But, this break the chain! :(. because we store . and .. in scan filecontent!
@@ -83,13 +85,13 @@ VOID	GetAllSubFile(
 	{
 		GetAllSubFile(TRUE,typedir,typefile,lpcountdir,lpcountfile,lpFileContent->lpfirstsubfile);
 	}
-	if(needbrother==TRUE)
-	{
-		if(lpFileContent->lpbrotherfile!=NULL)
+	if(needbrother==TRUE) {
+		if(lpFileContent->lpbrotherfile!=NULL) {
 			GetAllSubFile(TRUE,typedir,typefile,lpcountdir,lpcountfile,lpFileContent->lpbrotherfile);
+		}
 	}
 
-	
+
 }
 
 
@@ -123,9 +125,10 @@ VOID	GetFilesSnap(LPFILECONTENT lpFatherFile)
 	//_asm int 3;
 	filehandle=FindFirstFile(lpFilename,&finddata);
 	MYFREE(lpFilename);
-	if(filehandle==INVALID_HANDLE_VALUE)
+	if(filehandle==INVALID_HANDLE_VALUE) {
 		return;
-	
+	}
+
 	lpTemp=finddata.cFileName; //1.8
 
 	lpFileContent=MYALLOC0(sizeof(FILECONTENT));
@@ -140,40 +143,35 @@ VOID	GetFilesSnap(LPFILECONTENT lpFatherFile)
 	lpFatherFile->lpfirstsubfile=lpFileContent;
 	lpFileContentTemp=lpFileContent;
 
-	if(ISDIR(lpFileContent->fileattr))
-	{
-/*
-if( *(unsigned short *)lpTemp!=0x002E && !( *(unsigned short *)lpTemp==0x2E2E && *(lpTemp+2)==0x00 )   //1.8.2
-00401292   66:8B85 E4FEFFFF MOV AX,WORD PTR SS:[EBP-11C]
-00401299   66:3D 2E00       CMP AX,2E
-0040129D   74 43            JE SHORT regshot.004012E2
-0040129F   66:3D 2E2E       CMP AX,2E2E
-004012A3   75 0A            JNZ SHORT regshot.004012AF
-004012A5   8A85 E6FEFFFF    MOV AL,BYTE PTR SS:[EBP-11A]
-004012AB   84C0             TEST AL,AL
-004012AD   74 33            JE SHORT regshot.004012E2
+	if(ISDIR(lpFileContent->fileattr)) {
+		/*
+		if( *(unsigned short *)lpTemp!=0x002E && !( *(unsigned short *)lpTemp==0x2E2E && *(lpTemp+2)==0x00 )   //1.8.2
+		00401292   66:8B85 E4FEFFFF MOV AX,WORD PTR SS:[EBP-11C]
+		00401299   66:3D 2E00       CMP AX,2E
+		0040129D   74 43            JE SHORT regshot.004012E2
+		0040129F   66:3D 2E2E       CMP AX,2E2E
+		004012A3   75 0A            JNZ SHORT regshot.004012AF
+		004012A5   8A85 E6FEFFFF    MOV AL,BYTE PTR SS:[EBP-11A]
+		004012AB   84C0             TEST AL,AL
+		004012AD   74 33            JE SHORT regshot.004012E2
 
-*/
+		*/
 		//if(lstrcmp(lpFileContent->lpfilename,".")!=0&&lstrcmp(lpFileContent->lpfilename,"..")!=0 //or we can use that
 		//use lpTemp may "optimize" some, note, finddata.cfilename should exists!
 		//if( !(*lpTemp=='.' && *(lpTemp+1)==0x00 ) && !(*lpTemp=='.' && *(lpTemp+1)=='.' && *(lpTemp+2)==0x00 ) //1.8.0
 		//risk! see above.
 		if( *(unsigned short *)lpTemp!=0x002E && !( *(unsigned short *)lpTemp==0x2E2E && *(lpTemp+2)==0x00 )   //1.8.2
-			&&!IsInSkipList(lpFileContent->lpfilename,lpSnapFiles)) //tfx
-		{
-			
+				&&!IsInSkipList(lpFileContent->lpfilename,lpSnapFiles)) { //tfx
+
 			nGettingDir++;
 			GetFilesSnap(lpFileContent);
 		}
-	}
-	else
-	{
+	} else {
 		nGettingFile++;
 	}
 
-	
-	for	(;FindNextFile(filehandle,&finddata)!=FALSE;)
-	{
+
+	for	(; FindNextFile(filehandle,&finddata)!=FALSE;) {
 		lpFileContent=MYALLOC0(sizeof(FILECONTENT));
 		lpFileContent->lpfilename=MYALLOC0(strlen(finddata.cFileName)+1);
 		strcpy(lpFileContent->lpfilename,finddata.cFileName);
@@ -186,18 +184,14 @@ if( *(unsigned short *)lpTemp!=0x002E && !( *(unsigned short *)lpTemp==0x2E2E &&
 		lpFileContentTemp->lpbrotherfile=lpFileContent;
 		lpFileContentTemp=lpFileContent;
 
-		if(ISDIR(lpFileContent->fileattr))
-		{
+		if(ISDIR(lpFileContent->fileattr)) {
 			//if(   !(*lpTemp=='.' && *(lpTemp+1)==0x00 ) && !(*lpTemp=='.' && *(lpTemp+1)=='.' && *(lpTemp+2)==0x00 ) //if(lstrcmp(lpFileContent->lpfilename,".")!=0&&lstrcmp(lpFileContent->lpfilename,"..")!=0
 			if( *(unsigned short *)lpTemp!=0x002E && !( *(unsigned short *)lpTemp==0x2E2E && *(lpTemp+2)==0x00 )  //1.8.2
-				&&!IsInSkipList(lpFileContent->lpfilename,lpSnapFiles)) //tfx
-			{
+					&&!IsInSkipList(lpFileContent->lpfilename,lpSnapFiles)) { //tfx
 				nGettingDir++;
 				GetFilesSnap(lpFileContent);
 			}
-		}
-		else
-		{
+		} else {
 			nGettingFile++;
 		}
 
@@ -205,8 +199,7 @@ if( *(unsigned short *)lpTemp!=0x002E && !( *(unsigned short *)lpTemp==0x2E2E &&
 	FindClose(filehandle);
 
 	nGettingTime=GetTickCount();
-	if ((nGettingTime-nBASETIME1)>REFRESHINTERVAL)
-	{
+	if ((nGettingTime-nBASETIME1)>REFRESHINTERVAL) {
 		UpdateCounters(lan_dir,lan_file,nGettingDir,nGettingFile);
 	}
 
@@ -220,60 +213,50 @@ if( *(unsigned short *)lpTemp!=0x002E && !( *(unsigned short *)lpTemp==0x2E2E &&
 VOID	CompareFirstSubFile(LPFILECONTENT lpHead1,LPFILECONTENT lpHead2)
 {
 	LPFILECONTENT	lp1,lp2;
-	for(lp1=lpHead1;lp1!=NULL;lp1=lp1->lpbrotherfile)
-	{
-		for(lp2=lpHead2;lp2!=NULL;lp2=lp2->lpbrotherfile)
-		{
-			if((lp2->bfilematch==NOTMATCH) && strcmp(lp1->lpfilename,lp2->lpfilename)==0)  //1.8.2 from lstrcmp to strcmp
-			{	//Two 'FILE's have same name,but we are not sure they are the same,so we compare it!
+	for(lp1=lpHead1; lp1!=NULL; lp1=lp1->lpbrotherfile) {
+		for(lp2=lpHead2; lp2!=NULL; lp2=lp2->lpbrotherfile) {
+			if((lp2->bfilematch==NOTMATCH) && strcmp(lp1->lpfilename,lp2->lpfilename)==0) { //1.8.2 from lstrcmp to strcmp
+				//Two 'FILE's have same name,but we are not sure they are the same,so we compare it!
 				if( ISFILE(lp1->fileattr) && ISFILE(lp2->fileattr) )
 					////(lp1->fileattr&FILE_ATTRIBUTE_DIRECTORY)!=FILE_ATTRIBUTE_DIRECTORY&&(lp2->fileattr&FILE_ATTRIBUTE_DIRECTORY)!=FILE_ATTRIBUTE_DIRECTORY)
-				{	
+				{
 					//Lp1 is file,lp2 is file
 					if(lp1->writetimelow==lp2->writetimelow&&lp1->writetimehigh==lp2->writetimehigh&&
-						lp1->filesizelow==lp2->filesizelow&&lp1->filesizehigh==lp2->filesizehigh&&lp1->fileattr==lp2->fileattr)
-					{ //We found a match file!
+							lp1->filesizelow==lp2->filesizelow&&lp1->filesizehigh==lp2->filesizehigh&&lp1->fileattr==lp2->fileattr) {
+						//We found a match file!
 						lp2->bfilematch=ISMATCH;
-					}
-					else
-					{
+					} else {
 						//We found a dismatch file ,they will be logged
 						lp2->bfilematch=ISMODI;
 						LogToMem(FILEMODI,&nFILEMODI,lp1);
 					}
-					
-				}
-				else
-				{
+
+				} else {
 					//At least one file of the pair is directory,so we try to determine
 					if( ISDIR(lp1->fileattr) && ISDIR(lp2->fileattr))
 						////(lp1->fileattr&FILE_ATTRIBUTE_DIRECTORY)==FILE_ATTRIBUTE_DIRECTORY&&(lp2->fileattr&FILE_ATTRIBUTE_DIRECTORY)==FILE_ATTRIBUTE_DIRECTORY)
-					{	
+					{
 						//The two 'FILE's are all dirs
-						if(lp1->fileattr==lp2->fileattr)
-						{	//Same attributs of dirs,we compare their subfiles
+						if(lp1->fileattr==lp2->fileattr) {
+							//Same attributs of dirs,we compare their subfiles
 							lp2->bfilematch=ISMATCH;
 							CompareFirstSubFile(lp1->lpfirstsubfile,lp2->lpfirstsubfile);
-						}
-						else
-						{   //Dir attributes changed,they will be logged
+						} else {
+							//Dir attributes changed,they will be logged
 							lp2->bfilematch=ISMODI;
 							LogToMem(DIRMODI,&nDIRMODI,lp1);
 						}
 						//break;
-					}
-					else
-					{
+					} else {
 						//One of the 'FILE's is dir,but which one?
 						if( ISFILE(lp1->fileattr) && ISDIR(lp2->fileattr) )
 							////(lp1->fileattr&FILE_ATTRIBUTE_DIRECTORY)!=FILE_ATTRIBUTE_DIRECTORY&&(lp2->fileattr&FILE_ATTRIBUTE_DIRECTORY)==FILE_ATTRIBUTE_DIRECTORY)
-						{ //lp1 is file,lp2 is dir
+						{
+							//lp1 is file,lp2 is dir
 							lp1->bfilematch=ISDEL;
 							LogToMem(FILEDEL,&nFILEDEL,lp1);
 							GetAllSubFile(FALSE,DIRADD,FILEADD,&nDIRADD,&nFILEADD,lp2);
-						}
-						else
-						{	
+						} else {
 							//Lp1 is dir,lp2 is file
 							lp2->bfilematch=ISADD;
 							LogToMem(FILEADD,&nFILEADD,lp2);
@@ -284,34 +267,33 @@ VOID	CompareFirstSubFile(LPFILECONTENT lpHead1,LPFILECONTENT lpHead2)
 				break;
 			}
 		}
-		if(lp2==NULL)
-		{
+		if(lp2==NULL) {
 			//lp2 looped to the end,that is,we can not find a lp2 matches lp1,so lp1 is  deleted!
-			if(ISDIR(lp1->fileattr))
-				GetAllSubFile(FALSE,DIRDEL,FILEDEL,&nDIRDEL,&nFILEDEL,lp1); //if lp1 is dir
-			else
-				LogToMem(FILEDEL,&nFILEDEL,lp1); //if lp1 is file
+			if(ISDIR(lp1->fileattr)) {
+				GetAllSubFile(FALSE,DIRDEL,FILEDEL,&nDIRDEL,&nFILEDEL,lp1);    //if lp1 is dir
+			} else {
+				LogToMem(FILEDEL,&nFILEDEL,lp1);    //if lp1 is file
+			}
 		}
 	}
 	//We loop to the end,then we do an extra loop of lp2 use flag we previous make
-	for(lp2=lpHead2;lp2!=NULL;lp2=lp2->lpbrotherfile)
-	{
+	for(lp2=lpHead2; lp2!=NULL; lp2=lp2->lpbrotherfile) {
 		nComparing++;
-		if(lp2->bfilematch==NOTMATCH)
-		{   //We did not find a lp1 matches a lp2,so lp2 is added!
-			if(ISDIR(lp2->fileattr))
+		if(lp2->bfilematch==NOTMATCH) {
+			//We did not find a lp1 matches a lp2,so lp2 is added!
+			if(ISDIR(lp2->fileattr)) {
 				GetAllSubFile(FALSE,DIRADD,FILEADD,&nDIRADD,&nFILEADD,lp2);
-			else
+			} else {
 				LogToMem(FILEADD,&nFILEADD,lp2);
+			}
 		}
 	}
 	// Progress bar update
 	if (nGettingFile!=0)
-	if (nComparing%nGettingFile>nFileStep)
-	{
-		nComparing=0;
-		SendDlgItemMessage(hWnd,IDC_PBCOMPARE,PBM_STEPIT,(WPARAM)0,(LPARAM)0);
-	}
+		if (nComparing%nGettingFile>nFileStep) {
+			nComparing=0;
+			SendDlgItemMessage(hWnd,IDC_PBCOMPARE,PBM_STEPIT,(WPARAM)0,(LPARAM)0);
+		}
 
 }
 
@@ -320,8 +302,7 @@ VOID	CompareFirstSubFile(LPFILECONTENT lpHead1,LPFILECONTENT lpHead2)
 //-------------------------------------------------------------
 VOID FreeAllFileContent(LPFILECONTENT lpFile)
 {
-	if(lpFile!=NULL)
-	{
+	if(lpFile!=NULL) {
 		FreeAllFileContent(lpFile->lpfirstsubfile);
 		FreeAllFileContent(lpFile->lpbrotherfile);
 		MYFREE(lpFile->lpfilename);
@@ -334,8 +315,7 @@ VOID FreeAllFileContent(LPFILECONTENT lpFile)
 //-------------------------------------------------------------
 VOID FreeAllFileHead(LPHEADFILE lp)
 {
-	if(lp!=NULL)
-	{
+	if(lp!=NULL) {
 		FreeAllFileHead(lp->lpnextheadfile);
 		FreeAllFileContent(lp->lpfilecontent);
 		//FreeAllFileContent(lp->lpfilecontent2);
@@ -358,8 +338,8 @@ VOID	SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile,DWO
 {
 
 	DWORD	nFPHeader,nFPCurrent,nFPTemp4Write,nLenPlus1;
-	
-	
+
+
 	nLenPlus1=strlen(lpFileContent->lpfilename)+1;											//get len+1
 	nFPHeader=SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);							//save head fp
 	nFPTemp4Write=nFPHeader+41;								//10*4+1
@@ -373,22 +353,19 @@ VOID	SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile,DWO
 	nFPTemp4Write=0;
 	WriteFile(hFileWholeReg,&nFPTemp4Write,1,&NBW,NULL);					//clear and save bfilematch
 	WriteFile(hFileWholeReg,lpFileContent->lpfilename,nLenPlus1,&NBW,NULL);	//Save the current filename
-	
-	
-	if(lpFileContent->lpfirstsubfile!=NULL)
-	{
+
+
+	if(lpFileContent->lpfirstsubfile!=NULL) {
 		//pass this filecontent's position as subfile's fatherfile's position and pass the "lpfirstsubfile field"
-		SaveFileContent(lpFileContent->lpfirstsubfile,nFPHeader,nFPHeader+28); 
+		SaveFileContent(lpFileContent->lpfirstsubfile,nFPHeader,nFPHeader+28);
 	}
-		
-	if(lpFileContent->lpbrotherfile!=NULL)
-	{
+
+	if(lpFileContent->lpbrotherfile!=NULL) {
 		// pass this file's fatherfile's position as brother's father and pass "lpbrotherfile field"
 		SaveFileContent(lpFileContent->lpbrotherfile,nFPCurrentFatherFile,nFPHeader+32);
 	}
 
-	if(nFPCaller>0) //save position of current file in current father file
-	{
+	if(nFPCaller>0) { //save position of current file in current father file
 		nFPCurrent=SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);
 		SetFilePointer(hFileWholeReg,nFPCaller,NULL,FILE_BEGIN);
 		WriteFile(hFileWholeReg,&nFPHeader,4,&NBW,NULL);
@@ -397,14 +374,13 @@ VOID	SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile,DWO
 	//Need adjust progress bar para!!
 	nSavingFile++;
 	if (nGettingFile!=0)
-	if (nSavingFile%nGettingFile>nFileStep)
-	{
-		nSavingFile=0;
-		SendDlgItemMessage(hWnd,IDC_PBCOMPARE,PBM_STEPIT,(WPARAM)0,(LPARAM)0);
-		UpdateWindow(hWnd);
-		PeekMessage(&msg,hWnd,WM_ACTIVATE,WM_ACTIVATE,PM_REMOVE);
-	}
-	
+		if (nSavingFile%nGettingFile>nFileStep) {
+			nSavingFile=0;
+			SendDlgItemMessage(hWnd,IDC_PBCOMPARE,PBM_STEPIT,(WPARAM)0,(LPARAM)0);
+			UpdateWindow(hWnd);
+			PeekMessage(&msg,hWnd,WM_ACTIVATE,WM_ACTIVATE,PM_REMOVE);
+		}
+
 
 }
 //--------------------------------------------------
@@ -414,15 +390,28 @@ VOID ReAlignFileContent(LPFILECONTENT lpFC,DWORD nBase)
 {
 	LPDWORD lp;
 	lp=(LPDWORD)lpFC;
-	if((*lp)!=0) (*lp)+=nBase;	lp+=7;
-	if((*lp)!=0) (*lp)+=nBase;	lp++;
-	if((*lp)!=0) (*lp)+=nBase;	lp++;
-	if((*lp)!=0) (*lp)+=nBase;
+	if((*lp)!=0) {
+		(*lp)+=nBase;
+	}
+	lp+=7;
+	if((*lp)!=0) {
+		(*lp)+=nBase;
+	}
+	lp++;
+	if((*lp)!=0) {
+		(*lp)+=nBase;
+	}
+	lp++;
+	if((*lp)!=0) {
+		(*lp)+=nBase;
+	}
 	nGettingFile++; // just for the progress bar
-	if(lpFC->lpfirstsubfile!=NULL)
+	if(lpFC->lpfirstsubfile!=NULL) {
 		ReAlignFileContent(lpFC->lpfirstsubfile,nBase);
-	if(lpFC->lpbrotherfile!=NULL)
+	}
+	if(lpFC->lpbrotherfile!=NULL) {
 		ReAlignFileContent(lpFC->lpbrotherfile,nBase);
+	}
 
 }
 //--------------------------------------------------
@@ -432,13 +421,18 @@ VOID ReAlignFile(LPHEADFILE lpHF,DWORD nBase)
 {
 	LPDWORD lp;
 	LPHEADFILE lphf;
-	for(lphf=lpHF;lphf!=NULL;lphf=lphf->lpnextheadfile)
-	{
+	for(lphf=lpHF; lphf!=NULL; lphf=lphf->lpnextheadfile) {
 		lp=(LPDWORD)lphf;
-		if((*lp)!=0) (*lp)+=nBase;lp++;
-		if((*lp)!=0) (*lp)+=nBase;
-		if(lphf->lpfilecontent!=NULL) //I wouldn't find crash bug(loadhive->readfile) in 1.8.0 if I had added it in that version
+		if((*lp)!=0) {
+			(*lp)+=nBase;
+		}
+		lp++;
+		if((*lp)!=0) {
+			(*lp)+=nBase;
+		}
+		if(lphf->lpfilecontent!=NULL) { //I wouldn't find crash bug(loadhive->readfile) in 1.8.0 if I had added it in that version
 			ReAlignFileContent(lphf->lpfilecontent,nBase);
+		}
 	}
 }
 
@@ -450,12 +444,12 @@ LPFILECONTENT SearchDirChain(LPSTR lpname,LPHEADFILE lpHF)
 {
 	LPHEADFILE lphf;
 	if(lpname!=NULL)
-	for(lphf=lpHF;lphf!=NULL;lphf=lphf->lpnextheadfile)
-	{
-		if(lphf->lpfilecontent!=NULL && lphf->lpfilecontent->lpfilename!=NULL)
-			if(_strcmpi(lpname,lphf->lpfilecontent->lpfilename)==0)
-				return lphf->lpfilecontent;
-	}
+		for(lphf=lpHF; lphf!=NULL; lphf=lphf->lpnextheadfile) {
+			if(lphf->lpfilecontent!=NULL && lphf->lpfilecontent->lpfilename!=NULL)
+				if(_strcmpi(lpname,lphf->lpfilecontent->lpfilename)==0) {
+					return lphf->lpfilecontent;
+				}
+		}
 	return NULL;
 }
 
@@ -468,10 +462,8 @@ VOID FindDirChain(LPHEADFILE lpHF,LPSTR lpDir,int nMaxLen)
 	LPHEADFILE lphf;
 	*lpDir=0x00;
 	nLen=0;
-	for(lphf=lpHF;lphf!=NULL;lphf=lphf->lpnextheadfile)
-	{
-		if(lphf->lpfilecontent!=NULL && nLen < nMaxLen)
-		{
+	for(lphf=lpHF; lphf!=NULL; lphf=lphf->lpnextheadfile) {
+		if(lphf->lpfilecontent!=NULL && nLen < nMaxLen) {
 			nLen+=strlen(lphf->lpfilecontent->lpfilename)+1;
 			strcat(lpDir,lphf->lpfilecontent->lpfilename);
 			strcat(lpDir,";");
@@ -491,9 +483,10 @@ BOOL DirChainMatch(LPHEADFILE lphf1,LPHEADFILE lphf2)
 	ZeroMemory(lpDir2,sizeof(lpDir2));
 	FindDirChain(lphf1,lpDir1,EXTDIRLEN);
 	FindDirChain(lphf2,lpDir2,EXTDIRLEN);
-	if(_strcmpi(lpDir1,lpDir2)!=0)
+	if(_strcmpi(lpDir1,lpDir2)!=0) {
 		return FALSE;
-	else
+	} else {
 		return TRUE;
+	}
 }
 
