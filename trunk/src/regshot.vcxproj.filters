@@ -15,46 +15,46 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\global.h">
+    <ClInclude Include="global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\resource.h">
+    <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\regshot.ico">
+    <None Include="regshot.ico">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="src\regshot.rc">
+    <ResourceCompile Include="regshot.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\fileshot.c">
+    <ClCompile Include="fileshot.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\language.c">
+    <ClCompile Include="language.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\misc.c">
+    <ClCompile Include="misc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\output.c">
+    <ClCompile Include="output.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Regshot.c">
+    <ClCompile Include="Regshot.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\setup.c">
+    <ClCompile Include="setup.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui.c">
+    <ClCompile Include="ui.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\winmain.c">
+    <ClCompile Include="winmain.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
