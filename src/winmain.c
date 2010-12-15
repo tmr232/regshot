@@ -503,7 +503,7 @@ int		PASCAL WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,
 	hHeap=GetProcessHeap(); //1.8.2
 	hWnd=CreateDialog(hInstance,MAKEINTRESOURCE(IDD_DIALOG1),NULL,(WNDPROC)DialogProc);
 	
-	SetClassLong(hWnd,GCL_HICON,(LONG)LoadIcon(hInstance,MAKEINTRESOURCE(IDI_ICON1)));
+	SetClassLongPtr(hWnd,GCLP_HICON,(LONG_PTR)LoadIcon(hInstance,MAKEINTRESOURCE(IDI_ICON1)));
 
 	SetWindowText(hWnd, str_prgname);
 	ShowWindow(hWnd,nCmdShow);
