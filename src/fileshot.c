@@ -77,7 +77,7 @@ VOID	GetAllSubFile(
 	else
 		LogToMem(typefile,lpcountfile,lpFileContent);
 
-	if(lpFileContent->lpfirstsubfile!=NULL) //tfx 避免目录扫描时产生"."和".." added in 1.7.3 fixed at 1.8.0
+	if(lpFileContent->lpfirstsubfile!=NULL) //"和".." added in 1.7.3 fixed at 1.8.0
 		//&&strcmp(lpFileContent->lpfirstsubfile->lpfilename,".")!=0 //But, this break the chain! :(. because we store . and .. in scan filecontent!
 		//&&strcmp(lpFileContent->lpfirstsubfile->lpfilename,"..")!=0) //So we should move these two lines above
 	{
@@ -152,7 +152,6 @@ if( *(unsigned short *)lpTemp!=0x002E && !( *(unsigned short *)lpTemp==0x2E2E &&
 004012A5   8A85 E6FEFFFF    MOV AL,BYTE PTR SS:[EBP-11A]
 004012AB   84C0             TEST AL,AL
 004012AD   74 33            JE SHORT regshot.004012E2
-//存在风险,因为如果filename的长度不一定,内存分配不够长度的话代码是会出问题的! 而且从LoadHive过来的也不一定长度.从汇编代码来看还是比较安全的. 我要好好考虑考虑再用.
 
 */
 		//if(lstrcmp(lpFileContent->lpfilename,".")!=0&&lstrcmp(lpFileContent->lpfilename,"..")!=0 //or we can use that
