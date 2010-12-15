@@ -82,7 +82,7 @@ OBJECTS= \
 $(APP): $(OBJECTS)
 	@$(RC) $(RFLAGS) /fo"$(OBJDIR)\regshot.res" "src\regshot.rc"
 	@$(LD) $(LDFLAGS) /OUT:"$(APP)" $(OBJECTS)
-#	@$(MT) -nologo -manifest "$(RES)\regshot.exe.manifest" -outputresource:"$(APP);#1"
+	@$(MT) -nologo -manifest "src\regshot.exe.manifest" -outputresource:"$(APP);#1"
 
 
 # Dependencies
