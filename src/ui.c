@@ -20,6 +20,7 @@
 */
 
 #include "global.h"
+
 extern LPSTR lan_time;
 extern LPSTR lan_key;
 extern LPSTR lan_value;
