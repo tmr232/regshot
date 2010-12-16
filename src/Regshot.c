@@ -1106,9 +1106,9 @@ VOID	SaveRegKey(LPKEYCONTENT lpKeyContent, DWORD nFPCurrentFatherKey,DWORD nFPCa
 	LPVALUECONTENT lpv;
 
 
-	nLenPlus1=strlen(lpKeyContent->lpkeyname)+1;											//get len+1
-	nFPHeader=SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);							//save head fp
-	nFPTemp4Write=nFPHeader+21;								//5*4+1
+	nLenPlus1=strlen(lpKeyContent->lpkeyname)+1;							//get len+1
+	nFPHeader=SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);			//save head fp
+	nFPTemp4Write=nFPHeader+21;												//5*4+1
 	WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);					//save location of lpkeyname
 	nFPTemp4Write=(lpKeyContent->lpfirstvalue!=NULL) ? (nFPHeader+21+nLenPlus1):0;			//We write lpkeyname plus a "\0"
 	WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);					//save location of lpfirstvalue
@@ -1123,11 +1123,11 @@ VOID	SaveRegKey(LPKEYCONTENT lpKeyContent, DWORD nFPCurrentFatherKey,DWORD nFPCa
 	//Save the sub-value of current KeyContent
 	for(lpv=lpKeyContent->lpfirstvalue; lpv!=NULL; lpv=lpv->lpnextvalue) {
 		nLenPlus1=strlen(lpv->lpvaluename)+1;
-		nFPCurrent=SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);						//save  fp
+		nFPCurrent=SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);		//save  fp
 		WriteFile(hFileWholeReg,(LPBYTE)lpv,8,&NBW,NULL);
-		nFPTemp4Write=nFPCurrent+25;														//6*4+1
+		nFPTemp4Write=nFPCurrent+25;										//6*4+1
 		WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);				//save location of lpvaluename
-		nFPTemp4Write=(lpv->datasize>0)?(nFPCurrent+25+nLenPlus1):0;						//if no lpvaluedata,we write 0
+		nFPTemp4Write=(lpv->datasize>0)?(nFPCurrent+25+nLenPlus1):0;		//if no lpvaluedata,we write 0
 		WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);				//save location of lpvaluedata
 		nFPTemp4Write=(lpv->lpnextvalue!=NULL)?(nFPCurrent+25+nLenPlus1+lpv->datasize):0;	//if no nextvalue we write 0
 		WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);				//save location of next subvalue
@@ -1136,7 +1136,7 @@ VOID	SaveRegKey(LPKEYCONTENT lpKeyContent, DWORD nFPCurrentFatherKey,DWORD nFPCa
 		nFPTemp4Write=0;
 		WriteFile(hFileWholeReg,&nFPTemp4Write,1,&NBW,NULL);				//clear and save bvaluematch
 		WriteFile(hFileWholeReg,lpv->lpvaluename,nLenPlus1,&NBW,NULL);		//save lpvaluename
-		WriteFile(hFileWholeReg,lpv->lpvaluedata,lpv->datasize,&NBW,NULL); //save lpvaluedata
+		WriteFile(hFileWholeReg,lpv->lpvaluedata,lpv->datasize,&NBW,NULL);	//save lpvaluedata
 
 	}
 
