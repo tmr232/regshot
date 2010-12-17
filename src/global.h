@@ -19,6 +19,9 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#ifdef __GNUC__
+#include <unistd.h>
+#endif
 #include <windows.h>
 #include <stdio.h>
 #include <shlobj.h>
@@ -47,7 +50,7 @@
 
 //#define DEBUGLOG
 //Some definations
-#define SIZEOFREG_DWORD	4		//In current windows ,reg_dword's size =4 
+#define SIZEOFREG_DWORD	4		//In current windows ,reg_dword's size =4
 #define NOTMATCH		0		//Define modification type in compare results
 #define ISMATCH			1
 #define ISDEL			2
@@ -226,9 +229,9 @@ LPDWORD	ldwTempStrings;
 
 
 //Former definations used at Dynamic Monitor Engine.Not Used NOW
-//#define	DIOCPARAMSSIZE	20	//4+4+4+8 bytes DIOCParams size!
+//#define	DIOCPARAMSSIZE	20		//4+4+4+8 bytes DIOCParams size!
 //#define	MAXLISTBOXLEN	1024
-//#define	RING3TDLEN		8	//ring3 td name length
+//#define	RING3TDLEN		8		//ring3 td name length
 //LPSTR		str_errorini="Error create Dialog!";
 //INT		tabarray[]={40,106,426,466};		// the tabstops is the len addup!
 //BOOL		bWinNTDetected;
@@ -279,7 +282,7 @@ VOID	FreeAllKeyContent1(void);
 VOID	FreeAllKeyContent2(void);
 VOID	FreeAllFileHead(LPHEADFILE lp);
 VOID	ClearKeyMatchTag(LPKEYCONTENT lpKey);
-VOID	GetRegistrySnap(HKEY hkey,LPKEYCONTENT lpFatherKeyContent);	//HWND hDlg,first para deleted in 1.8, return from void * to void
+VOID	GetRegistrySnap(HKEY hkey,LPKEYCONTENT lpFatherKeyContent);		//HWND hDlg,first para deleted in 1.8, return from void * to void
 VOID	GetFilesSnap(LPFILECONTENT lpFatherFile);						//HWND hDlg,first para deleted in 1.8
 LPSTR	GetWholeFileName(LPFILECONTENT lpFileContent);
 VOID	InitProgressBar(VOID);
