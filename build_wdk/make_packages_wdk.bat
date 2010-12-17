@@ -20,7 +20,7 @@ SET REGSHOTVER=1.8.3
 
 CALL "build_wdk.cmd"
 
-CALL :SubZipFiles Release x86
+CALL :SubZipFiles Release_x86 x86
 CALL :SubZipFiles Release_x64 x64
 
 :END
