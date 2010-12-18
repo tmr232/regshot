@@ -30,7 +30,7 @@
 
 //!!!WARNING!!! HEAP_NO_SERIALIZE mean we can not use this in multithread.
 //added in 1.8.2 to gain a slightly faster speed but it is danger!
-#define	USEHEAPALLOC_DANGER
+//#define	USEHEAPALLOC_DANGER
 
 #ifdef USEHEAPALLOC_DANGER
 
