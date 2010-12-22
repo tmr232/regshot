@@ -91,7 +91,7 @@ unsigned char lan_default[][22]= {
 	"Error move fp",
 	"&1st shot",
 	"&2nd shot",
-	"c&Ompare",
+	"C&ompare",
 	"&Clear",
 	"&Quit",
 	"&About",

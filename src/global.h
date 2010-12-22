@@ -31,6 +31,7 @@
 //!!!WARNING!!! HEAP_NO_SERIALIZE mean we can not use this in multithread.
 //added in 1.8.2 to gain a slightly faster speed but it is danger!
 //#define	USEHEAPALLOC_DANGER
+//#define	DEBUGLOG
 
 #ifdef USEHEAPALLOC_DANGER
 
@@ -46,9 +47,6 @@
 
 #endif
 
-//#define WIN32_LEAN_AND_MEAN
-
-//#define DEBUGLOG
 //Some definations
 #define SIZEOFREG_DWORD	4		//In current windows ,reg_dword's size =4
 #define NOTMATCH		0		//Define modification type in compare results
