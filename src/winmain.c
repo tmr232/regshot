@@ -31,21 +31,24 @@ char *str_prgname="Regshot x64 1.8.3";
 #elif defined(WIN32)
 char *str_prgname="Regshot 1.8.3";
 #endif
-char *str_aboutme="Regshot is a free and opensource registry compare utility.\n\n\
+char *str_aboutme="Regshot is a free and open source registry compare utility.\n\n\
+http://code.google.com/p/regshot/\n\n\
+Original webpages:\n\
 http://regshot.yeah.net/\n\
 http://regshot.blog.googlepages.com/\n\n";
+
 LPSTR	REGSHOTINI			="regshot.ini"; //tfx
 LPSTR	REGSHOTLANGUAGEFILE	="language.ini";
 
 extern u_char * lan_menuclearallshots;  // Be careful of extern ref! must be the same when declare them,otherwise pointer would mis-point
-extern u_char * lan_menuclearshot1;     //and I can not use sizeof to get real array size in extern ref
+extern u_char * lan_menuclearshot1;     // and I can not use sizeof to get real array size in extern ref
 extern u_char * lan_menuclearshot2;
 extern u_char * lan_about;
 extern LPSTR str_DefaultLanguage;
 extern LPSTR str_Original;
 
 
-// this new function Added by Youri in 1.8.2, for expand path in browse dialog
+// this new function added by Youri in 1.8.2, for expand path in browse dialog
 int CALLBACK SelectBrowseFolder(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
 {
 	if (uMsg == BFFM_INITIALIZED) {
