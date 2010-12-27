@@ -11,28 +11,29 @@ History of Regshot
 V1.8.2 20071103
 ! Change some calls to ANSI version(lstrcmp->strcmp...)
 ! Use risk . and .. compare
-! Use HeapAlloc instead of GlobalAlloc,danger but slightly faster,see sourcecode
-! html differ color from e0e0e0 to e0f0e0. Thanks Charles!
+! Use HeapAlloc instead of GlobalAlloc, danger but slightly faster, see source code
+! html differ color from e0e0e0 to e0f0e0 [Thanks Charles!]
 + Add frech languagefixed,kazakh language.
-+ Add new style browseforfolder by Belogorokhov Youri! (NT+)
-+ Do not save setting to regshot.ini when there is no such ini file.( idea from "alan borer" in My msg board)
++ Add new style browse for folder by Belogorokhov Youri! (NT+)
++ Do not save setting to regshot.ini when there is no such ini file
+ (idea from "alan borer" in my msg board)
 + Fix crash bug in former version if start from cmd window
 ! minor changes and minor bug fixed
 
 V1.8.1 20070620
 ! Fix a Crash bug in 1.8.0! (LoadHive()->ReadFile())
 + Dir chains comparison is more human.
-+ "UseLongRegHead" option added in regshot.ini to compatible with undoReg(1.46)
-* "UseLongRegHead=1" means using "HKEY_LOCAL_MACHINE" instead of "HKLM",default 0
++ "UseLongRegHead" option added in regshot.ini to compatible with undoReg (1.46)
+* "UseLongRegHead=1" means using "HKEY_LOCAL_MACHINE" instead of "HKLM", default 0
 * Do not compare shots saved with different "UseLongRegHead" option!
 
-V1.8.0 20070615 (Its TiANWEi reloaded;)
+V1.8.0 20070615 (Its TiANWEi reloaded)
 ! Fix filechain break bug in 1.7(.,..)
-! Fix several pointer mis-point(lpComputer,etc)
-! Code maintenance(split,rename,OMG)
+! Fix several pointer mis-point (lpComputer, etc)
+! Code maintenance (split, rename, OMG)
 ! file attribute dir code adjust
-! value modi section of html output is colored (Thanks HANDLE!)
-+ fileshots are NOW SAVEed in hive(you must be waiting for this ^_^)
+! value modi section of html output is colored [Thanks HANDLE!]
++ fileshots are NOW SAVEed in hive (you must be waiting for this ^_^)
 + Use GPLv2 licence
 
 V1.7,1.7.1,1.7.2 2004/2/25-2004/03/05 This version is made by tulipfan[CCG]!
@@ -46,7 +47,7 @@ V1.7,1.7.1,1.7.2 2004/2/25-2004/03/05 This version is made by tulipfan[CCG]!
 V1.61a,b,c,d,e,e+,e1-e5 2002/07/13-2003/01/01
 + Add 2 languages[1 in 1.61b],Fixed 1.
 ! SeparatorBar missplaced in Popup menu in some OS,
-  Hope to fix it![Thanks Dchenka]
+  Hope to fix it! [Thanks Dchenka]
 ! Fix Output path bug found by itschy!
 + Add Japanese language by Kentaro Okude!
 + Add Polish language by Adam Mikusiñski!
@@ -60,7 +61,7 @@ V1.61a,b,c,d,e,e+,e1-e5 2002/07/13-2003/01/01
 V1.61 2002/03/30
 + Clear shots separately
 + Show translators name in About Dialog
-+ Add Nederlands, Türkçe ,Èeskylanguage support
++ Add Nederlands, Türkçe, Èesky language support
 ! Optimize some codes
 
 V1.60[test] 2002/03/25
@@ -79,8 +80,8 @@ V1.54a 2002/02/22
 ! Fix bug that made in 1.54 [Can not save mask in
   Monitor window]
 + Minor changes,add Italian language strings.
-* Some friends reported that Monitor Window may hang 
-  up,but I have not encounter it myself, I will 
+* Some friends reported that Monitor Window may hang
+  up,but I have not encounter it myself, I will
   debug later.
 
 V1.54 2002/01/27
@@ -109,12 +110,12 @@ V1.52 2001/11/10
 
 V1.51,1.51a 2001/10/25
 ! Fix crash bug in 1.50e when scan folders!!
-+ Scan unlimited number of drivers[folders]
++ Scan unlimited number of drivers [folders]
 
 V1.50e 2001/10/18
 + Scan up to 26 drivers[folders] separated with ";"
-- Text log don't wrap at too long data for the 
-  3rd party software analysis 
+- Text log don't wrap at too long data for the
+  3rd party software analysis
 
 V1.50d 2001/09/29
 ! Deal with more non-standard(invalid) reg values
@@ -128,7 +129,7 @@ V1.50b 2001/09/22
 
 V1.50a 2001/09/10
 * Teachers Day!
-+ files and folders scan![maybe whole partition!]
++ files and folders scan! [maybe whole partition!]
 ! log filename fixed
 ! regshot.dat -> rgst150.dat
 
@@ -187,7 +188,7 @@ Debug Version 1.0 2001/08/07
   debug_keyqueryinfo.log
   debug_keycannotbeopen.log
 * My PC has no Win2000 installed,so I email this
-  Version to Zhangl,and he email me the logfile!
+  version to Zhangl, and he email me the logfile!
 
 Version 1.10 2001/04/09
 * One and a half year apart from my regshot!
@@ -195,12 +196,12 @@ Version 1.10 2001/04/09
 
 Version 1.01j 1999/12/29
 - NT4 bug can not be found?? So sad!
-- Not packed by UPX any more
+- Not packed with UPX any more
 
 Version 1.01i 1999/12/04
-+ Compare log save to different files,max 10000!
++ Compare log save to different files, max 10000!
 + Turtor file (turtor.txt) added in release pack.
-* Found bugs on NT,bug I cannot fix it
+* Found bugs on NT, bug I cannot fix it
 
 Version 1.01h 1999/11/25
 ! Found bugs on NT sp3
@@ -229,5 +230,8 @@ Version before 1.01c
 -------------------------------------------------
 
 Download new version at:
-http://regshot.yeah.net/ 
+http://code.google.com/p/regshot/
+
+Original webpages:
+http://regshot.yeah.net/
 http://regshot.blog.googlepages.com/
