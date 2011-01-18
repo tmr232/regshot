@@ -41,7 +41,7 @@ COPY /Y /V "..\history.txt" "temp_zip\History.txt"
 COPY /Y /V "..\language.ini" "temp_zip\"
 COPY /Y /V "..\readme.txt" "temp_zip\Readme.txt"
 COPY /Y /V "..\regshot.ini" "temp_zip\"
-COPY /Y /V "..\%1\Regshot.exe" "temp_zip\"
+COPY /Y /V "..\bin\WDK\%1\Regshot.exe" "temp_zip\"
 
 PUSHD "temp_zip"
 START "" /B /WAIT "..\7za.exe" a -tzip -mx=9 "Regshot_%REGSHOTVER%_%2_WDK.zip" >NUL

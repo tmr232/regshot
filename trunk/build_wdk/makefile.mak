@@ -7,7 +7,7 @@
 #*
 #* See gpl.txt for details about distribution and modification.
 #*
-#*                                       (c) XhmikosR 2010
+#*                                       (c) XhmikosR 2010-2011
 #*                                       http://code.google.com/p/regshot/
 #*
 #* Use build.cmd and set there your WDK and SDK directories.
@@ -21,9 +21,9 @@ MT=mt
 
 
 !IFDEF x64
-BINDIR=..\Release_x64
+BINDIR=..\bin\WDK\Release_x64
 !ELSE
-BINDIR=..\Release_x86
+BINDIR=..\bin\WDK\Release_x86
 !ENDIF
 OBJDIR=$(BINDIR)\obj
 APP=$(BINDIR)\Regshot.exe
@@ -31,24 +31,24 @@ SRC=..\src
 
 
 DEFINES=/D "_WINDOWS" /D "NDEBUG" /D "_CRT_SECURE_NO_WARNINGS"
-CFLAGS=/nologo /c /Fo"$(OBJDIR)/" /W3 /EHsc /MD /O2 /GS /GT /GL /MP $(DEFINES)
-LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib \
-	ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
+CFLAGS=/nologo /c /Fo"$(OBJDIR)/" /W3 /EHsc /MD /O2 /GT /GL /MP $(DEFINES)
 LDFLAGS=/NOLOGO /WX /INCREMENTAL:NO /RELEASE /OPT:REF /OPT:ICF /DYNAMICBASE /NXCOMPAT \
 		/LTCG /MERGE:.rdata=.text
+LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib \
+	ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
 RFLAGS=
 
 
 !IFDEF x64
 CFLAGS=$(CFLAGS) /D "_WIN64" /D "_WIN32_WINNT=0x0502" /wd4244 /wd4267
-RFLAGS=$(RFLAGS) /d "_WIN64"
 LIBS=$(LIBS) msvcrt_win2003.obj
-LDFLAGS=$(LDFLAGS) /SUBSYSTEM:WINDOWS,5.02 /MACHINE:X64 $(LIBS)
+LDFLAGS=$(LDFLAGS) /SUBSYSTEM:WINDOWS,5.02 /MACHINE:X64
+RFLAGS=$(RFLAGS) /d "_WIN64"
 !ELSE
 CFLAGS=$(CFLAGS) /D "WIN32" /D "_WIN32_WINNT=0x0500"
-RFLAGS=$(RFLAGS) /d "WIN32"
 LIBS=$(LIBS) msvcrt_win2000.obj
-LDFLAGS=$(LDFLAGS) /SUBSYSTEM:WINDOWS,5.0 /MACHINE:X86 $(LIBS)
+LDFLAGS=$(LDFLAGS) /SUBSYSTEM:WINDOWS,5.0 /MACHINE:X86
+RFLAGS=$(RFLAGS) /d "WIN32"
 !ENDIF
 
 
@@ -60,8 +60,8 @@ CHECKDIRS:
 ALL:	CHECKDIRS $(APP)
 
 CLEAN:
-	-@ DEL "$(APP)" "$(OBJDIR)\*.idb" "$(OBJDIR)\*.obj" "$(BINDIR)\*.pdb" \
-	"$(OBJDIR)\*.res" >NUL 2>&1
+	-@ DEL "$(APP)" "$(OBJDIR)\regshot.idb" "$(OBJDIR)\*.obj" "$(BINDIR)\regshot.pdb" \
+	"$(OBJDIR)\regshot.res" >NUL 2>&1
 	-@ RMDIR /Q "$(OBJDIR)" "$(BINDIR)" >NUL 2>&1
 
 
@@ -83,7 +83,7 @@ OBJECTS= \
 
 $(APP): $(OBJECTS)
 	@$(RC) $(RFLAGS) /fo"$(OBJDIR)\regshot.res" "$(SRC)\regshot.rc"
-	@$(LD) $(LDFLAGS) /OUT:"$(APP)" $(OBJECTS)
+	@$(LD) $(LDFLAGS) $(LIBS) $(OBJECTS) /OUT:"$(APP)"
 	@$(MT) -nologo -manifest "$(SRC)\regshot.exe.manifest" -outputresource:"$(APP);#1"
 
 
