@@ -8,7 +8,7 @@ rem *   Batch file for building Regshot with WDK and creating the zip packages
 rem *
 rem * See gpl.txt for details about distribution and modification.
 rem *
-rem *                                       (c) XhmikosR 2010
+rem *                                       (c) XhmikosR 2010-2011
 rem *                                       http://code.google.com/p/regshot/
 rem *
 rem ******************************************************************************
@@ -22,6 +22,7 @@ CALL "build_wdk.cmd"
 
 CALL :SubZipFiles Release_x86 x86
 CALL :SubZipFiles Release_x64 x64
+
 
 :END
 TITLE Finished!
@@ -56,9 +57,9 @@ EXIT /B
 
 
 :SUBMSG
-ECHO.&&ECHO:______________________________
-ECHO:[%~1] %~2
-ECHO:______________________________&&ECHO.
+ECHO. & ECHO ______________________________
+ECHO [%~1] %~2
+ECHO ______________________________ & ECHO.
 IF /I "%~1"=="ERROR" (
   PAUSE
   EXIT
