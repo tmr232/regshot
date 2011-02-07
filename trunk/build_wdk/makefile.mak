@@ -33,6 +33,7 @@ LDFLAGS = /NOLOGO /WX /INCREMENTAL:NO /RELEASE /OPT:REF /OPT:ICF /LTCG /MERGE:.r
           /DYNAMICBASE /NXCOMPAT 
 LIBS    = kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib \
           ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
+MTFLAGS = -nologo
 RFLAGS  = /l 0x0409
 
 
@@ -85,16 +86,16 @@ OBJECTS= \
 ##  Batch rule  ##
 ##################
 {$(SRC)}.c{$(OBJDIR)}.obj::
-    @cl $(CFLAGS) /Tc $<
+    cl $(CFLAGS) /Tc $<
 
 
 ################
 ##  Commands  ##
 ################
 $(EXE): $(OBJECTS)
-	@rc $(RFLAGS) /fo"$(OBJDIR)\regshot.res" "$(SRC)\regshot.rc" >NUL
-	@link $(LDFLAGS) $(LIBS) $(OBJECTS) /OUT:"$(EXE)"
-	@mt -nologo -manifest "$(SRC)\regshot.exe.manifest" -outputresource:"$(EXE);#1"
+	rc $(RFLAGS) /fo"$(OBJDIR)\regshot.res" "$(SRC)\regshot.rc" >NUL
+	link $(LDFLAGS) $(LIBS) $(OBJECTS) /OUT:"$(EXE)"
+	mt $(MTFLAGS) -manifest "$(SRC)\regshot.exe.manifest" -outputresource:"$(EXE);#1"
 
 
 ####################
