@@ -20,6 +20,7 @@
 */
 
 #include "global.h"
+#include "version.h"
 
 char str_DefResPre[]="~res" PLATFORM_SUFFIX;
 char str_filter[]= {"Regshot hive files [*.hiv]\0*.hiv\0All files\0*.*\0\0"};

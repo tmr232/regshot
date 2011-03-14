@@ -16,7 +16,8 @@ rem ****************************************************************************
 SETLOCAL
 CD /D %~dp0
 
-SET REGSHOTVER=1.8.3
+
+CALL :SubGetVersion
 
 CALL "build_wdk.cmd"
 
@@ -53,6 +54,45 @@ CALL :SUBMSG "INFO" "Regshot_%REGSHOTVER%_%2_WDK.zip created successfully!"
 MOVE /Y "Regshot_%REGSHOTVER%_%2_WDK.zip" "..\" >NUL 2>&1
 POPD
 RD /S /Q "temp_zip" >NUL 2>&1
+EXIT /B
+
+
+:SubGetVersion
+rem Get the version
+FOR /F "tokens=3,4 delims= " %%K IN (
+  'FINDSTR /I /L /C:"define REGSHOT_VERSION_MAJOR" "..\src\version.h"') DO (
+  SET "VerMajor=%%K"&Call :SubVerMajor %%VerMajor:*Z=%%)
+FOR /F "tokens=3,4 delims= " %%L IN (
+  'FINDSTR /I /L /C:"define REGSHOT_VERSION_MINOR" "..\src\version.h"') DO (
+  SET "VerMinor=%%L"&Call :SubVerMinor %%VerMinor:*Z=%%)
+FOR /F "tokens=3,4 delims= " %%M IN (
+  'FINDSTR /I /L /C:"define REGSHOT_VERSION_PATCH" "..\src\version.h"') DO (
+  SET "VerBuild=%%M"&Call :SubVerBuild %%VerBuild:*Z=%%)
+FOR /F "tokens=3,4 delims= " %%N IN (
+  'FINDSTR /I /L /C:"define REGSHOT_VERSION_REV" "..\src\version.h"') DO (
+  SET "VerRev=%%N"&Call :SubVerRev %%VerRev:*Z=%%)
+
+SET REGSHOTVER=%VerMajor%.%VerMinor%.%VerBuild%
+EXIT /B
+
+
+:SubVerMajor
+SET VerMajor=%*
+EXIT /B
+
+
+:SubVerMinor
+SET VerMinor=%*
+EXIT /B
+
+
+:SubVerBuild
+SET VerBuild=%*
+EXIT /B
+
+
+:SubVerRev
+SET VerRev=%*
 EXIT /B
 
 
