@@ -26,17 +26,11 @@
 
 #include "global.h"
 
-#if defined(_WIN64)
-char *str_prgname="Regshot x64 1.8.3";
-#elif defined(WIN32)
-char *str_prgname="Regshot 1.8.3";
-#endif
+char *str_prgname="Regshot" PLATFORM_SUFFIX " " "1.8.3";
 char *str_aboutme="Regshot is a free and open source registry compare utility.\n\n\
 http://code.google.com/p/regshot/\n\n\
-Original webpages:\n\
-http://regshot.yeah.net/\n\
-http://regshot.blog.googlepages.com/\n\n";
-
+Original project webpage:\n\
+http://sourceforge.net/projects/regshot/\n\n";
 LPSTR	REGSHOTINI			="regshot.ini"; //tfx
 LPSTR	REGSHOTLANGUAGEFILE	="language.ini";
 
@@ -63,7 +57,7 @@ int CALLBACK SelectBrowseFolder(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpDa
 //--------------------------------------------------
 BOOL	CALLBACK	DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam)
 {
-	UINT	nLengthofStr;
+	size_t	nLengthofStr;
 	//	BYTE	nFlag;
 
 	switch(message) {
@@ -376,7 +370,7 @@ BOOL	CALLBACK	DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam)
 				case	IDC_BROWSE1: {
 
 					LPITEMIDLIST lpidlist;
-					DWORD	nWholeLen;
+					size_t	nWholeLen;
 					BrowseInfo1.hwndOwner=hDlg;
 					BrowseInfo1.pszDisplayName=MYALLOC0(MAX_PATH+1);
 					//BrowseInfo1.lpszTitle="Select:";
@@ -480,8 +474,8 @@ BOOL	SetPrivilege(HANDLE hToken,LPCTSTR pString,BOOL bEnablePrivilege)
 */
 
 //////////////////////////////////////////////////////////////////
-int		PASCAL WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,
-					   LPSTR lpszCmdLine,INT nCmdShow)
+int	WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,
+					   LPSTR lpszCmdLine,int nCmdShow)
 {
 	/*
 	BOOL	bWinNTDetected;
@@ -524,5 +518,5 @@ int		PASCAL WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,
 			DispatchMessage(&msg);
 		}
 	}
-	return(msg.wParam);
+	return(int)(msg.wParam);
 }

@@ -21,7 +21,7 @@
 
 #include "global.h"
 
-char str_DefResPre[]="~res";
+char str_DefResPre[]="~res" PLATFORM_SUFFIX;
 char str_filter[]= {"Regshot hive files [*.hiv]\0*.hiv\0All files\0*.*\0\0"};
 char str_RegFileSignature[]="REGSHOTHIVE"; //Need [] to use with sizeof()
 
@@ -59,7 +59,7 @@ LPSTR	GetWholeKeyName(LPKEYCONTENT lpKeyContent)
 {
 	LPKEYCONTENT lpf;
 	LPSTR	lpName,lptail;
-	int nLen=0;
+	size_t nLen=0;
 
 	for(lpf=lpKeyContent; lpf!=NULL; lpf=lpf->lpfatherkey) {
 		nLen+=strlen(lpf->lpkeyname)+1;
@@ -89,7 +89,7 @@ LPSTR	GetWholeKeyName(LPKEYCONTENT lpKeyContent)
 LPSTR	GetWholeValueName(LPVALUECONTENT lpValueContent)
 {
 	LPKEYCONTENT lpf;
-	int nWholeLen,nLen;
+	size_t	nWholeLen,nLen;
 	LPSTR	lpName,lptail;
 	nLen=strlen(lpValueContent->lpvaluename);
 	nWholeLen=nLen+1;
@@ -654,7 +654,8 @@ BOOL CompareShots(void)
 {
 	BOOL	isHTML,bshot2isnewer;//,bSaveWithCommentName;
 	LPSTR	lpstrcomp,lpExt,lpDestFileName;
-	DWORD	buffersize=2048,nTotal,filetail=0,nLengthofStr;
+	DWORD	buffersize=2048,nTotal,filetail=0;
+	size_t	nLengthofStr;
 	LPHEADFILE	lphf1,lphf2;
 	LPFILECONTENT lpfc1,lpfc2;
 	FILETIME ftime1,ftime2;
@@ -1102,7 +1103,8 @@ VOID	GetRegistrySnap(HKEY hkey,LPKEYCONTENT lpFatherKeyContent)
 VOID	SaveRegKey(LPKEYCONTENT lpKeyContent, DWORD nFPCurrentFatherKey,DWORD nFPCaller)
 {
 
-	DWORD	nFPHeader,nFPCurrent,nFPTemp4Write,nLenPlus1;
+	DWORD	nFPHeader,nFPCurrent;
+	size_t	nFPTemp4Write,nLenPlus1;
 	LPVALUECONTENT lpv;
 
 

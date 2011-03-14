@@ -116,7 +116,7 @@ unsigned char lan_default[][22]= {
 //--------------------------------------------------
 BOOL	GetLanguageType(HWND hDlg)
 {
-	DWORD	nReturn;
+	LRESULT	nReturn;
 	BOOL	bRet;
 	LPSTR	lp;
 	LPSTR	lpSectionNames=MYALLOC0(SIZEOF_LANGUAGE_SECTIONNAMES_BUFFER);
@@ -280,7 +280,8 @@ VOID	PointToNewStrings(VOID)
 //--------------------------------------------------
 BOOL	GetLanguageStrings(HWND hDlg)
 {
-	DWORD	nIndex,i;
+	LRESULT	nIndex;
+	DWORD	i;
 	BOOL	bRet;
 	LPSTR	lpReturn;
 	LPDWORD lp;
