@@ -27,6 +27,16 @@
 #include <shlobj.h>
 #include "resource.h"
 
+// Platform suffix, see http://msdn.microsoft.com/library/b0084kay.aspx
+#ifdef _WIN64
+ #ifdef _M_IA64
+  #define PLATFORM_SUFFIX " IA64"
+ #else	// _M_IA64
+  #define PLATFORM_SUFFIX " x64"
+ #endif	// _M_IA64
+#else	// _WIN64
+#define PLATFORM_SUFFIX ""
+#endif	// _WIN64
 
 //!!!WARNING!!! HEAP_NO_SERIALIZE mean we can not use this in multithread.
 //added in 1.8.2 to gain a slightly faster speed but it is danger!
@@ -292,7 +302,7 @@ VOID	WritePart(LPCOMRESULT lpcomhead,BOOL isHTML,BOOL usecolor);
 VOID	WriteTitle(LPSTR lph,LPSTR lpb,BOOL isHTML);
 VOID	SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile,DWORD nFPCaller);
 VOID	ClearHeadFileMatchTag(LPHEADFILE lpHF);
-VOID	FindDirChain(LPHEADFILE lpHF,LPSTR lpDir,int nMaxLen);
+VOID	FindDirChain(LPHEADFILE lpHF,LPSTR lpDir,size_t nMaxLen);
 BOOL	DirChainMatch(LPHEADFILE lphf1,LPHEADFILE lphf2);
 VOID	WriteHtmlbegin(void);
 VOID	WriteHtmlover(void);

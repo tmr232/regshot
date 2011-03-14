@@ -68,23 +68,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\obj\</IntDir>
+    <OutDir>$(SolutionDir)bin\VS2010\$(Configuration)_$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)bin\VS2010\$(Configuration)_$(Platform)\obj\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\obj\</IntDir>
+    <OutDir>$(SolutionDir)bin\VS2010\$(Configuration)_$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)bin\VS2010\$(Configuration)_$(Platform)\obj\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\obj\</IntDir>
+    <OutDir>$(SolutionDir)bin\VS2010\$(Configuration)_$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)bin\VS2010\$(Configuration)_$(Platform)\obj\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\obj\</IntDir>
+    <OutDir>$(SolutionDir)bin\VS2010\$(Configuration)_$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)bin\VS2010\$(Configuration)_$(Platform)\obj\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -163,7 +163,7 @@
       <PreprocessorDefinitions>_WIN64;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <DisableSpecificWarnings>4133;4244;4267</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4267</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

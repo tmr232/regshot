@@ -22,14 +22,14 @@ SET "SDKDIR=%PROGRAMFILES%\Microsoft SDKs\Windows\v7.1"
 
 rem Check the building environment
 IF NOT EXIST "%WDKBASEDIR%" CALL :SUBMSG "ERROR" "Specify your WDK directory!"
-IF NOT EXIST "%SDKDIR%" CALL :SUBMSG "ERROR" "Specify your SDK directory!"
+IF NOT EXIST "%SDKDIR%"     CALL :SUBMSG "ERROR" "Specify your SDK directory!"
 
 rem check for the help switches
-IF /I "%1"=="help" GOTO SHOWHELP
-IF /I "%1"=="/help" GOTO SHOWHELP
-IF /I "%1"=="-help" GOTO SHOWHELP
+IF /I "%1"=="help"   GOTO SHOWHELP
+IF /I "%1"=="/help"  GOTO SHOWHELP
+IF /I "%1"=="-help"  GOTO SHOWHELP
 IF /I "%1"=="--help" GOTO SHOWHELP
-IF /I "%1"=="/?" GOTO SHOWHELP
+IF /I "%1"=="/?"     GOTO SHOWHELP
 GOTO CHECKFIRSTARG
 
 
@@ -59,17 +59,17 @@ rem Check for the first switch
 IF "%~1" == "" (
   SET "BUILDTYPE=Build"
 ) ELSE (
-  IF /I "%~1" == "Build" SET "BUILDTYPE=Build" & GOTO CHECKSECONDARG
-  IF /I "%~1" == "/Build" SET "BUILDTYPE=Build" & GOTO CHECKSECONDARG
-  IF /I "%~1" == "-Build" SET "BUILDTYPE=Build" & GOTO CHECKSECONDARG
-  IF /I "%~1" == "--Build" SET "BUILDTYPE=Build" & GOTO CHECKSECONDARG
-  IF /I "%~1" == "Clean" SET "BUILDTYPE=Clean" & GOTO CHECKSECONDARG
-  IF /I "%~1" == "/Clean" SET "BUILDTYPE=Clean" & GOTO CHECKSECONDARG
-  IF /I "%~1" == "-Clean" SET "BUILDTYPE=Clean" & GOTO CHECKSECONDARG
-  IF /I "%~1" == "--Clean" SET "BUILDTYPE=Clean" & GOTO CHECKSECONDARG
-  IF /I "%~1" == "Rebuild" SET "BUILDTYPE=Rebuild" & GOTO CHECKSECONDARG
-  IF /I "%~1" == "/Rebuild" SET "BUILDTYPE=Rebuild" & GOTO CHECKSECONDARG
-  IF /I "%~1" == "-Rebuild" SET "BUILDTYPE=Rebuild" & GOTO CHECKSECONDARG
+  IF /I "%~1" == "Build"     SET "BUILDTYPE=Build"   & GOTO CHECKSECONDARG
+  IF /I "%~1" == "/Build"    SET "BUILDTYPE=Build"   & GOTO CHECKSECONDARG
+  IF /I "%~1" == "-Build"    SET "BUILDTYPE=Build"   & GOTO CHECKSECONDARG
+  IF /I "%~1" == "--Build"   SET "BUILDTYPE=Build"   & GOTO CHECKSECONDARG
+  IF /I "%~1" == "Clean"     SET "BUILDTYPE=Clean"   & GOTO CHECKSECONDARG
+  IF /I "%~1" == "/Clean"    SET "BUILDTYPE=Clean"   & GOTO CHECKSECONDARG
+  IF /I "%~1" == "-Clean"    SET "BUILDTYPE=Clean"   & GOTO CHECKSECONDARG
+  IF /I "%~1" == "--Clean"   SET "BUILDTYPE=Clean"   & GOTO CHECKSECONDARG
+  IF /I "%~1" == "Rebuild"   SET "BUILDTYPE=Rebuild" & GOTO CHECKSECONDARG
+  IF /I "%~1" == "/Rebuild"  SET "BUILDTYPE=Rebuild" & GOTO CHECKSECONDARG
+  IF /I "%~1" == "-Rebuild"  SET "BUILDTYPE=Rebuild" & GOTO CHECKSECONDARG
   IF /I "%~1" == "--Rebuild" SET "BUILDTYPE=Rebuild" & GOTO CHECKSECONDARG
 
   ECHO.
@@ -84,17 +84,17 @@ rem Check for the second switch
 IF "%~2" == "" (
   SET "ARCH=all"
 ) ELSE (
-  IF /I "%~2" == "x86" SET "ARCH=x86" & GOTO x86
-  IF /I "%~2" == "/x86" SET "ARCH=x86" & GOTO x86
-  IF /I "%~2" == "-x86" SET "ARCH=x86" & GOTO x86
+  IF /I "%~2" == "x86"   SET "ARCH=x86" & GOTO x86
+  IF /I "%~2" == "/x86"  SET "ARCH=x86" & GOTO x86
+  IF /I "%~2" == "-x86"  SET "ARCH=x86" & GOTO x86
   IF /I "%~2" == "--x86" SET "ARCH=x86" & GOTO x86
-  IF /I "%~2" == "x64" SET "ARCH=x64" & GOTO x86
-  IF /I "%~2" == "/x64" SET "ARCH=x64" & GOTO x86
-  IF /I "%~2" == "-x64" SET "ARCH=x64" & GOTO x86
+  IF /I "%~2" == "x64"   SET "ARCH=x64" & GOTO x86
+  IF /I "%~2" == "/x64"  SET "ARCH=x64" & GOTO x86
+  IF /I "%~2" == "-x64"  SET "ARCH=x64" & GOTO x86
   IF /I "%~2" == "--x64" SET "ARCH=x64" & GOTO x86
-  IF /I "%~2" == "all" SET "ARCH=all" & GOTO x86
-  IF /I "%~2" == "/all" SET "ARCH=all" & GOTO x86
-  IF /I "%~2" == "-all" SET "ARCH=all" & GOTO x86
+  IF /I "%~2" == "all"   SET "ARCH=all" & GOTO x86
+  IF /I "%~2" == "/all"  SET "ARCH=all" & GOTO x86
+  IF /I "%~2" == "-all"  SET "ARCH=all" & GOTO x86
   IF /I "%~2" == "--all" SET "ARCH=all" & GOTO x86
 
   ECHO.

@@ -34,7 +34,7 @@ LPSTR	GetWholeFileName(LPFILECONTENT lpFileContent)
 {
 	LPFILECONTENT lpf;
 	LPSTR	lpName,lptail;
-	int	nLen=0;
+	size_t	nLen=0;
 
 	for(lpf=lpFileContent; lpf!=NULL; lpf=lpf->lpfatherfile) {
 		nLen+=strlen(lpf->lpfilename)+1;
@@ -341,7 +341,8 @@ VOID FreeAllFiles(void)
 VOID	SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile,DWORD nFPCaller)
 {
 
-	DWORD	nFPHeader,nFPCurrent,nFPTemp4Write,nLenPlus1;
+	DWORD	nFPHeader,nFPCurrent,nFPTemp4Write;
+	size_t	nLenPlus1;
 
 
 	nLenPlus1=strlen(lpFileContent->lpfilename)+1;							//get len+1
@@ -464,9 +465,9 @@ LPFILECONTENT SearchDirChain(LPSTR lpname,LPHEADFILE lpHF)
 //--------------------------------------------------
 // Walkthrough lpheadfile chain and collect it's first dirname to lpDir
 //--------------------------------------------------
-VOID FindDirChain(LPHEADFILE lpHF,LPSTR lpDir,int nMaxLen)
+VOID FindDirChain(LPHEADFILE lpHF,LPSTR lpDir,size_t nMaxLen)
 {
-	int nLen;
+	size_t nLen;
 	LPHEADFILE lphf;
 	*lpDir=0x00;
 	nLen=0;

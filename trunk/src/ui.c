@@ -166,7 +166,7 @@ VOID	UI_AfterClear(VOID)
 
 VOID	Shot1(VOID)
 {
-	UINT	nLengthofStr;
+	size_t	nLengthofStr;
 	lpHeadLocalMachine1=(LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
 	lpHeadUsers1=(LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
 
@@ -197,7 +197,8 @@ VOID	Shot1(VOID)
 	UpdateCounters(lan_key,lan_value,nGettingKey,nGettingValue);
 
 	if(SendMessage(GetDlgItem(hWnd,IDC_CHECKDIR),BM_GETCHECK,(WPARAM)0,(LPARAM)0)==1) {
-		DWORD nSubExtDirLen,i;
+		size_t nSubExtDirLen;
+		DWORD i;
 		LPSTR lpSubExtDir;
 		LPHEADFILE lphf,lphftemp;
 
@@ -261,7 +262,7 @@ VOID	Shot1(VOID)
 // -----------------------------
 VOID	Shot2(VOID)
 {
-	UINT	nLengthofStr;
+	size_t	nLengthofStr;
 	lpHeadLocalMachine2=(LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
 	lpHeadUsers2=(LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
 
@@ -292,7 +293,8 @@ VOID	Shot2(VOID)
 	UpdateCounters(lan_key,lan_value,nGettingKey,nGettingValue);
 
 	if(SendMessage(GetDlgItem(hWnd,IDC_CHECKDIR),BM_GETCHECK,(WPARAM)0,(LPARAM)0)==1) {
-		DWORD nSubExtDirLen,i;
+		size_t nSubExtDirLen;
+		DWORD i;
 		LPSTR lpSubExtDir;
 		LPHEADFILE lphf,lphftemp;
 

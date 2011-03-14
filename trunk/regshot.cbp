@@ -8,7 +8,7 @@
 		<Build>
 			<Target title="Debug">
 				<Option platforms="Windows;" />
-				<Option output="Debug_gcc\regshot" prefix_auto="1" extension_auto="1" />
+				<Option output="bin\gcc\Debug\regshot" prefix_auto="1" extension_auto="1" />
 				<Option object_output="Debug_gcc\obj\" />
 				<Option type="0" />
 				<Option compiler="gcc" />
@@ -19,7 +19,7 @@
 			</Target>
 			<Target title="Release">
 				<Option platforms="Windows;" />
-				<Option output="Release_gcc\regshot" prefix_auto="1" extension_auto="1" />
+				<Option output="bin\gcc\Release\regshot" prefix_auto="1" extension_auto="1" />
 				<Option object_output="Release_gcc\obj\" />
 				<Option type="0" />
 				<Option compiler="gcc" />
