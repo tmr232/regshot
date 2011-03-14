@@ -1,6 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
+#include "version.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -124,8 +125,8 @@ IDI_MAINICON            ICON                    "regshot.ico"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,8,3,0
- PRODUCTVERSION 1,8,3,0
+ FILEVERSION    REGSHOT_VERSION_NUM
+ PRODUCTVERSION REGSHOT_VERSION_NUM
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -140,18 +141,14 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", ""
-            #if defined(_WIN64)
-            VALUE "FileDescription", "Regshot x64"
-            #elif defined(WIN32)
-            VALUE "FileDescription", "Regshot"
-            #endif
-            VALUE "FileVersion", "1.8.3.0"
-            VALUE "InternalName", "regshot.exe"
-            VALUE "LegalCopyright", ""
+            VALUE "FileDescription",  REGSHOT_FILEDESCRIPTION
+            VALUE "CompanyName",      ""
+            VALUE "LegalCopyright",   ""
+            VALUE "InternalName",     "regshot.exe"
             VALUE "OriginalFilename", "regshot.exe"
-            VALUE "ProductName", "Regshot"
-            VALUE "ProductVersion", "1.8.3.0"
+            VALUE "ProductName",      "Regshot"
+            VALUE "FileVersion",      REGSHOT_VERSION
+            VALUE "ProductVersion",   REGSHOT_VERSION
         END
     END
     BLOCK "VarFileInfo"

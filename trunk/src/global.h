@@ -27,17 +27,6 @@
 #include <shlobj.h>
 #include "resource.h"
 
-// Platform suffix, see http://msdn.microsoft.com/library/b0084kay.aspx
-#ifdef _WIN64
- #ifdef _M_IA64
-  #define PLATFORM_SUFFIX " IA64"
- #else	// _M_IA64
-  #define PLATFORM_SUFFIX " x64"
- #endif	// _M_IA64
-#else	// _WIN64
-#define PLATFORM_SUFFIX ""
-#endif	// _WIN64
-
 //!!!WARNING!!! HEAP_NO_SERIALIZE mean we can not use this in multithread.
 //added in 1.8.2 to gain a slightly faster speed but it is danger!
 //#define	USEHEAPALLOC_DANGER
@@ -77,19 +66,19 @@
 #define DIRDEL			10
 #define DIRMODI			11
 
-#define REFRESHINTERVAL	110		//Define progress refresh rate
-#define MAXPBPOSITION	100		//Define progress bar length
-#define COMMENTLENGTH	50		//Define commentfield length on the MainForm
-#define HTMLWRAPLENGTH	1000	//Define html out put wrap length
-#define MAXAMOUNTOFFILE	10000	//Define out put file counts
-#define	EXTDIRLEN	MAX_PATH*3	//Define Searching Directory field length
-#define COMPUTERNAMELEN	64		//Define COMPUTER name length
-#define HIVEBEGINOFFSET	512		//Hive file out put header computerlen*2+sizeof(systemtime)+32 must <hivebeginoffset!!!!!!!!!!!!!!
+#define REFRESHINTERVAL	110			//Define progress refresh rate
+#define MAXPBPOSITION	100			//Define progress bar length
+#define COMMENTLENGTH	50			//Define commentfield length on the MainForm
+#define HTMLWRAPLENGTH	1000		//Define html out put wrap length
+#define MAXAMOUNTOFFILE	10000		//Define out put file counts
+#define EXTDIRLEN		MAX_PATH*3	//Define Searching Directory field length
+#define COMPUTERNAMELEN	64			//Define COMPUTER name length
+#define HIVEBEGINOFFSET	512			//Hive file out put header computerlen*2+sizeof(systemtime)+32 must <hivebeginoffset!!!!!!!!!!!!!!
 
 
 //Some definations of MutiLanguage strings [Free space length]
 #define SIZEOF_LANGUAGE_SECTIONNAMES_BUFFER 2048
-#define SIZEOF_SINGLE_LANGUAGENAME	64
+#define SIZEOF_SINGLE_LANGUAGENAME 64
 #define SIZEOF_FREESTRINGS 16384
 #define SIZEOF_ABOUTBOX 2048
 
