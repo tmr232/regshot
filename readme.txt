@@ -4,7 +4,7 @@ Readme file of Regshot 1.8.2    (20071103)
 -----------------
 Introduction:
 -----------------
-Regshot is a small,free and open-source registry compare utility that allows you to quickly
+Regshot is a small, free and open-source registry compare utility that allows you to quickly
 take a snapshot of your registry and then compare it with a second one - done after doing
 system changes or installing a new software product. The changes report can be produced in
 text or HTML format and contains a list of all modifications that have taken place between
@@ -143,5 +143,4 @@ Youri      handle@wgapatcher.ru
 http://code.google.com/p/regshot/
 
 Original webpages:
-http://regshot.yeah.net/ 
-http://regshot.blog.googlepages.com/
+http://sourceforge.net/projects/regshot/

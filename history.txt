@@ -233,5 +233,4 @@ Download new version at:
 http://code.google.com/p/regshot/
 
 Original webpages:
-http://regshot.yeah.net/
-http://regshot.blog.googlepages.com/
+http://sourceforge.net/projects/regshot/
