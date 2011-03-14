@@ -28,7 +28,7 @@ SRC     = ..\src
 
 
 DEFINES = /D "_WINDOWS" /D "NDEBUG" /D "_CRT_SECURE_NO_WARNINGS"
-CFLAGS  = /nologo /c /Fo"$(OBJDIR)/" /W3 /WX /EHsc /MD /Ox /GL /MP $(DEFINES)
+CFLAGS  = /nologo /c /Fo"$(OBJDIR)/" /W3 /WX /EHsc /MD /O2 /GL /MP $(DEFINES)
 LDFLAGS = /NOLOGO /WX /INCREMENTAL:NO /RELEASE /OPT:REF /OPT:ICF /LTCG /MERGE:.rdata=.text \
           /DYNAMICBASE /NXCOMPAT 
 LIBS    = kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib \
