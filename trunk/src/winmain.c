@@ -476,7 +476,7 @@ BOOL	SetPrivilege(HANDLE hToken,LPCTSTR pString,BOOL bEnablePrivilege)
 
 //////////////////////////////////////////////////////////////////
 int	WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,
-					   LPSTR lpszCmdLine,int nCmdShow)
+				   LPSTR lpszCmdLine,int nCmdShow)
 {
 	/*
 	BOOL	bWinNTDetected;
