@@ -789,9 +789,9 @@ BOOL CompareShots(void)
 	hFile = CreateFile(lpDestFileName,GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
 	if( hFile == INVALID_HANDLE_VALUE) {
 		for (filetail=0; filetail<MAXAMOUNTOFFILE; filetail++) {
-			sprintf(lpDestFileName+nLengthofStr,"%04d",filetail);
-			//*(lpDestFileName+nLengthofStr+4)=0x00;
-			strcpy(lpDestFileName+nLengthofStr+4,lpExt);
+			sprintf(lpDestFileName+nLengthofStr,"_%04d",filetail);
+			//*(lpDestFileName+nLengthofStr+5)=0x00;
+			strcpy(lpDestFileName+nLengthofStr+5,lpExt);
 
 			hFile = CreateFile(lpDestFileName,GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
 			if( hFile == INVALID_HANDLE_VALUE) {
