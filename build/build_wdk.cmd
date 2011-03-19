@@ -13,6 +13,7 @@ rem *                                       http://code.google.com/p/regshot/
 rem *
 rem ******************************************************************************
 
+
 SETLOCAL
 CD /D %~dp0
 
