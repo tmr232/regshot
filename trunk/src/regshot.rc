@@ -32,7 +32,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 IDD_DIALOG1 DIALOGEX 0, 0, 194, 166
 STYLE DS_MODALFRAME | DS_SHELLFONT | DS_CENTER | WS_POPUPWINDOW | WS_CAPTION | WS_MINIMIZEBOX
 EXSTYLE WS_EX_APPWINDOW
-CAPTION REGSHOT_FILEDESCRIPTION
+CAPTION REGSHOT_TITLE
 FONT 8, "MS Shell Dlg"
 BEGIN
     DEFPUSHBUTTON   "&1st shot",IDC_1STSHOT,137,10,49,13
@@ -86,18 +86,18 @@ END
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -137,11 +137,11 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "FileDescription",  REGSHOT_FILEDESCRIPTION
-            VALUE "CompanyName",      ""
-            VALUE "LegalCopyright",   ""
-            VALUE "InternalName",     "regshot.exe"
-            VALUE "OriginalFilename", "regshot.exe"
+            VALUE "FileDescription",  REGSHOT_TITLE
+            VALUE "CompanyName",      "Regshot Team"
+            VALUE "LegalCopyright",   REGSHOT_VERSION_COPYRIGHT
+            VALUE "InternalName",     "Regshot"
+            VALUE "OriginalFilename", "Regshot.exe"
             VALUE "ProductName",      "Regshot"
             VALUE "FileVersion",      REGSHOT_VERSION
             VALUE "ProductVersion",   REGSHOT_VERSION
@@ -167,4 +167,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-

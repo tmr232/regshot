@@ -120,11 +120,13 @@ $(OBJDIR)\output.obj: \
 
 $(OBJDIR)\Regshot.obj: \
     $(SRC)\Regshot.c \
-    $(SRC)\global.h
+    $(SRC)\global.h \
+    $(SRC)\version.h
 
 $(OBJDIR)\regshot.res: \
     $(SRC)\regshot.rc \
-    $(SRC)\resource.h
+    $(SRC)\resource.h \
+    $(SRC)\version.h
 
 $(OBJDIR)\setup.obj: \
     $(SRC)\setup.c \
@@ -136,4 +138,5 @@ $(OBJDIR)\ui.obj: \
 
 $(OBJDIR)\winmain.obj: \
     $(SRC)\winmain.c \
-    $(SRC)\global.h
+    $(SRC)\global.h \
+    $(SRC)\version.h

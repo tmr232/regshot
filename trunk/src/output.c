@@ -45,7 +45,7 @@ char htm_TableOver[]="</TABLE>\r\n";
 char htm_s1[]="<span class=o>";
 char htm_s2[]="<span class=n>";
 char htm_s3[]="</span>\r\n";
-//char htm_website[]="<FONT COLOR=C8C8C8>Bug reports to:<A HREF=\"http://regshot.yeah.net/\">regshot.yeah.net</FONT></A>";
+//char htm_website[]="<FONT COLOR=C8C8C8>Bug reports to:<A HREF=\"http://sourceforge.net/projects/regshot/\">http://sourceforge.net/projects/regshot/</FONT></A>";
 
 
 //------------------------------------------------------------
