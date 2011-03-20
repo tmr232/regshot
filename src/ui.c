@@ -48,7 +48,7 @@ void ShowHideCounters(int nCmdShow) //1.8.2
 //////////////////////////////////////////////////////////////////
 VOID InitProgressBar(VOID)
 {
-	//Following are not so good,but they works
+	//The following are not so good, but they work
 	nSavingKey=0;
 	nComparing=0;
 	nRegStep=nGettingKey/MAXPBPOSITION;
@@ -80,7 +80,7 @@ void UpdateCounters(LPSTR title1,LPSTR title2,DWORD count1,DWORD count2)
 
 
 //--------------------------------------------------
-// Prepare the GUI for the Shot about to be taken
+// Prepare the GUI for the shot about to be taken
 //--------------------------------------------------
 VOID	UI_BeforeShot(DWORD id)
 {
@@ -97,7 +97,7 @@ VOID	UI_BeforeShot(DWORD id)
 
 
 //--------------------------------------------------
-// Reset the GUI after the shot had been taken
+// Reset the GUI after the shot has been taken
 //--------------------------------------------------
 VOID	UI_AfterShot(VOID)
 {

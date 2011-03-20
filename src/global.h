@@ -27,16 +27,23 @@
 #include <shlobj.h>
 #include "resource.h"
 
+#if defined(_MSC_VER) && (_MSC_VER < 1300)	// before VS 2002 .NET (e.g. VS 6)
+#define SetClassLongPtr SetClassLong
+#ifndef GCLP_HICON
+#define GCLP_HICON GCL_HICON
+#endif
+#endif	// _MSC_VER
+
 //!!!WARNING!!! HEAP_NO_SERIALIZE mean we can not use this in multithread.
 //added in 1.8.2 to gain a slightly faster speed but it is danger!
-//#define	USEHEAPALLOC_DANGER
-//#define	DEBUGLOG
+#define USEHEAPALLOC_DANGER
+//#define DEBUGLOG
 
 #ifdef USEHEAPALLOC_DANGER
 
-#define	MYALLOC(x)	HeapAlloc(hHeap,1,x)
-#define	MYALLOC0(x)	HeapAlloc(hHeap,9,x) //HEAP_NO_SERIALIZE|HEAP_ZERO_MEMORY ,1|8
-#define	MYFREE(x)	HeapFree(hHeap,1,x)
+#define MYALLOC(x)	HeapAlloc(hHeap,1,x)
+#define MYALLOC0(x)	HeapAlloc(hHeap,9,x) //HEAP_NO_SERIALIZE|HEAP_ZERO_MEMORY ,1|8
+#define MYFREE(x)	HeapFree(hHeap,1,x)
 
 #else
 
@@ -77,19 +84,19 @@
 
 
 //Some definations of MutiLanguage strings [Free space length]
-#define SIZEOF_LANGUAGE_SECTIONNAMES_BUFFER 2048
-#define SIZEOF_SINGLE_LANGUAGENAME 64
-#define SIZEOF_FREESTRINGS 16384
-#define SIZEOF_ABOUTBOX 2048
+#define SIZEOF_LANGUAGE_SECTIONNAMES_BUFFER	2048
+#define SIZEOF_SINGLE_LANGUAGENAME			64
+#define SIZEOF_FREESTRINGS					16384
+#define SIZEOF_ABOUTBOX						2048
 
 
 //Struct used for Windows Registry Key
 struct	_KEYCONTENT {
 	LPSTR	lpkeyname;							//Pointer to Key Name
 	struct	_VALUECONTENT FAR * lpfirstvalue;	//Pointer to Key's first Value
-	struct	_KEYCONTENT	FAR * lpfirstsubkey;	//Pointer to Key's first Sub Key
-	struct	_KEYCONTENT	FAR * lpbrotherkey;		//Pointer to Key's brother
-	struct	_KEYCONTENT	FAR * lpfatherkey;		//Pointer to Key's father
+	struct	_KEYCONTENT FAR * lpfirstsubkey;	//Pointer to Key's first Sub Key
+	struct	_KEYCONTENT FAR * lpbrotherkey;		//Pointer to Key's brother
+	struct	_KEYCONTENT FAR * lpfatherkey;		//Pointer to Key's father
 	BYTE	bkeymatch;							//Flag used at comparing
 
 };
@@ -103,7 +110,7 @@ struct	_VALUECONTENT {
 	LPSTR	lpvaluename;						//Pointer to Value Name
 	LPBYTE	lpvaluedata;						//Pointer to Value Data
 	struct	_VALUECONTENT FAR * lpnextvalue;	//Pointer to Value's brother
-	struct	_KEYCONTENT	FAR * lpfatherkey;		//Pointer to Value's father[Key]
+	struct	_KEYCONTENT FAR * lpfatherkey;		//Pointer to Value's father[Key]
 	BYTE	bvaluematch;						//Flag used at comparing
 };
 typedef struct _VALUECONTENT VALUECONTENT,FAR * LPVALUECONTENT;
@@ -114,8 +121,8 @@ struct	_FILECONTENT {
 	LPSTR	lpfilename;							//Pointer to File Name
 	DWORD	writetimelow;						//File write time [LOW  DWORD]
 	DWORD	writetimehigh;						//File write time [HIGH DWORD]
-	DWORD	filesizelow;						//File size	 [LOW  DWORD]
-	DWORD	filesizehigh;						//File size	 [HIGH DWORD]
+	DWORD	filesizelow;						//File size [LOW  DWORD]
+	DWORD	filesizehigh;						//File size [HIGH DWORD]
 	DWORD	fileattr;							//File Attributes
 	DWORD	cksum;								//File checksum(plan to add in 1.8 not used now)
 	struct	_FILECONTENT FAR * lpfirstsubfile;	//Pointer to Files[DIRS] first sub file
@@ -226,9 +233,9 @@ LPDWORD	ldwTempStrings;
 
 
 //Former definations used at Dynamic Monitor Engine.Not Used NOW
-//#define	DIOCPARAMSSIZE	20		//4+4+4+8 bytes DIOCParams size!
-//#define	MAXLISTBOXLEN	1024
-//#define	RING3TDLEN		8		//ring3 td name length
+//#define DIOCPARAMSSIZE	20		//4+4+4+8 bytes DIOCParams size!
+//#define MAXLISTBOXLEN	1024
+//#define RING3TDLEN		8		//ring3 td name length
 //LPSTR		str_errorini="Error create Dialog!";
 //INT		tabarray[]={40,106,426,466};		// the tabstops is the len addup!
 //BOOL		bWinNTDetected;

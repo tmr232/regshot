@@ -22,7 +22,7 @@
 #include "global.h"
 #include "version.h"
 
-char str_DefResPre[]="~res" PLATFORM_SUFFIX;
+char str_DefResPre[]=REGSHOT_RESULT_FILE;
 char str_filter[]= {"Regshot hive files [*.hiv]\0*.hiv\0All files\0*.*\0\0"};
 char str_RegFileSignature[]="REGSHOTHIVE"; //Need [] to use with sizeof()
 

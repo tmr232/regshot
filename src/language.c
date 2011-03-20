@@ -284,8 +284,8 @@ BOOL	GetLanguageStrings(HWND hDlg)
 	DWORD	i;
 	BOOL	bRet;
 	LPSTR	lpReturn;
-	LPDWORD lp;
-	char lpIniKey[8];	//1.8.2	LPSTR	lpIniKey=MYALLOC0(8);
+	LPDWORD	lp;
+	char	lpIniKey[8];	//1.8.2	LPSTR	lpIniKey=MYALLOC0(8);
 
 
 	nIndex=SendDlgItemMessage(hDlg,IDC_COMBOLANGUAGE,CB_GETCURSEL,(WPARAM)0,(LPARAM)0);
