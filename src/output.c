@@ -22,7 +22,7 @@
 #include "global.h"
 
 
-//Some strings use to write to HTML or TEXT file,need [] to use with sizeof()
+//Some strings used to write to HTML or TEXT file, need [] to use with sizeof()
 char str_CR[]="\r\n"; //{0x0d,0x0a,0x00};
 char txt_line[]		="\r\n----------------------------------\r\n";
 char htm_BR[]		="<BR>";
@@ -116,7 +116,7 @@ VOID	WritePart(LPCOMRESULT lpcomhead,BOOL isHTML,BOOL usecolor)
 				WriteFile(hFile,htm_s3,sizeof(htm_s3)-1,&NBW,NULL);
 			}
 		} else {
-			WriteFile(hFile,str_CR,sizeof(str_CR)-1,&NBW,NULL);    //this!
+			WriteFile(hFile,str_CR,sizeof(str_CR)-1,&NBW,NULL);		//this!
 		}
 
 
@@ -160,7 +160,7 @@ VOID WriteHtmlbegin(void)
 
 VOID WriteHtmlover(void)
 {
-	//WriteFile(hFile,htm_website,sizeof(htm_website)-1,&NBW,NULL); //omit at 1.8
+	//WriteFile(hFile,htm_website,sizeof(htm_website)-1,&NBW,NULL);	//omit at 1.8
 	WriteFile(hFile,htm_BodyOver,sizeof(htm_BodyOver)-1,&NBW,NULL);
 	WriteFile(hFile,htm_HTMLover,sizeof(htm_HTMLover)-1,&NBW,NULL);
 }

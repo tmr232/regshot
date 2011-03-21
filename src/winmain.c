@@ -35,15 +35,15 @@ http://sourceforge.net/projects/regshot/\n\n";
 LPSTR	REGSHOTINI			="regshot.ini"; //tfx
 LPSTR	REGSHOTLANGUAGEFILE	="language.ini";
 
-extern u_char * lan_menuclearallshots;  // Be careful of extern ref! must be the same when declare them,otherwise pointer would mis-point
-extern u_char * lan_menuclearshot1;     // and I can not use sizeof to get real array size in extern ref
-extern u_char * lan_menuclearshot2;
+extern u_char * lan_menuclearallshots;	// Be careful of extern ref! must be the same when declare them,
+extern u_char * lan_menuclearshot1;		// otherwise pointer would mis-point, and I can not use sizeof
+extern u_char * lan_menuclearshot2;		// to get real array size in extern ref
 extern u_char * lan_about;
 extern LPSTR str_DefaultLanguage;
 extern LPSTR str_Original;
 
 
-// this new function added by Youri in 1.8.2, for expand path in browse dialog
+// this new function added by Youri in 1.8.2, for expanding path in browse dialog
 int CALLBACK SelectBrowseFolder(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
 {
 	if (uMsg == BFFM_INITIALIZED) {
@@ -59,7 +59,7 @@ int CALLBACK SelectBrowseFolder(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpDa
 BOOL	CALLBACK	DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam)
 {
 	size_t	nLengthofStr;
-	//	BYTE	nFlag;
+	//BYTE	nFlag;
 
 	switch(message) {
 		case	WM_INITDIALOG:
@@ -91,16 +91,16 @@ BOOL	CALLBACK	DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam)
 			GetTempPath(MAX_PATH,lpTempPath);
 
 			//_asm int 3;
-			GetCurrentDirectory(MAX_PATH,lpStartDir); //fixed at 1.8.2 former version use getcommandline()
+			GetCurrentDirectory(MAX_PATH,lpStartDir);	//fixed at 1.8.2 former version use getcommandline()
 			lpIni=MYALLOC0(MAX_PATH*2);
 			strcpy(lpIni,lpStartDir);
-			if (*(lpIni+strlen(lpIni)-1)!='\\') { // 1.8.2
+			if (*(lpIni+strlen(lpIni)-1)!='\\') {		// 1.8.2
 				strcat(lpIni,"\\");
 			}
 			strcat(lpIni,REGSHOTLANGUAGEFILE);
 
 			lpFreeStrings=MYALLOC(SIZEOF_FREESTRINGS);
-			ldwTempStrings=MYALLOC0(4*60); //max is 60 strings
+			ldwTempStrings=MYALLOC0(4*60);	//max is 60 strings
 
 			if(GetLanguageType(hDlg)) {
 				GetLanguageStrings(hDlg);
@@ -286,7 +286,7 @@ BOOL	CALLBACK	DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam)
 					return(TRUE);
 				case	IDM_CLEARALLSHOTS:
 					UI_BeforeClear();
-					FreeAllKeyContent1();  //Note!! if loadfromhive and contains file,we should let lpHeadFile to NULL
+					FreeAllKeyContent1();  //Note!! if loadfromhive and contains file, we should let lpHeadFile to NULL
 					FreeAllKeyContent2();
 					FreeAllCompareResults();
 
@@ -304,7 +304,7 @@ BOOL	CALLBACK	DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam)
 					FreeAllCompareResults();
 					FreeAllFileHead(lpHeadFile1);
 					lpHeadFile1=NULL;
-					ClearKeyMatchTag(lpHeadLocalMachine2); //we clear shot2's tag
+					ClearKeyMatchTag(lpHeadLocalMachine2);	//we clear shot2's tag
 					ClearKeyMatchTag(lpHeadUsers2);
 					ClearHeadFileMatchTag(lpHeadFile2);
 					UI_AfterClear();
@@ -315,7 +315,7 @@ BOOL	CALLBACK	DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam)
 					FreeAllCompareResults();
 					FreeAllFileHead(lpHeadFile2);
 					lpHeadFile2=NULL;
-					ClearKeyMatchTag(lpHeadLocalMachine1); //we clear shot1's tag
+					ClearKeyMatchTag(lpHeadLocalMachine1);	//we clear shot1's tag
 					ClearKeyMatchTag(lpHeadUsers1);
 					ClearHeadFileMatchTag(lpHeadFile1);
 					UI_AfterClear();
