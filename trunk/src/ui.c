@@ -37,7 +37,7 @@ char USERSSTRING[]="HKU"; //="HKEY_USERS";	// 1.7 using short name tfx, a good i
 char LOCALMACHINESTRING[]="HKLM";			//="HKEY_LOCAL_MACHINE";
 
 
-void ShowHideCounters(int nCmdShow) //1.8.2
+void ShowHideCounters(int nCmdShow)	//1.8.2
 {
 	ShowWindow(GetDlgItem(hWnd,IDC_TEXTCOUNT1),nCmdShow);
 	ShowWindow(GetDlgItem(hWnd,IDC_TEXTCOUNT2),nCmdShow);

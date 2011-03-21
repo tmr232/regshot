@@ -20,7 +20,7 @@
 */
 
 #include "global.h"
-//ISDIR,ISFILE added in 1.8.0
+//ISDIR, ISFILE added in 1.8.0
 #define ISDIR(x) ( (x&FILE_ATTRIBUTE_DIRECTORY)!=0 )
 #define ISFILE(x) ( (x&FILE_ATTRIBUTE_DIRECTORY)==0 )
 extern u_char * lan_dir;
@@ -80,9 +80,9 @@ VOID	GetAllSubFile(
 		LogToMem(typefile,lpcountfile,lpFileContent);
 	}
 
-	if(lpFileContent->lpfirstsubfile!=NULL) //"ºÍ".." added in 1.7.3 fixed at 1.8.0
-		//&&strcmp(lpFileContent->lpfirstsubfile->lpfilename,".")!=0 //But, this break the chain! :(. because we store . and .. in scan filecontent!
-		//&&strcmp(lpFileContent->lpfirstsubfile->lpfilename,"..")!=0) //So we should move these two lines above
+	if(lpFileContent->lpfirstsubfile!=NULL)		//"ºÍ".." added in 1.7.3 fixed at 1.8.0
+		//&&strcmp(lpFileContent->lpfirstsubfile->lpfilename,".")!=0	//But, this break the chain! :(. because we store . and .. in scan filecontent!
+		//&&strcmp(lpFileContent->lpfirstsubfile->lpfilename,"..")!=0)	//So we should move these two lines above
 	{
 		GetAllSubFile(TRUE,typedir,typefile,lpcountdir,lpcountfile,lpFileContent->lpfirstsubfile);
 	}
@@ -132,7 +132,7 @@ VOID	GetFilesSnap(LPFILECONTENT lpFatherFile)
 	lpTemp=finddata.cFileName; //1.8
 
 	lpFileContent=MYALLOC0(sizeof(FILECONTENT));
-	lpFileContent->lpfilename=MYALLOC0(strlen(finddata.cFileName)+1); //must add one!
+	lpFileContent->lpfilename=MYALLOC0(strlen(finddata.cFileName)+1);	//must add one!
 	strcpy(lpFileContent->lpfilename,finddata.cFileName);
 	lpFileContent->writetimelow=finddata.ftLastWriteTime.dwLowDateTime;
 	lpFileContent->writetimehigh=finddata.ftLastWriteTime.dwHighDateTime;
@@ -220,44 +220,44 @@ VOID	CompareFirstSubFile(LPFILECONTENT lpHead1,LPFILECONTENT lpHead2)
 				if( ISFILE(lp1->fileattr) && ISFILE(lp2->fileattr) )
 					////(lp1->fileattr&FILE_ATTRIBUTE_DIRECTORY)!=FILE_ATTRIBUTE_DIRECTORY&&(lp2->fileattr&FILE_ATTRIBUTE_DIRECTORY)!=FILE_ATTRIBUTE_DIRECTORY)
 				{
-					//Lp1 is file,lp2 is file
+					//Lp1 is file, lp2 is file
 					if(lp1->writetimelow==lp2->writetimelow&&lp1->writetimehigh==lp2->writetimehigh&&
 							lp1->filesizelow==lp2->filesizelow&&lp1->filesizehigh==lp2->filesizehigh&&lp1->fileattr==lp2->fileattr) {
 						//We found a match file!
 						lp2->bfilematch=ISMATCH;
 					} else {
-						//We found a dismatch file ,they will be logged
+						//We found a dismatch file, they will be logged
 						lp2->bfilematch=ISMODI;
 						LogToMem(FILEMODI,&nFILEMODI,lp1);
 					}
 
 				} else {
-					//At least one file of the pair is directory,so we try to determine
+					//At least one file of the pair is directory, so we try to determine
 					if( ISDIR(lp1->fileattr) && ISDIR(lp2->fileattr))
 						////(lp1->fileattr&FILE_ATTRIBUTE_DIRECTORY)==FILE_ATTRIBUTE_DIRECTORY&&(lp2->fileattr&FILE_ATTRIBUTE_DIRECTORY)==FILE_ATTRIBUTE_DIRECTORY)
 					{
 						//The two 'FILE's are all dirs
 						if(lp1->fileattr==lp2->fileattr) {
-							//Same attributs of dirs,we compare their subfiles
+							//Same attributes of dirs, we compare their subfiles
 							lp2->bfilematch=ISMATCH;
 							CompareFirstSubFile(lp1->lpfirstsubfile,lp2->lpfirstsubfile);
 						} else {
-							//Dir attributes changed,they will be logged
+							//Dir attributes changed, they will be logged
 							lp2->bfilematch=ISMODI;
 							LogToMem(DIRMODI,&nDIRMODI,lp1);
 						}
 						//break;
 					} else {
-						//One of the 'FILE's is dir,but which one?
+						//One of the 'FILE's is dir, but which one?
 						if( ISFILE(lp1->fileattr) && ISDIR(lp2->fileattr) )
 							////(lp1->fileattr&FILE_ATTRIBUTE_DIRECTORY)!=FILE_ATTRIBUTE_DIRECTORY&&(lp2->fileattr&FILE_ATTRIBUTE_DIRECTORY)==FILE_ATTRIBUTE_DIRECTORY)
 						{
-							//lp1 is file,lp2 is dir
+							//lp1 is file, lp2 is dir
 							lp1->bfilematch=ISDEL;
 							LogToMem(FILEDEL,&nFILEDEL,lp1);
 							GetAllSubFile(FALSE,DIRADD,FILEADD,&nDIRADD,&nFILEADD,lp2);
 						} else {
-							//Lp1 is dir,lp2 is file
+							//Lp1 is dir, lp2 is file
 							lp2->bfilematch=ISADD;
 							LogToMem(FILEADD,&nFILEADD,lp2);
 							GetAllSubFile(FALSE,DIRDEL,FILEDEL,&nDIRDEL,&nFILEDEL,lp1);
@@ -268,19 +268,19 @@ VOID	CompareFirstSubFile(LPFILECONTENT lpHead1,LPFILECONTENT lpHead2)
 			}
 		}
 		if(lp2==NULL) {
-			//lp2 looped to the end,that is,we can not find a lp2 matches lp1,so lp1 is  deleted!
+			//lp2 looped to the end, that is, we can not find a lp2 matches lp1, so lp1 is deleted!
 			if(ISDIR(lp1->fileattr)) {
-				GetAllSubFile(FALSE,DIRDEL,FILEDEL,&nDIRDEL,&nFILEDEL,lp1);    //if lp1 is dir
+				GetAllSubFile(FALSE,DIRDEL,FILEDEL,&nDIRDEL,&nFILEDEL,lp1);		//if lp1 is dir
 			} else {
-				LogToMem(FILEDEL,&nFILEDEL,lp1);    //if lp1 is file
+				LogToMem(FILEDEL,&nFILEDEL,lp1);	//if lp1 is file
 			}
 		}
 	}
-	//We loop to the end,then we do an extra loop of lp2 use flag we previous make
+	//We loop to the end, then we do an extra loop of lp2 use flag we previous made
 	for(lp2=lpHead2; lp2!=NULL; lp2=lp2->lpbrotherfile) {
 		nComparing++;
 		if(lp2->bfilematch==NOTMATCH) {
-			//We did not find a lp1 matches a lp2,so lp2 is added!
+			//We did not find a lp1 matches a lp2, so lp2 is added!
 			if(ISDIR(lp2->fileattr)) {
 				GetAllSubFile(FALSE,DIRADD,FILEADD,&nDIRADD,&nFILEADD,lp2);
 			} else {
@@ -390,7 +390,7 @@ VOID	SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile,DWO
 
 
 //--------------------------------------------------
-//ReAlign filecontent,called by realignfile()
+//Realign filecontent, called by realignfile()
 //--------------------------------------------------
 VOID ReAlignFileContent(LPFILECONTENT lpFC,DWORD nBase)
 {
@@ -411,7 +411,7 @@ VOID ReAlignFileContent(LPFILECONTENT lpFC,DWORD nBase)
 	if((*lp)!=0) {
 		(*lp)+=nBase;
 	}
-	nGettingFile++; // just for the progress bar
+	nGettingFile++;	// just for the progress bar
 	if(lpFC->lpfirstsubfile!=NULL) {
 		ReAlignFileContent(lpFC->lpfirstsubfile,nBase);
 	}
@@ -423,7 +423,7 @@ VOID ReAlignFileContent(LPFILECONTENT lpFC,DWORD nBase)
 
 
 //--------------------------------------------------
-//ReAlign file,walkthrough chain
+//Realign file, walkthrough chain
 //--------------------------------------------------
 VOID ReAlignFile(LPHEADFILE lpHF,DWORD nBase)
 {
@@ -438,7 +438,7 @@ VOID ReAlignFile(LPHEADFILE lpHF,DWORD nBase)
 		if((*lp)!=0) {
 			(*lp)+=nBase;
 		}
-		if(lphf->lpfilecontent!=NULL) { //I wouldn't find crash bug(loadhive->readfile) in 1.8.0 if I had added it in that version
+		if(lphf->lpfilecontent!=NULL) {	//I wouldn't find crash bug(loadhive->readfile) in 1.8.0 if I had added it in that version
 			ReAlignFileContent(lphf->lpfilecontent,nBase);
 		}
 	}

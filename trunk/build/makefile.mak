@@ -76,7 +76,7 @@ OBJECTS= \
     $(OBJDIR)\language.obj \
     $(OBJDIR)\misc.obj \
     $(OBJDIR)\output.obj \
-    $(OBJDIR)\Regshot.obj \
+    $(OBJDIR)\regshot.obj \
     $(OBJDIR)\regshot.res \
     $(OBJDIR)\setup.obj \
     $(OBJDIR)\ui.obj \
@@ -118,8 +118,8 @@ $(OBJDIR)\output.obj: \
     $(SRC)\output.c \
     $(SRC)\global.h
 
-$(OBJDIR)\Regshot.obj: \
-    $(SRC)\Regshot.c \
+$(OBJDIR)\regshot.obj: \
+    $(SRC)\regshot.c \
     $(SRC)\global.h \
     $(SRC)\version.h
 
