@@ -1,16 +1,26 @@
 @ECHO OFF
 rem ******************************************************************************
+rem *  Copyright 2010-2011 XhmikosR
 rem *
-rem * Regshot
+rem *  This file is part of Regshot.
 rem *
-rem * make_packages.bat
-rem *   Batch file for building Regshot with WDK and creating the zip packages
+rem *  Regshot is free software; you can redistribute it and/or modify
+rem *  it under the terms of the GNU General Public License as published by
+rem *  the Free Software Foundation; either version 2 of the License, or
+rem *  (at your option) any later version.
 rem *
-rem * See gpl.txt for details about distribution and modification.
+rem *  Regshot is distributed in the hope that it will be useful,
+rem *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+rem *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+rem *  GNU General Public License for more details.
 rem *
-rem *                                       (c) XhmikosR 2010-2011
-rem *                                       http://code.google.com/p/regshot/
+rem *  You should have received a copy of the GNU General Public License
+rem *  along with Regshot; if not, write to the Free Software
+rem *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 rem *
+rem *
+rem *  make_packages.bat
+rem *    Batch file for building Regshot with WDK and creating the zip packages
 rem ******************************************************************************
 
 
