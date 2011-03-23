@@ -127,7 +127,7 @@ BOOL	GetLanguageType(HWND hDlg)
 	if (nReturn>1) {
 		bRet=TRUE;
 		for(lp=lpSectionNames; *lp!=0; lp=lp+strlen(lp)+1) {
-			if(_strcmpi(lp,str_SectionCurrent)!=0) {
+			if(_stricmp(lp,str_SectionCurrent)!=0) {
 				SendDlgItemMessage(hDlg,IDC_COMBOLANGUAGE,CB_ADDSTRING,(WPARAM)0,(LPARAM)lp);
 			}
 		}

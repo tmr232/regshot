@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Regshot", "Regshot.vcproj", "{A7D5D156-E803-459D-B768-7EBBC5D09DC6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Regshot", "regshot_vs2008.vcproj", "{A7D5D156-E803-459D-B768-7EBBC5D09DC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

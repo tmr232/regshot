@@ -375,7 +375,7 @@ BOOL	CALLBACK	DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam)
 					BrowseInfo1.hwndOwner=hDlg;
 					BrowseInfo1.pszDisplayName=MYALLOC0(MAX_PATH+1);
 					//BrowseInfo1.lpszTitle="Select:";
-					BrowseInfo1.ulFlags =0; //3lines added in 1.8.2
+					BrowseInfo1.ulFlags =0;		//3lines added in 1.8.2
 					BrowseInfo1.lpfn = NULL;
 					BrowseInfo1.lParam = 0;
 
@@ -411,8 +411,8 @@ BOOL	CALLBACK	DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam)
 					//-----------------
 					// Added by Youri in 1.8.2 ,Thanks!
 					// if you add this code, the browse dialog will be expand path and have button "Create Folder"
-					BrowseInfo1.ulFlags |= 0x0040; //BIF_NEWDIALOGSTYLE;    // button "Create Folder" and resizable
-					BrowseInfo1.lpfn = SelectBrowseFolder;        // function for expand path
+					BrowseInfo1.ulFlags |= 0x0040; //BIF_NEWDIALOGSTYLE;	// button "Create Folder" and resizable
+					BrowseInfo1.lpfn = SelectBrowseFolder;					// function for expand path
 					BrowseInfo1.lParam = (LPARAM)BrowseInfo1.pszDisplayName;
 					// Initilize selection path
 					GetDlgItemText(hDlg,IDC_EDITPATH,BrowseInfo1.pszDisplayName,MAX_PATH);
@@ -437,7 +437,7 @@ BOOL	CALLBACK	DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam)
 					//_asm int 3;
 					lpAboutBox=MYALLOC0(SIZEOF_ABOUTBOX);
 					//it is silly that when wsprintf encounter a NULL strings, it will write the whole string to NULL!
-					sprintf(lpAboutBox,"%s%s%s%s%s%s",str_aboutme,"[",(strlen(lpCurrentLanguage)==0)?str_DefaultLanguage:lpCurrentLanguage,"]"," by:",lpCurrentTranslator);
+					sprintf(lpAboutBox,"%s%s%s%s%s%s",str_aboutme,"[",(strlen(lpCurrentLanguage)==0)?str_DefaultLanguage:lpCurrentLanguage,"]"," by: ",lpCurrentTranslator);
 					MessageBox(hDlg,lpAboutBox,lan_about,MB_OK);
 					MYFREE(lpAboutBox);
 					return(TRUE);

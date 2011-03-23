@@ -30,8 +30,8 @@ SRC     = ..\src
 
 DEFINES = /D "_WINDOWS" /D "NDEBUG" /D "_CRT_SECURE_NO_WARNINGS"
 CFLAGS  = /nologo /c /Fo"$(OBJDIR)/" /W3 /WX /EHsc /MD /O2 /GL /MP $(DEFINES)
-LDFLAGS = /NOLOGO /WX /INCREMENTAL:NO /RELEASE /OPT:REF /OPT:ICF /LTCG /MERGE:.rdata=.text \
-          /DYNAMICBASE /NXCOMPAT /DEBUG
+LDFLAGS = /NOLOGO /WX /INCREMENTAL:NO /RELEASE /OPT:REF /OPT:ICF /DYNAMICBASE /NXCOMPAT \
+          /LTCG /DEBUG
 LIBS    = kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib \
           ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
 MTFLAGS = -nologo
@@ -61,8 +61,8 @@ CHECKDIRS:
 
 CLEAN:
 	ECHO Cleaning... & ECHO.
-	-DEL "$(EXE)" "$(OBJDIR)\regshot.idb" "$(OBJDIR)\*.obj" \
-	"$(BINDIR)\regshot.pdb" "$(OBJDIR)\regshot.res" >NUL 2>&1
+	-DEL "$(EXE)" "$(OBJDIR)\*.obj" "$(OBJDIR)\regshot.res" \
+	"$(BINDIR)\Regshot.pdb" >NUL 2>&1
 	-RMDIR /Q "$(OBJDIR)" "$(BINDIR)" >NUL 2>&1
 
 REBUILD:	CLEAN BUILD
