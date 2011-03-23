@@ -2,14 +2,14 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="regshot" />
+		<Option title="Regshot" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
 				<Option platforms="Windows;" />
-				<Option output="..\bin\gcc\Debug\regshot" prefix_auto="1" extension_auto="1" />
-				<Option object_output="Debug_gcc\obj\" />
+				<Option output="..\bin\GCC\Debug_x86\Regshot" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\bin\GCC\Debug_x86\obj\" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -19,12 +19,12 @@
 			</Target>
 			<Target title="Release">
 				<Option platforms="Windows;" />
-				<Option output="..\bin\gcc\Release\regshot" prefix_auto="1" extension_auto="1" />
-				<Option object_output="Release_gcc\obj\" />
+				<Option output="..\bin\GCC\Release_x86\Regshot" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\bin\GCC\Release_x86\obj\" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-march=pentium4" />
+					<Add option="-march=i686" />
 					<Add option="-O3" />
 					<Add option="-w" />
 					<Add option="-flto" />
@@ -71,6 +71,7 @@
 		<Unit filename="..\src\ui.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="..\src\version.h" />
 		<Unit filename="..\src\winmain.c">
 			<Option compilerVar="CC" />
 		</Unit>

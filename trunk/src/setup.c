@@ -158,7 +158,7 @@ BOOL IsInSkipList(LPSTR lpSnap, LPDWORD lpSkipList)
 {
 	int i;
 	for(i=0; (LPSTR)(*(lpSkipList+i))!=NULL && i<=MAXREGSHOT-1; i++) {
-		if(_strcmpi(lpSnap, (LPSTR)*(lpSkipList+i))==0) {
+		if(_stricmp(lpSnap, (LPSTR)*(lpSkipList+i))==0) {
 			return TRUE;
 		}
 	}
