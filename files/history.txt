@@ -31,7 +31,7 @@ V1.8.1 2007-06-20
 * Do not compare shots saved with different "UseLongRegHead" option!
 
 V1.8.0 2007-06-15 (Its TiANWEi reloaded)
-! Fix file chain break bug in 1.7(.,..)
+! Fix file chain break bug in 1.7
 ! Fix several pointer mis-point (lpComputer, etc)
 ! Code maintenance (split, rename, OMG)
 ! File attribute dir code adjust
@@ -39,7 +39,7 @@ V1.8.0 2007-06-15 (Its TiANWEi reloaded)
 + Fileshots are now saved in hive (you must be waiting for this ^_^)
 + Use GPLv2 license
 
-V1.7,1.7.1, and 1.7.2 2004-02-25 until 2004-03-05 This version is made by tulipfan[CCG]!
+V1.7, 1.7.1, and 1.7.2 2004-02-25 until 2004-03-05 This version is made by tulipfan[CCG]!
 * Minimize file size from 44k to 28k, thanks to y0da
 ! When shot file, "."&".." not show
 * Instead of using "rgst152.dat", the config moved to "regshot.ini"
@@ -48,7 +48,7 @@ V1.7,1.7.1, and 1.7.2 2004-02-25 until 2004-03-05 This version is made by tulipf
 + 1.7.2 fix language codepage bug thanks Bata György!
 
 V1.61a,b,c,d,e,e+,e1-e5 2002-07-13 until 2003-01-01
-+ Add 2 languages[1 in 1.61b],Fixed 1.
++ Add 2 languages[1 in 1.61b], Fixed 1.
 ! SeparatorBar misplaced in Popup menu in some OS,
   Hope to fix it! [Thanks Dchenka]
 ! Fix Output path bug found by itschy!
@@ -111,7 +111,7 @@ V1.52 2001-11-10
   read readme.txt for detail!
 ! rgst150a.dat -> rgst152.dat
 
-V1.51,1.51a 2001-10-25
+V1.51, 1.51a 2001-10-25
 ! Fix crash bug in 1.50e when scan folders!!
 + Scan unlimited number of drivers [folders]
 
@@ -221,10 +221,10 @@ Version 1.01f 1999-10
 - Bmp logo.
 
 Version 1.01e
-* Mostly like 1.01d,bugs fixed.
+* Mostly like 1.01d, bugs fixed.
 
 Version 1.01d
-! Use direct "=" instead "lstrcat()",faster!
+! Use direct "=" instead "lstrcat()", faster!
 ! Larger listBox
 
 Version before 1.01c
