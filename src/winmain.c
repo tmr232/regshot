@@ -29,8 +29,6 @@
 
 char *str_prgname=REGSHOT_TITLE " " REGSHOT_VERSION_STRING;
 char *str_aboutme="Regshot is a free and open source registry compare utility.\n\n\
-http://code.google.com/p/regshot/\n\n\
-Original project webpage:\n\
 http://sourceforge.net/projects/regshot/\n\n";
 LPSTR	REGSHOTINI			="regshot.ini"; //tfx
 LPSTR	REGSHOTLANGUAGEFILE	="language.ini";
