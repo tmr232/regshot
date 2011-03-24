@@ -184,7 +184,7 @@
     <ClInclude Include="..\src\resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\regshot.ico" />
+    <None Include="..\src\res\regshot.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\regshot.rc" />
@@ -194,7 +194,7 @@
     <ClCompile Include="..\src\language.c" />
     <ClCompile Include="..\src\misc.c" />
     <ClCompile Include="..\src\output.c" />
-    <ClCompile Include="..\src\Regshot.c" />
+    <ClCompile Include="..\src\regshot.c" />
     <ClCompile Include="..\src\setup.c" />
     <ClCompile Include="..\src\ui.c" />
     <ClCompile Include="..\src\winmain.c" />

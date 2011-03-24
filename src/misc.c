@@ -26,9 +26,9 @@ extern u_char * lan_error;
 //-------------------------------------------------------------
 // Show error message
 //-------------------------------------------------------------
-VOID	ErrMsg(char * note)
+VOID    ErrMsg(char * note)
 {
-	MessageBox(hWnd,note,lan_error,MB_ICONHAND);
+    MessageBox(hWnd,note,lan_error,MB_ICONHAND);
 }
 
 
@@ -37,32 +37,32 @@ VOID	ErrMsg(char * note)
 //-------------------------------------------------------------
 #ifdef  DEBUGLOG
 extern char * str_CR;
-VOID	DebugLog(LPSTR filename,LPSTR lpstr,HWND hDlg,BOOL bisCR)
+VOID    DebugLog(LPSTR filename,LPSTR lpstr,HWND hDlg,BOOL bisCR)
 {
-	DWORD	length;
-	DWORD	nPos;
+    DWORD   length;
+    DWORD   nPos;
 
-	hFile = CreateFile(filename,GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
-	if( hFile == INVALID_HANDLE_VALUE) {
-		ErrMsg(lan_errorcreatefile);
-	} else {
-		nPos=SetFilePointer(hFile,0,NULL,FILE_END);
-		if(nPos==0xFFFFFFFF) {
-			ErrMsg(lan_errormovefp);
-		} else {
+    hFile = CreateFile(filename,GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+    if( hFile == INVALID_HANDLE_VALUE) {
+        ErrMsg(lan_errorcreatefile);
+    } else {
+        nPos=SetFilePointer(hFile,0,NULL,FILE_END);
+        if(nPos==0xFFFFFFFF) {
+            ErrMsg(lan_errormovefp);
+        } else {
 
-			length=strlen(lpstr);
-			WriteFile(hFile,lpstr,length,&NBW,NULL);
-			if(NBW!=length) {
-				//ErrMsg(lan_errorwritefile);
+            length=strlen(lpstr);
+            WriteFile(hFile,lpstr,length,&NBW,NULL);
+            if(NBW!=length) {
+                //ErrMsg(lan_errorwritefile);
 
-			}
-			if(bisCR==TRUE) {
-				WriteFile(hFile,str_CR,sizeof(str_CR)-1,&NBW,NULL);
-			}
-		}
-	}
-	CloseHandle(hFile);
+            }
+            if(bisCR==TRUE) {
+                WriteFile(hFile,str_CR,sizeof(str_CR)-1,&NBW,NULL);
+            }
+        }
+    }
+    CloseHandle(hFile);
 }
 #endif
 
@@ -72,49 +72,49 @@ VOID	DebugLog(LPSTR filename,LPSTR lpstr,HWND hDlg,BOOL bisCR)
 //------------------------------------------------------------
 BOOL ReplaceInValidFileName(LPSTR lpf)
 {
-	char lpInvalid[]="\\/:*?\"<>|"; //1.8.2
-	DWORD	i,j;
-	size_t	nLen;
-	BOOL	bLegal=FALSE;
-	nLen=strlen(lpf);
-	for(i=0; i<nLen; i++) {
-		for(j=0; j<sizeof(lpInvalid)-1; j++) { //changed at 1.8.2 from 9 to sizeof()-1
-			if (*(lpf+i)==*(lpInvalid+j)) {
-				*(lpf+i)='-';					//0x2D; check for invalid chars and replace it (return FALSE;)
-			} else if(*(lpf+i)!=0x20&&*(lpf+i)!=0x09) { //At least one non-space,non-tab char needed!
-				bLegal=TRUE;
-			}
+    char lpInvalid[]="\\/:*?\"<>|"; //1.8.2
+    DWORD   i,j;
+    size_t  nLen;
+    BOOL    bLegal=FALSE;
+    nLen=strlen(lpf);
+    for(i=0; i<nLen; i++) {
+        for(j=0; j<sizeof(lpInvalid)-1; j++) { //changed at 1.8.2 from 9 to sizeof()-1
+            if (*(lpf+i)==*(lpInvalid+j)) {
+                *(lpf+i)='-';                   //0x2D; check for invalid chars and replace it (return FALSE;)
+            } else if(*(lpf+i)!=0x20&&*(lpf+i)!=0x09) { //At least one non-space,non-tab char needed!
+                bLegal=TRUE;
+            }
 
-		}
-	}
-	return bLegal;
+        }
+    }
+    return bLegal;
 }
 
 
 //--------------------------------------------------
 // Find lp's position in lpMaster (like At(),but not limit to str)
 //--------------------------------------------------
-LPSTR	AtPos(LPSTR lpMaster,LPSTR lp,DWORD size)
+LPSTR   AtPos(LPSTR lpMaster,LPSTR lp,DWORD size)
 {
-	DWORD	i,j;
-	size_t	nsizelp;
-	nsizelp=strlen(lp);
-	if (size<=nsizelp||nsizelp<1) {
-		return NULL;
-	}
+    DWORD   i,j;
+    size_t  nsizelp;
+    nsizelp=strlen(lp);
+    if (size<=nsizelp||nsizelp<1) {
+        return NULL;
+    }
 
-	for(i=0; i<size-nsizelp; i++) {
-		for(j=0; j<nsizelp; j++) {
-			if(*(lp+j)!=*(lpMaster+i+j)) {
-				break;
-			}
-		}
-		//_asm int 3;
-		if(j==nsizelp) {
-			return lpMaster+i+nsizelp;
-		}
-	}
-	return NULL;
+    for(i=0; i<size-nsizelp; i++) {
+        for(j=0; j<nsizelp; j++) {
+            if(*(lp+j)!=*(lpMaster+i+j)) {
+                break;
+            }
+        }
+        //_asm int 3;
+        if(j==nsizelp) {
+            return lpMaster+i+nsizelp;
+        }
+    }
+    return NULL;
 
 }
 
@@ -123,18 +123,18 @@ LPSTR	AtPos(LPSTR lpMaster,LPSTR lp,DWORD size)
 //-------------------------------------------------------------
 // Once, I think about to use own memory allocation method
 //-------------------------------------------------------------
-/*LPVOID	MyHeapAlloc(DWORD type,DWORD size)
+/*LPVOID    MyHeapAlloc(DWORD type,DWORD size)
 {
-	if((bTurboMode==FALSE)&&((lpMyHeap+size)<(lpMyHeap+MYHEAPSIZE)))
-	{
-		lpMyHeap=lpMyHeap+size;
-		if(type==LPTR)
-			ZeroMemory(lpMyHeap,size);
-	}
-	else
-	{
-		lpMyHeap=GlobalAlloc(type,size);
-	}
-	return lpMyHeap;
+    if((bTurboMode==FALSE)&&((lpMyHeap+size)<(lpMyHeap+MYHEAPSIZE)))
+    {
+        lpMyHeap=lpMyHeap+size;
+        if(type==LPTR)
+            ZeroMemory(lpMyHeap,size);
+    }
+    else
+    {
+        lpMyHeap=GlobalAlloc(type,size);
+    }
+    return lpMyHeap;
 }
  */

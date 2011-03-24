@@ -42,6 +42,6 @@
 #else
 #define REGSHOT_TITLE             "Regshot"
 #define REGSHOT_RESULT_FILE       "~res"
-#endif	// _WIN64
+#endif  // _WIN64
 
 #endif
