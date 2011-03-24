@@ -26,7 +26,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\regshot.ico">
+    <None Include="..\src\res\regshot.ico">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -48,7 +48,7 @@
     <ClCompile Include="..\src\output.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Regshot.c">
+    <ClCompile Include="..\src\regshot.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\setup.c">

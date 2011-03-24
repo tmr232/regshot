@@ -113,7 +113,15 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_MAINICON            ICON                    "regshot.ico"
+IDI_MAINICON            ICON                    "res\\regshot.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Manifest
+//
+IDR_RT_MANIFEST         24                      "res\\Regshot.exe.manifest"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

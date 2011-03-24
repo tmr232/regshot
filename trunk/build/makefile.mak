@@ -21,7 +21,7 @@
 #*  makefile.mak
 #*    makefile for building Regshot with WDK
 #*
-#*    Use build.cmd and set there your WDK and SDK directories.
+#*    Use build.cmd and set there your WDK directory.
 #******************************************************************************
 
 
@@ -39,7 +39,7 @@ SRC     = ..\src
 
 
 DEFINES = /D "_WINDOWS" /D "NDEBUG" /D "_CRT_SECURE_NO_WARNINGS"
-CFLAGS  = /nologo /c /Fo"$(OBJDIR)/" /W3 /WX /EHsc /MD /O2 /GL /MP $(DEFINES)
+CFLAGS  = /nologo /c /Fo"$(OBJDIR)/" /W3 /WX /wd4819 /EHsc /MD /O2 /GL /MP $(DEFINES)
 LDFLAGS = /NOLOGO /WX /INCREMENTAL:NO /RELEASE /OPT:REF /OPT:ICF /DYNAMICBASE /NXCOMPAT \
           /LTCG /DEBUG
 LIBS    = kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib \
@@ -106,7 +106,6 @@ OBJECTS= \
 $(EXE): $(OBJECTS)
 	rc $(RFLAGS) /fo"$(OBJDIR)\regshot.res" "$(SRC)\regshot.rc" >NUL
 	link $(LDFLAGS) $(LIBS) $(OBJECTS) /OUT:"$(EXE)"
-	mt $(MTFLAGS) -manifest "$(SRC)\regshot.exe.manifest" -outputresource:"$(EXE);#1"
 
 
 ####################

@@ -2,6 +2,8 @@
 // Microsoft Developer Studio generated include file.
 // Used by regshot.rc
 //
+#define IDR_RT_MANIFEST                 1
+
 #define IDD_DIALOG1                     100
 #define IDD_DIALOG2                     101
 #define IDI_MAINICON                    111

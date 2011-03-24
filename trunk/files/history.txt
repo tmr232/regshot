@@ -10,6 +10,10 @@ History of Regshot
 
 V1.8.3 upcoming
 + Add 64-Bit build
+* New program icon (thanks to the PortableApps guys)
+! Add support for various compilers
+! Add a proper manifest file
+! Various code cleanup
 
 V1.8.2 2007-11-03
 ! Change some calls to ANSI version (lstrcmp->strcmp...)
