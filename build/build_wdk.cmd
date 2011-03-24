@@ -50,7 +50,7 @@ ECHO.
 ECHO Note:   You can also prefix the commands with "-", "--" or "/".
 ECHO.
 ECHO.
-ECHO Edit "%~nx0" and set your WDK and SDK directories.
+ECHO Edit "%~nx0" and set your WDK directory.
 ECHO You shouldn't need to make any changes other than that.
 ECHO.
 ECHO.

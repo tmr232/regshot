@@ -179,6 +179,9 @@
     <ClCompile Include="..\src\ui.c" />
     <ClCompile Include="..\src\winmain.c" />
   </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="..\src\res\Regshot.exe.manifest" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

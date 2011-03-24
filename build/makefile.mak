@@ -36,6 +36,7 @@ BINDIR  = ..\bin\WDK\Release_x86
 OBJDIR  = $(BINDIR)\obj
 EXE     = $(BINDIR)\Regshot.exe
 SRC     = ..\src
+RES     = $(SRC)\res
 
 
 DEFINES = /D "_WINDOWS" /D "NDEBUG" /D "_CRT_SECURE_NO_WARNINGS"
@@ -135,6 +136,8 @@ $(OBJDIR)\regshot.obj: \
 $(OBJDIR)\regshot.res: \
     $(SRC)\regshot.rc \
     $(SRC)\resource.h \
+    $(RES)\Regshot.exe.manifest \
+    $(RES)\regshot.ico \
     $(SRC)\version.h
 
 $(OBJDIR)\setup.obj: \
