@@ -127,7 +127,7 @@ BOOL    GetLanguageType(HWND hDlg)
     if (nReturn>1) {
         bRet=TRUE;
         for(lp=lpSectionNames; *lp!=0; lp=lp+strlen(lp)+1) {
-            if(_stricmp(lp,str_SectionCurrent)!=0) {
+            if (_stricmp(lp,str_SectionCurrent)!=0) {
                 SendDlgItemMessage(hDlg,IDC_COMBOLANGUAGE,CB_ADDSTRING,(WPARAM)0,(LPARAM)lp);
             }
         }
@@ -299,14 +299,14 @@ BOOL    GetLanguageStrings(HWND hDlg)
 
             sprintf(lpIniKey,"%d%s",i,"=");
             //pointer returned was pointed to char just after "="
-            if((lpReturn=AtPos(lpFreeStrings,lpIniKey,SIZEOF_FREESTRINGS))!=NULL) {
+            if ((lpReturn=AtPos(lpFreeStrings,lpIniKey,SIZEOF_FREESTRINGS))!=NULL) {
                 //_asm int 3;
                 *(lp+i-1)=(DWORD)lpReturn;
             } else {
                 *(lp+i-1)=(DWORD)lan_default[i-1];
             }
 
-            if(i>=28&&i<41&&i!=34) {
+            if (i>=28&&i<41&&i!=34) {
                 SetDlgItemText(hDlg,ID_BASE+3+i-28,(LPSTR)(*(lp+i-1)));
             }
 

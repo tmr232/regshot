@@ -30,7 +30,7 @@ CD /D %~dp0
 
 CALL :SubGetVersion
 
-CALL "build_wdk.cmd"
+CALL "build_wdk.bat"
 
 CALL :SubZipFiles Release_x86 x86
 CALL :SubZipFiles Release_x64 x64

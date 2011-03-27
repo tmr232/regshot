@@ -100,7 +100,7 @@ BOOL    CALLBACK    DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lPara
             lpFreeStrings=MYALLOC(SIZEOF_FREESTRINGS);
             ldwTempStrings=MYALLOC0(4*60);  //max is 60 strings
 
-            if(GetLanguageType(hDlg)) {
+            if (GetLanguageType(hDlg)) {
                 GetLanguageStrings(hDlg);
             } else {
                 GetDefaultStrings();
@@ -108,9 +108,9 @@ BOOL    CALLBACK    DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lPara
 
             /*          //To get rgst152.dat which is the ini file of regshot,but it should  be a standard ini file in future!
                         hFile = CreateFile(REGSHOTDATFILE,GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
-                        if( hFile != INVALID_HANDLE_VALUE)
+                        if (hFile != INVALID_HANDLE_VALUE)
                         {
-                            if((ReadFile(hFile,&nFlag,1,&NBW,NULL)==TRUE)&&NBW==1)
+                            if ((ReadFile(hFile,&nFlag,1,&NBW,NULL)==TRUE)&&NBW==1)
                             {
                                 SendMessage(GetDlgItem(hDlg,IDC_RADIO1),BM_SETCHECK,(WPARAM)(nFlag&0x01),(LPARAM)0);
                                 SendMessage(GetDlgItem(hDlg,IDC_RADIO2),BM_SETCHECK,(WPARAM)((nFlag&0x01)^0x01),(LPARAM)0);
@@ -123,11 +123,11 @@ BOOL    CALLBACK    DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lPara
                             }
                             ReadFile(hFile,&nMask,4,&NBW,NULL);
 
-                            if((ReadFile(hFile,&nLengthofStr,sizeof(nLengthofStr),&NBW,NULL)==TRUE)
+                            if ((ReadFile(hFile,&nLengthofStr,sizeof(nLengthofStr),&NBW,NULL)==TRUE)
                                 &&NBW==sizeof(nLengthofStr)&&nLengthofStr!=0)
                             {
 
-                                if((ReadFile(hFile,lpExtDir,nLengthofStr,&NBW,NULL)==TRUE)&&NBW==nLengthofStr)
+                                if ((ReadFile(hFile,lpExtDir,nLengthofStr,&NBW,NULL)==TRUE)&&NBW==nLengthofStr)
                                 {
                                     SetDlgItemText(hDlg,IDC_EDITDIR,lpExtDir);
                                 }
@@ -139,11 +139,11 @@ BOOL    CALLBACK    DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lPara
                                 SetDlgItemText(hDlg,IDC_EDITDIR,lpWindowsDirName);
 
                             //the output temppath
-                            if((ReadFile(hFile,&nLengthofStr,sizeof(nLengthofStr),&NBW,NULL)==TRUE)
+                            if ((ReadFile(hFile,&nLengthofStr,sizeof(nLengthofStr),&NBW,NULL)==TRUE)
                                 &&NBW==sizeof(nLengthofStr)&&nLengthofStr!=0)
                             {
 
-                                if((ReadFile(hFile,lpOutputpath,nLengthofStr,&NBW,NULL)==TRUE)&&NBW==nLengthofStr)
+                                if ((ReadFile(hFile,lpOutputpath,nLengthofStr,&NBW,NULL)==TRUE)&&NBW==nLengthofStr)
                                 {
                                     SetDlgItemText(hDlg,IDC_EDITPATH,lpOutputpath);
                                 }
@@ -201,7 +201,7 @@ BOOL    CALLBACK    DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lPara
                     DestroyMenu(hMenu);
                     return(TRUE);
                 case    IDM_SHOTONLY:
-                    if(is1) {
+                    if (is1) {
                         is1LoadFromHive=FALSE;
                         Shot1();
                     } else {
@@ -211,7 +211,7 @@ BOOL    CALLBACK    DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lPara
 
                     return(TRUE);
                 case    IDM_SHOTSAVE:
-                    if(is1) {
+                    if (is1) {
                         is1LoadFromHive=FALSE;
                         Shot1();
                         SaveHive(lpHeadLocalMachine1,lpHeadUsers1,lpHeadFile1,lpComputerName1,lpUserName1,lpSystemtime1); //I might use a struct in future!
@@ -224,13 +224,13 @@ BOOL    CALLBACK    DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lPara
                     return(TRUE);
 
                 case    IDM_LOAD:
-                    if(is1) {
+                    if (is1) {
                         is1LoadFromHive=LoadHive(&lpHeadLocalMachine1,&lpHeadUsers1,&lpHeadFile1,&lpTempHive1);
                     } else {
                         is2LoadFromHive=LoadHive(&lpHeadLocalMachine2,&lpHeadUsers2,&lpHeadFile2,&lpTempHive2);
                     }
 
-                    //if(is1LoadFromHive||is2LoadFromHive)
+                    //if (is1LoadFromHive||is2LoadFromHive)
                     //  SendMessage(GetDlgItem(hWnd,IDC_CHECKDIR),BM_SETCHECK,(WPARAM)0x00,(LPARAM)0);
 
                     return(TRUE);
@@ -259,20 +259,20 @@ BOOL    CALLBACK    DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lPara
                     SetMenuDefaultItem(hMenuClear,IDM_CLEARALLSHOTS,FALSE);
 
 
-                    //if(lpHeadFile!=NULL)
+                    //if (lpHeadFile!=NULL)
                     //{
                     //  EnableMenuItem(hMenuClear,IDM_CLEARSHOT1,MF_BYCOMMAND|MF_GRAYED);
                     //  EnableMenuItem(hMenuClear,IDM_CLEARSHOT2,MF_BYCOMMAND|MF_GRAYED);
                     //}
                     //else
                     {
-                        if(lpHeadLocalMachine1!=NULL) {
+                        if (lpHeadLocalMachine1!=NULL) {
                             EnableMenuItem(hMenuClear,IDM_CLEARSHOT1,MF_BYCOMMAND|MF_ENABLED);
                         } else {
                             EnableMenuItem(hMenuClear,IDM_CLEARSHOT1,MF_BYCOMMAND|MF_GRAYED);
                         }
 
-                        if(lpHeadLocalMachine2!=NULL) {
+                        if (lpHeadLocalMachine2!=NULL) {
                             EnableMenuItem(hMenuClear,IDM_CLEARSHOT2,MF_BYCOMMAND|MF_ENABLED);
                         } else {
                             EnableMenuItem(hMenuClear,IDM_CLEARSHOT2,MF_BYCOMMAND|MF_GRAYED);
@@ -333,7 +333,7 @@ BOOL    CALLBACK    DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lPara
                     */
 
                 case    IDC_CHECKDIR:
-                    if(SendMessage(GetDlgItem(hDlg,IDC_CHECKDIR),BM_GETCHECK,(WPARAM)0,(LPARAM)0)==1) {
+                    if (SendMessage(GetDlgItem(hDlg,IDC_CHECKDIR),BM_GETCHECK,(WPARAM)0,(LPARAM)0)==1) {
                         EnableWindow(GetDlgItem(hDlg,IDC_EDITDIR),TRUE);
                         EnableWindow(GetDlgItem(hDlg,IDC_BROWSE1),TRUE);
                     } else {
@@ -345,7 +345,7 @@ BOOL    CALLBACK    DialogProc(HWND hDlg,UINT message,WPARAM wParam,LPARAM lPara
                 case    IDCANCEL:
                     /*                  SetCurrentDirectory(lpStartDir);
                                         hFile = CreateFile(REGSHOTDATFILE,GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
-                                        if( hFile != INVALID_HANDLE_VALUE)
+                                        if (hFile != INVALID_HANDLE_VALUE)
                                         {
 
                                             nFlag=(BYTE)(SendMessage(GetDlgItem(hDlg,IDC_RADIO1),BM_GETCHECK,(WPARAM)0,(LPARAM)0)|
@@ -453,20 +453,20 @@ BOOL    SetPrivilege(HANDLE hToken,LPCTSTR pString,BOOL bEnablePrivilege)
     LUID    luid;
     TOKEN_PRIVILEGES    tpPrevious;
     DWORD   cbSize=sizeof(TOKEN_PRIVILEGES);
-    if  (!LookupPrivilegeValue(NULL,pString,&luid))
+    if (!LookupPrivilegeValue(NULL,pString,&luid))
         return FALSE;
     tp.PrivilegeCount=1;
     tp.Privileges[0].Luid=luid;
     tp.Privileges[0].Attributes=0;
-    if  (!AdjustTokenPrivileges(hToken,FALSE,&tp,sizeof(TOKEN_PRIVILEGES),&tpPrevious,&cbSize))
+    if (!AdjustTokenPrivileges(hToken,FALSE,&tp,sizeof(TOKEN_PRIVILEGES),&tpPrevious,&cbSize))
         return FALSE;
     tpPrevious.PrivilegeCount=1;
     tpPrevious.Privileges[0].Luid=luid;
-    if  (bEnablePrivilege)
+    if (bEnablePrivilege)
         tpPrevious.Privileges[0].Attributes|=(SE_PRIVILEGE_ENABLED);
     else
         tpPrevious.Privileges[0].Attributes^=((tpPrevious.Privileges[0].Attributes)&(SE_PRIVILEGE_ENABLED));
-    if  (!AdjustTokenPrivileges(hToken,FALSE,&tpPrevious,cbSize,NULL,NULL))
+    if (!AdjustTokenPrivileges(hToken,FALSE,&tpPrevious,cbSize,NULL,NULL))
         return FALSE;
     return TRUE;
 }
@@ -499,11 +499,11 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,
     UpdateWindow(hWnd);
     //SetPriorityClass(hInstance,31);
     /*
-    if  (bWinNTDetected)
+    if (bWinNTDetected)
     {
-        if  (OpenProcessToken(GetCurrentProcess(),TOKEN_ADJUST_PRIVILEGES|TOKEN_QUERY,&hToken)==TRUE)
+        if (OpenProcessToken(GetCurrentProcess(),TOKEN_ADJUST_PRIVILEGES|TOKEN_QUERY,&hToken)==TRUE)
         {
-            if  (SetPrivilege(hToken,"SeSystemProfilePrivilege",TRUE)==TRUE)
+            if (SetPrivilege(hToken,"SeSystemProfilePrivilege",TRUE)==TRUE)
             {
                 MessageBox(hWnd,"We are in system level,enjoy!","Info:",MB_OK);
             }
@@ -512,7 +512,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,
     }
     */
     while(GetMessage(&msg,NULL,(WPARAM)NULL,(LPARAM)NULL)) {
-        if(!IsDialogMessage(hWnd,&msg)) {
+        if (!IsDialogMessage(hWnd,&msg)) {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }

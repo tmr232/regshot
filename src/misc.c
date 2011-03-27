@@ -37,27 +37,30 @@ VOID    ErrMsg(char * note)
 //-------------------------------------------------------------
 #ifdef  DEBUGLOG
 extern char * str_CR;
+extern u_char * lan_errorcreatefile;
+extern u_char * lan_errormovefp;
+
 VOID    DebugLog(LPSTR filename,LPSTR lpstr,HWND hDlg,BOOL bisCR)
 {
     DWORD   length;
     DWORD   nPos;
 
     hFile = CreateFile(filename,GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
-    if( hFile == INVALID_HANDLE_VALUE) {
+    if (hFile == INVALID_HANDLE_VALUE) {
         ErrMsg(lan_errorcreatefile);
     } else {
         nPos=SetFilePointer(hFile,0,NULL,FILE_END);
-        if(nPos==0xFFFFFFFF) {
+        if (nPos==0xFFFFFFFF) {
             ErrMsg(lan_errormovefp);
         } else {
 
             length=strlen(lpstr);
             WriteFile(hFile,lpstr,length,&NBW,NULL);
-            if(NBW!=length) {
+            if (NBW!=length) {
                 //ErrMsg(lan_errorwritefile);
 
             }
-            if(bisCR==TRUE) {
+            if (bisCR==TRUE) {
                 WriteFile(hFile,str_CR,sizeof(str_CR)-1,&NBW,NULL);
             }
         }
@@ -81,7 +84,7 @@ BOOL ReplaceInValidFileName(LPSTR lpf)
         for(j=0; j<sizeof(lpInvalid)-1; j++) { //changed at 1.8.2 from 9 to sizeof()-1
             if (*(lpf+i)==*(lpInvalid+j)) {
                 *(lpf+i)='-';                   //0x2D; check for invalid chars and replace it (return FALSE;)
-            } else if(*(lpf+i)!=0x20&&*(lpf+i)!=0x09) { //At least one non-space,non-tab char needed!
+            } else if (*(lpf+i)!=0x20&&*(lpf+i)!=0x09) { //At least one non-space,non-tab char needed!
                 bLegal=TRUE;
             }
 
@@ -105,12 +108,12 @@ LPSTR   AtPos(LPSTR lpMaster,LPSTR lp,DWORD size)
 
     for(i=0; i<size-nsizelp; i++) {
         for(j=0; j<nsizelp; j++) {
-            if(*(lp+j)!=*(lpMaster+i+j)) {
+            if (*(lp+j)!=*(lpMaster+i+j)) {
                 break;
             }
         }
         //_asm int 3;
-        if(j==nsizelp) {
+        if (j==nsizelp) {
             return lpMaster+i+nsizelp;
         }
     }
@@ -125,10 +128,10 @@ LPSTR   AtPos(LPSTR lpMaster,LPSTR lp,DWORD size)
 //-------------------------------------------------------------
 /*LPVOID    MyHeapAlloc(DWORD type,DWORD size)
 {
-    if((bTurboMode==FALSE)&&((lpMyHeap+size)<(lpMyHeap+MYHEAPSIZE)))
+    if ((bTurboMode==FALSE)&&((lpMyHeap+size)<(lpMyHeap+MYHEAPSIZE)))
     {
         lpMyHeap=lpMyHeap+size;
-        if(type==LPTR)
+        if (type==LPTR)
             ZeroMemory(lpMyHeap,size);
     }
     else
