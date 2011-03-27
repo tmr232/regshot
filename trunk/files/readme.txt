@@ -16,54 +16,54 @@ scanned for changes as well.
 -----------------
 Usage:
 -----------------
-(1)CLICK "1st shot" BUTTON
+(1) Click the "1st shot" button
 It pops up a menu which contains several items:
- (A)"Shot"  to take a snapshot only, and it will not be kept if you exit Regshot program;
- (B)"Shot and save..." to take a snapshot of your registry and save the whole registry to
-    a "hive" file and you can keep it in your hard disk for future use;
- (C)"Load..." to load a "hive" file previous saved.
+ (A) "Shot", to take a snapshot only, and it will not be kept if you exit Regshot program;
+ (B) "Shot and save...", to take a snapshot of your registry and save the whole registry to
+     a "hive" file and you can keep it in your hard disk for future use;
+ (C) "Load...", to load a "hive" file previous saved.
 If you want to monitor your file system, just check the "Scan Dir [dir..]" checkbox
 and input the folder names below it. Note: Regshot has the ability to scan multiple
-folders, just separate them with ";", Regshot also scan the subfolders of the current
+folders, just separate them with ";", Regshot will also scan the subfolders of the current
 folders you entered.
 
-(2)RUN SOME PROGRAMS which may change your windows registry, or it may change the file system
+(2) Run any program that may change your windows registry or the file system
 
-(3)CLICK "2nd shot" BUTTON
+(3) Click the "2nd shot" button
 
-(4)Select your output LOG file type, "text" or "HTML", default is "text"
+(4) Select your output LOG file type, "text" or "HTML", default is "text"
 
-(5)INPUT YOUR COMMENT for this action into the "comment field", e.g.: "Changes made after
-winzip started". COMMENT will only be saved into compare log files not into "hive" files
+(5) Enter your comment for this action into the "comment field", e.g.: "Changes made after
+winzip started". The comment will only be saved into the comparison log files not into "hive" files
 
-(6)CLICK "compare" BUTTON
-Regshot will do the compare job now(auto detect which shot is newer), when it is finished,
-Regshot will automatically load the compare LOG as you defined above, the log files are
+(6) Click the "Compare" button
+Regshot will do the comparison job now (auto detect which shot is newer), when it is finished,
+Regshot will automatically load the comparison log as you defined above, the log files are
 saved  in the directory where "Output path" is defined, default is your Windows Temp Path,
 it was named as the "comment" you input, if the "comment field" is empty or invalid, the
-LOG will be name as "~resxxxx.txt" or "~resxxxx.htm" where "xxxx" is 0000-9999.
+log will be name as "~resxxxx.txt" or "~resxxxx.htm" where "xxxx" is 0000-9999.
 
-(7)CLICK "Clear" BUTTON
-You  will clear the two snapshots(or separately) previous made and begin a new job.
+(7) Click the "Clear" button
+The two snapshots (or separately) previous made will be cleared and you can begin a new job.
 Note: "Clear" does not erase the log files!
 
-(8)TO QUIT Regshot, just hit "Quit" button
+(8) To quit Regshot, just click the "Quit" button
 
-(9)You can change the language of the Regshot at main window, all words are saved in the
+(9) You can change the language of the Regshot at main window, all words are saved in the
 file "language.ini". View it for details!
 
-(10)New to 1.7: regshot.dat now changed to regshot.ini, skip dirs and skip registry keys
-are included. exe size are smaller!
-(11)New to 1.8:
+(10) New to 1.7: regshot.dat now changed to regshot.ini, skip dirs and skip registry keys
+are included. The executable's size is smaller!
+
+(11) New to 1.8:
 File shots are now saved in hive file.
-"UseLongRegHead" option added in regshot.ini to compatible with undoReg(1.46)
+"UseLongRegHead" option added in regshot.ini to compatible with undoReg (1.46)
 "UseLongRegHead=1" means using "HKEY_LOCAL_MACHINE" instead of "HKLM", default 0
 Do not compare shots saved with different "UseLongRegHead" option!
 
 -----------------
 Thanks:
 -----------------
-Special thanks:
 Alexander Romanenko   -- Former space provider! http://www.ist.md/
 Ivan                  -- Former space provider! http://www.digitalnuke.com/
 Toye                  -- Release!
@@ -117,7 +117,7 @@ Copyright 1999-2003,2007 TiANWEi
 Copyright 2004 tulipfan
 Copyright 2007 Belogorokhov Youri
 
-Multi-language translation are the property of their respective owner.
+Multi-language translations are the property of their respective owner.
 
 Regshot is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

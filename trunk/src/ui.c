@@ -102,9 +102,9 @@ VOID    UI_BeforeShot(DWORD id)
 VOID    UI_AfterShot(VOID)
 {
     DWORD   iddef;
-    if(lpHeadLocalMachine1==NULL) {
+    if (lpHeadLocalMachine1==NULL) {
         iddef=IDC_1STSHOT;
-    } else if(lpHeadLocalMachine2==NULL) {
+    } else if (lpHeadLocalMachine2==NULL) {
         iddef=IDC_2NDSHOT;
     } else {
         iddef=IDC_COMPARE;
@@ -138,15 +138,15 @@ VOID    UI_AfterClear(VOID)
 {
     DWORD iddef=0;
     //BOOL  bChk; //used for file scan disable
-    if(lpHeadLocalMachine1==NULL) {
+    if (lpHeadLocalMachine1==NULL) {
         iddef=IDC_1STSHOT;
-    } else if(lpHeadLocalMachine2==NULL) {
+    } else if (lpHeadLocalMachine2==NULL) {
         iddef=IDC_2NDSHOT;
     }
     EnableWindow(GetDlgItem(hWnd,iddef),TRUE);
     EnableWindow(GetDlgItem(hWnd,IDC_COMPARE),FALSE);
 
-    if(lpHeadLocalMachine1==NULL&&lpHeadLocalMachine2==NULL) {
+    if (lpHeadLocalMachine1==NULL&&lpHeadLocalMachine2==NULL) {
         EnableWindow(GetDlgItem(hWnd,IDC_2NDSHOT),FALSE);
         EnableWindow(GetDlgItem(hWnd,IDC_CLEAR1),FALSE);
         //bChk=TRUE;
@@ -170,7 +170,7 @@ VOID    Shot1(VOID)
     lpHeadLocalMachine1=(LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
     lpHeadUsers1=(LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
 
-    if(bUseLongRegHead) { //1.8.1
+    if (bUseLongRegHead) { //1.8.1
         lpHeadLocalMachine1->lpkeyname=MYALLOC(sizeof(LOCALMACHINESTRING_LONG));
         lpHeadUsers1->lpkeyname=MYALLOC(sizeof(USERSSTRING_LONG));
         strcpy(lpHeadLocalMachine1->lpkeyname,LOCALMACHINESTRING_LONG);
@@ -196,7 +196,7 @@ VOID    Shot1(VOID)
     nGettingTime=GetTickCount();
     UpdateCounters(lan_key,lan_value,nGettingKey,nGettingValue);
 
-    if(SendMessage(GetDlgItem(hWnd,IDC_CHECKDIR),BM_GETCHECK,(WPARAM)0,(LPARAM)0)==1) {
+    if (SendMessage(GetDlgItem(hWnd,IDC_CHECKDIR),BM_GETCHECK,(WPARAM)0,(LPARAM)0)==1) {
         size_t nSubExtDirLen;
         DWORD i;
         LPSTR lpSubExtDir;
@@ -208,19 +208,19 @@ VOID    Shot1(VOID)
         lphf=lphftemp=lpHeadFile1; // changed in 1.8
         lpSubExtDir=lpExtDir;
 
-        if(nLengthofStr>0)
+        if (nLengthofStr>0)
             for(i=0; i<=nLengthofStr; i++) {
                 //This is the stupid File Name Detect Routine,[seperate with ";"]
-                if(*(lpExtDir+i)==0x3b||*(lpExtDir+i)==0x00) {
+                if (*(lpExtDir+i)==0x3b||*(lpExtDir+i)==0x00) {
                     *(lpExtDir+i)=0x00;
 
-                    if(*(lpExtDir+i-1)=='\\'&&i>0) {
+                    if (*(lpExtDir+i-1)=='\\'&&i>0) {
                         *(lpExtDir+i-1)=0x00;
                     }
 
-                    if(*lpSubExtDir!=0x00) {
+                    if (*lpSubExtDir!=0x00) {
                         lphf=(LPHEADFILE)MYALLOC0(sizeof(HEADFILE));
-                        if(lpHeadFile1==NULL) {
+                        if (lpHeadFile1==NULL) {
                             lpHeadFile1=lphf;
                         } else {
                             lphftemp->lpnextheadfile=lphf;
@@ -266,7 +266,7 @@ VOID    Shot2(VOID)
     lpHeadLocalMachine2=(LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
     lpHeadUsers2=(LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
 
-    if(bUseLongRegHead) { //1.8.1
+    if (bUseLongRegHead) { //1.8.1
         lpHeadLocalMachine2->lpkeyname=MYALLOC(sizeof(LOCALMACHINESTRING_LONG));
         lpHeadUsers2->lpkeyname=MYALLOC(sizeof(USERSSTRING_LONG));
         strcpy(lpHeadLocalMachine2->lpkeyname,LOCALMACHINESTRING_LONG);
@@ -292,7 +292,7 @@ VOID    Shot2(VOID)
     nGettingTime=GetTickCount();
     UpdateCounters(lan_key,lan_value,nGettingKey,nGettingValue);
 
-    if(SendMessage(GetDlgItem(hWnd,IDC_CHECKDIR),BM_GETCHECK,(WPARAM)0,(LPARAM)0)==1) {
+    if (SendMessage(GetDlgItem(hWnd,IDC_CHECKDIR),BM_GETCHECK,(WPARAM)0,(LPARAM)0)==1) {
         size_t nSubExtDirLen;
         DWORD i;
         LPSTR lpSubExtDir;
@@ -304,19 +304,19 @@ VOID    Shot2(VOID)
         lphf=lphftemp=lpHeadFile1; // changed in 1.8
         lpSubExtDir=lpExtDir;
 
-        if(nLengthofStr>0)
+        if (nLengthofStr>0)
             for(i=0; i<=nLengthofStr; i++) {
                 //This is the stupid File Name Detect Routine,[seperate with ";"]
-                if(*(lpExtDir+i)==0x3b||*(lpExtDir+i)==0x00) {
+                if (*(lpExtDir+i)==0x3b||*(lpExtDir+i)==0x00) {
                     *(lpExtDir+i)=0x00;
 
-                    if(*(lpExtDir+i-1)=='\\'&&i>0) {
+                    if (*(lpExtDir+i-1)=='\\'&&i>0) {
                         *(lpExtDir+i-1)=0x00;
                     }
 
-                    if(*lpSubExtDir!=0x00) {
+                    if (*lpSubExtDir!=0x00) {
                         lphf=(LPHEADFILE)MYALLOC0(sizeof(HEADFILE));
-                        if(lpHeadFile2==NULL) {
+                        if (lpHeadFile2==NULL) {
                             lpHeadFile2=lphf;
                         } else {
                             lphftemp->lpnextheadfile=lphf;

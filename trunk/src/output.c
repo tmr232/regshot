@@ -55,7 +55,7 @@ VOID    WriteHead(u_char * lpstr,DWORD count,BOOL isHTML)
 {
     unsigned char lpcount[8];
     sprintf(lpcount,"%d",count);
-    if(isHTML==TRUE) {
+    if (isHTML==TRUE) {
         WriteFile(hFile,htm_BR,sizeof(htm_BR)-1,&NBW,NULL);
         WriteFile(hFile,htm_TableBegin,sizeof(htm_TableBegin)-1,&NBW,NULL);
         WriteFile(hFile,htm_Td1Begin,sizeof(htm_Td1Begin)-1,&NBW,NULL);
@@ -64,7 +64,7 @@ VOID    WriteHead(u_char * lpstr,DWORD count,BOOL isHTML)
     }
     WriteFile(hFile,lpstr,strlen(lpstr),&NBW,NULL);
     WriteFile(hFile,lpcount,strlen(lpcount),&NBW,NULL);
-    if(isHTML==TRUE) {
+    if (isHTML==TRUE) {
         WriteFile(hFile,htm_Td1Over,sizeof(htm_Td1Over)-1,&NBW,NULL);
         WriteFile(hFile,htm_TableOver,sizeof(htm_TableOver)-1,&NBW,NULL);
     } else {
@@ -80,7 +80,7 @@ VOID    WritePart(LPCOMRESULT lpcomhead,BOOL isHTML,BOOL usecolor)
     size_t n,nLen;
     LPBYTE lpstr;
     LPCOMRESULT lp;
-    if(isHTML) {
+    if (isHTML) {
         WriteFile(hFile,htm_TableBegin,sizeof(htm_TableBegin)-1,&NBW,NULL);
         WriteFile(hFile,htm_Td2Begin,sizeof(htm_Td2Begin)-1,&NBW,NULL);
     }
@@ -88,9 +88,9 @@ VOID    WritePart(LPCOMRESULT lpcomhead,BOOL isHTML,BOOL usecolor)
     for(i=0,lp=lpcomhead; lp!=NULL; i++,lp=lp->lpnextresult) {
         nLen=strlen(lp->lpresult);
         lpstr=lp->lpresult;
-        if(isHTML) {
+        if (isHTML) {
             //1.8.0
-            if(usecolor&&i%2==0) {
+            if (usecolor&&i%2==0) {
                 WriteFile(hFile,htm_s1,sizeof(htm_s1)-1,&NBW,NULL);
             } else {
                 WriteFile(hFile,htm_s2,sizeof(htm_s2)-1,&NBW,NULL);
@@ -104,15 +104,15 @@ VOID    WritePart(LPCOMRESULT lpcomhead,BOOL isHTML,BOOL usecolor)
             lpstr=lpstr+n;
             nLen=nLen-n;
             //WriteFile(hFile,lp->lpresult,strlen(lp->lpresult),&NBW,NULL);
-            if(isHTML) {
+            if (isHTML) {
                 WriteFile(hFile,htm_BR,sizeof(htm_BR)-1,&NBW,NULL);
             }
             //else
             //  WriteFile(hFile,str_CR,sizeof(str_CR)-1,&NBW,NULL);
             // for some reason,txt don't wrap anymore since 1.50e,check below!
         }
-        if(isHTML) {
-            if(usecolor) {
+        if (isHTML) {
+            if (usecolor) {
                 WriteFile(hFile,htm_s3,sizeof(htm_s3)-1,&NBW,NULL);
             }
         } else {
@@ -121,7 +121,7 @@ VOID    WritePart(LPCOMRESULT lpcomhead,BOOL isHTML,BOOL usecolor)
 
 
     }
-    if(isHTML) {
+    if (isHTML) {
         WriteFile(hFile,htm_Td2Over,sizeof(htm_Td2Over)-1,&NBW,NULL);
         WriteFile(hFile,htm_TableOver,sizeof(htm_TableOver)-1,&NBW,NULL);
     }
@@ -132,13 +132,13 @@ VOID    WritePart(LPCOMRESULT lpcomhead,BOOL isHTML,BOOL usecolor)
 //------------------------------------------------------------
 VOID    WriteTitle(LPSTR lph,LPSTR lpb,BOOL isHTML)
 {
-    if(isHTML) {
+    if (isHTML) {
         WriteFile(hFile,htm_TableBegin,sizeof(htm_TableBegin)-1,&NBW,NULL);
         WriteFile(hFile,htm_Td1Begin,sizeof(htm_Td1Begin)-1,&NBW,NULL);
     }
     WriteFile(hFile,lph,strlen(lph),&NBW,NULL);
     WriteFile(hFile,lpb,strlen(lpb),&NBW,NULL);
-    if(isHTML) {
+    if (isHTML) {
         WriteFile(hFile,htm_Td1Over,sizeof(htm_Td1Over)-1,&NBW,NULL);
         WriteFile(hFile,htm_TableOver,sizeof(htm_TableOver)-1,&NBW,NULL);
     } else {

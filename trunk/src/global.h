@@ -34,7 +34,7 @@
 #endif
 #endif  // _MSC_VER
 
-//!!!WARNING!!! HEAP_NO_SERIALIZE mean we can not use this in multithread.
+//!!!WARNING!!! HEAP_NO_SERIALIZE means we can not use this in multithread.
 //added in 1.8.2 to gain a slightly faster speed but it is danger!
 #define USEHEAPALLOC_DANGER
 //#define DEBUGLOG
@@ -205,7 +205,7 @@ DWORD   nGettingValue;
 DWORD   nGettingKey,nComparing,nRegStep,nFileStep,nSavingKey;
 DWORD   nGettingTime,nBASETIME,nBASETIME1;
 DWORD   nGettingFile,nGettingDir,nSavingFile;
-//DWORD nMask=0xf7fd; //not used now ,but should be added
+//DWORD nMask=0xf7fd;   //not used now, but should be added
 //DWORD nRegMessageCount=0;
 DWORD   NBW; //that is: NumberOfBytesWritten;
 
@@ -232,7 +232,7 @@ LPSTR   lpSnapRegsStr,lpSnapFilesStr,lpSnapKey,lpSnapReturn;
 LPDWORD ldwTempStrings;
 
 
-//Former definations used at Dynamic Monitor Engine.Not Used NOW
+//Former definations used at Dynamic Monitor Engine. Not Used NOW
 //#define DIOCPARAMSSIZE    20      //4+4+4+8 bytes DIOCParams size!
 //#define MAXLISTBOXLEN 1024
 //#define RING3TDLEN        8       //ring3 td name length

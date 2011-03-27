@@ -19,7 +19,7 @@ rem *  along with Regshot; if not, write to the Free Software
 rem *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 rem *
 rem *
-rem *  build_wdk.cmd
+rem *  build_wdk.bat
 rem *    Batch file "wrapper" for makefile.mak, used to build Regshot with WDK
 rem ******************************************************************************
 
