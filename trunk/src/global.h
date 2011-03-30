@@ -92,71 +92,71 @@
 
 
 // Struct used for Windows Registry Key
-struct  _KEYCONTENT {
-    LPSTR   lpkeyname;                          // Pointer to key's name
-    struct  _VALUECONTENT FAR * lpfirstvalue;   // Pointer to key's first value
-    struct  _KEYCONTENT FAR * lpfirstsubkey;    // Pointer to key's first subkey
-    struct  _KEYCONTENT FAR * lpbrotherkey;     // Pointer to key's brother
-    struct  _KEYCONTENT FAR * lpfatherkey;      // Pointer to key's father
-    BYTE    bkeymatch;                          // Flag used at comparing
+struct _KEYCONTENT {
+    LPSTR  lpkeyname;                          // Pointer to key's name
+    struct _VALUECONTENT FAR * lpfirstvalue;   // Pointer to key's first value
+    struct _KEYCONTENT FAR * lpfirstsubkey;    // Pointer to key's first subkey
+    struct _KEYCONTENT FAR * lpbrotherkey;     // Pointer to key's brother
+    struct _KEYCONTENT FAR * lpfatherkey;      // Pointer to key's father
+    BYTE   bkeymatch;                          // Flag used at comparing
 
 };
 typedef struct _KEYCONTENT KEYCONTENT,FAR * LPKEYCONTENT;
 
 
 // Struct used for Windows Registry Value
-struct  _VALUECONTENT {
-    DWORD   typecode;                           // Type of value [DWORD,STRING...]
-    DWORD   datasize;                           // Value data size in bytes
-    LPSTR   lpvaluename;                        // Pointer to value name
-    LPBYTE  lpvaluedata;                        // Pointer to value data
-    struct  _VALUECONTENT FAR * lpnextvalue;    // Pointer to value's brother
-    struct  _KEYCONTENT FAR * lpfatherkey;      // Pointer to value's father[Key]
-    BYTE    bvaluematch;                        // Flag used at comparing
+struct _VALUECONTENT {
+    DWORD  typecode;                           // Type of value [DWORD,STRING...]
+    DWORD  datasize;                           // Value data size in bytes
+    LPSTR  lpvaluename;                        // Pointer to value name
+    LPBYTE lpvaluedata;                        // Pointer to value data
+    struct _VALUECONTENT FAR * lpnextvalue;    // Pointer to value's brother
+    struct _KEYCONTENT FAR * lpfatherkey;      // Pointer to value's father[Key]
+    BYTE   bvaluematch;                        // Flag used at comparing
 };
 typedef struct _VALUECONTENT VALUECONTENT,FAR * LPVALUECONTENT;
 
 
 // Struct used for Windows File System
-struct  _FILECONTENT {
-    LPSTR   lpfilename;                         // Pointer to filename
-    DWORD   writetimelow;                       // File write time [LOW  DWORD]
-    DWORD   writetimehigh;                      // File write time [HIGH DWORD]
-    DWORD   filesizelow;                        // File size [LOW  DWORD]
-    DWORD   filesizehigh;                       // File size [HIGH DWORD]
-    DWORD   fileattr;                           // File attributes
-    DWORD   cksum;                              // File checksum(plan to add in 1.8 not used now)
-    struct  _FILECONTENT FAR * lpfirstsubfile;  // Pointer to files[DIRS] first sub file
-    struct  _FILECONTENT FAR * lpbrotherfile;   // Pointer to files[DIRS] brother
-    struct  _FILECONTENT FAR * lpfatherfile;    // Pointer to files father
-    BYTE    bfilematch;                         // Flag used at comparing
+struct _FILECONTENT {
+    LPSTR  lpfilename;                         // Pointer to filename
+    DWORD  writetimelow;                       // File write time [LOW  DWORD]
+    DWORD  writetimehigh;                      // File write time [HIGH DWORD]
+    DWORD  filesizelow;                        // File size [LOW  DWORD]
+    DWORD  filesizehigh;                       // File size [HIGH DWORD]
+    DWORD  fileattr;                           // File attributes
+    DWORD  cksum;                              // File checksum(plan to add in 1.8 not used now)
+    struct _FILECONTENT FAR * lpfirstsubfile;  // Pointer to files[DIRS] first sub file
+    struct _FILECONTENT FAR * lpbrotherfile;   // Pointer to files[DIRS] brother
+    struct _FILECONTENT FAR * lpfatherfile;    // Pointer to files father
+    BYTE   bfilematch;                         // Flag used at comparing
 };
 typedef struct _FILECONTENT FILECONTENT,FAR * LPFILECONTENT;
 
 
 // Struct used for file tree comparison
 /* <= 1.7.3
-struct  _HEADFILE
+struct _HEADFILE
 {
     LPFILECONTENT   lpfilecontent1;             // Pointer to file content at 1st shot
     LPFILECONTENT   lpfilecontent2;             // Pointer to file content at 2nd shot
-    struct _HEADFILE    FAR *   lpnextheadfile; // Pointer to next headfile struc
+    struct _HEADFILE FAR * lpnextheadfile;      // Pointer to next headfile struc
 };
 */
 
 
 // Adjusted for filecontent saving. 1.8
-struct  _HEADFILE {
-    struct _HEADFILE    FAR *   lpnextheadfile; // Pointer to next headfile struc
+struct _HEADFILE {
+    struct _HEADFILE FAR * lpnextheadfile;      // Pointer to next headfile struc
     LPFILECONTENT   lpfilecontent;              // Pointer to filecontent
 };
-typedef struct  _HEADFILE   HEADFILE,FAR * LPHEADFILE;
+typedef struct  _HEADFILE HEADFILE,FAR * LPHEADFILE;
 
 
 // Struct used for comparing result output
-struct  _COMRESULT {
-    LPSTR   lpresult;                           // Pointer to result string
-    struct  _COMRESULT FAR * lpnextresult;      // Pointer to next _COMRESULT
+struct _COMRESULT {
+    LPSTR  lpresult;                           // Pointer to result string
+    struct _COMRESULT FAR * lpnextresult;      // Pointer to next _COMRESULT
 };
 typedef struct _COMRESULT COMRESULT,FAR * LPCOMRESULT;
 
