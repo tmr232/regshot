@@ -289,7 +289,7 @@ BOOL GetLanguageStrings(HWND hDlg)
         WritePrivateProfileString(str_SectionCurrent,str_SectionCurrent,lpCurrentLanguage,lpIni);
         ZeroMemory(lpFreeStrings,SIZEOF_FREESTRINGS);
         GetPrivateProfileSection(lpCurrentLanguage,lpFreeStrings,SIZEOF_FREESTRINGS,lpIni);
-        for (i = 1,lp = ldwTempStrings; i<47; i++) {
+        for (i = 1,lp = ldwTempStrings; i < 47; i++) {
 
             sprintf(lpIniKey,"%d%s",i,"=");
             // pointer returned was pointed to char just after "="
@@ -300,7 +300,7 @@ BOOL GetLanguageStrings(HWND hDlg)
                 *(lp+i-1) = (DWORD)lan_default[i-1];
             }
 
-            if (i >= 28 && i<41 && i != 34) {
+            if (i >= 28 && i < 41 && i != 34) {
                 SetDlgItemText(hDlg,ID_BASE+3+i-28,(LPSTR)(*(lp+i-1)));
             }
 

@@ -146,7 +146,7 @@ LPSTR TransData(LPVALUECONTENT lpValueContent, DWORD type)
             // Be sure to add below line outside of following "if",
             // for that GlobalFree(lp) must had lp already located!
             lpvaluedata = MYALLOC0(size+5);// 5 is enough
-            for (c = 0; c<size; c++) {
+            for (c = 0; c < size; c++) {
                 if (*((LPBYTE)(lpValueContent->lpvaluedata+c)) == 0) {
                     if (*((LPBYTE)(lpValueContent->lpvaluedata+c+1)) != 0) {
                         *((LPBYTE)(lpValueContent->lpvaluedata+c)) = 0x20;    // ???????
@@ -170,7 +170,7 @@ LPSTR TransData(LPVALUECONTENT lpValueContent, DWORD type)
             lpvaluedata = MYALLOC0(3*(size+1));   // 3*(size+1) is enough
             *lpvaluedata = 0x3a;
             // for the resttype lengthofvaluedata doesn't contains the 0!
-            for (c = 0; c<size; c++) {
+            for (c = 0; c < size; c++) {
                 sprintf(lpvaluedata+3*c+1," %02X",*(lpValueContent->lpvaluedata+c));
             }
     }
@@ -582,7 +582,7 @@ VOID * CompareFirstSubKey(LPKEYCONTENT lpHead1, LPKEYCONTENT lpHead2)
                                         // Same valuename
                                         if (lpvalue1->datasize == lpvalue2->datasize) {
                                             // Same size of valuedata
-                                            /*for (i = 0;i<lpvalue1->datasize;i++)
+                                            /*for (i = 0; i < lpvalue1->datasize;i++)
                                             {
                                                 if (*((lpvalue1->lpvaluedata)+i) != *((lpvalue2->lpvaluedata)+i))
                                                     break;
@@ -820,7 +820,7 @@ BOOL CompareShots(void)
     hFile = CreateFile(lpDestFileName,GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
         DWORD   filetail = 0;
-        for (filetail = 0; filetail<MAXAMOUNTOFFILE; filetail++) {
+        for (filetail = 0; filetail < MAXAMOUNTOFFILE; filetail++) {
             sprintf(lpDestFileName+nLengthofStr,"_%04d",filetail);
             //*(lpDestFileName+nLengthofStr+5) = 0x00;
             strcpy(lpDestFileName+nLengthofStr+5,lpExt);

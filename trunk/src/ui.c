@@ -31,10 +31,10 @@ extern LPSTR lan_menushotsave;
 extern LPSTR lan_menuload;
 
 
-char USERSSTRING_LONG[] = "HKEY_USERS";       // 1.6 using long name, so in 1.8.1 an option in regshot.ini "UseLongRegHead" control this
+char USERSSTRING_LONG[] = "HKEY_USERS";         // 1.6 using long name, so in 1.8.1 an option in regshot.ini "UseLongRegHead" control this
 char LOCALMACHINESTRING_LONG[] = "HKEY_LOCAL_MACHINE";
 char USERSSTRING[] = "HKU"; // = "HKEY_USERS";  // 1.7 using short name tfx, a good idea
-char LOCALMACHINESTRING[] = "HKLM";           // = "HKEY_LOCAL_MACHINE";
+char LOCALMACHINESTRING[] = "HKLM";             // = "HKEY_LOCAL_MACHINE";
 
 
 void ShowHideCounters(int nCmdShow) // 1.8.2
@@ -53,7 +53,7 @@ VOID InitProgressBar(VOID)
     nComparing = 0;
     nRegStep = nGettingKey/MAXPBPOSITION;
     nFileStep = nGettingFile/MAXPBPOSITION;
-    ShowHideCounters(SW_HIDE); // 1.8.2
+    ShowHideCounters(SW_HIDE);  // 1.8.2
     SendDlgItemMessage(hWnd,IDC_PBCOMPARE,PBM_SETRANGE,(WPARAM)0,MAKELPARAM(0,MAXPBPOSITION));
     SendDlgItemMessage(hWnd,IDC_PBCOMPARE,PBM_SETPOS,(WPARAM)0,(LPARAM)0);
     SendDlgItemMessage(hWnd,IDC_PBCOMPARE,PBM_SETSTEP,(WPARAM)1,(LPARAM)0);
@@ -61,7 +61,6 @@ VOID InitProgressBar(VOID)
 }
 
 
-////////////////////////////////////////////////////////////////// renamed from showcounters() at 1.8.2
 void UpdateCounters(LPSTR title1, LPSTR title2, DWORD count1, DWORD count2)
 {
     //nGettingTime = GetTickCount();
@@ -138,7 +137,7 @@ VOID UI_BeforeClear(VOID)
 VOID UI_AfterClear(VOID)
 {
     DWORD   iddef = 0;
-    //BOOL    bChk; // used for file scan disable
+    //BOOL    bChk;   // used for file scan disable
 
     if (lpHeadLocalMachine1 == NULL) {
         iddef = IDC_1STSHOT;
@@ -211,10 +210,8 @@ VOID Shot1(VOID)
         lphf = lphftemp = lpHeadFile1;  // changed in 1.8
         lpSubExtDir = lpExtDir;
 
-        if (nLengthofStr>0)
+        if (nLengthofStr > 0)
             for (i = 0; i <= nLengthofStr; i++) {
-                size_t  nSubExtDirLen;
-
                 // This is the stupid filename detection routine, [seperate with ";"]
                 if (*(lpExtDir+i) == 0x3b || *(lpExtDir+i) == 0x00) {
                     *(lpExtDir+i) = 0x00;
@@ -224,6 +221,8 @@ VOID Shot1(VOID)
                     }
 
                     if (*lpSubExtDir != 0x00) {
+                        size_t  nSubExtDirLen;
+
                         lphf = (LPHEADFILE)MYALLOC0(sizeof(HEADFILE));
                         if (lpHeadFile1 == NULL) {
                             lpHeadFile1 = lphf;
@@ -309,10 +308,8 @@ VOID Shot2(VOID)
         lphf = lphftemp = lpHeadFile1;  // changed in 1.8
         lpSubExtDir = lpExtDir;
 
-        if (nLengthofStr>0)
+        if (nLengthofStr > 0)
             for (i = 0; i <= nLengthofStr; i++) {
-                size_t  nSubExtDirLen;
-
                 // This is the stupid filename detection routine, [seperate with ";"]
                 if (*(lpExtDir+i) == 0x3b || *(lpExtDir+i) == 0x00) {
                     *(lpExtDir+i) = 0x00;
@@ -322,6 +319,8 @@ VOID Shot2(VOID)
                     }
 
                     if (*lpSubExtDir != 0x00) {
+                        size_t  nSubExtDirLen;
+
                         lphf = (LPHEADFILE)MYALLOC0(sizeof(HEADFILE));
                         if (lpHeadFile2 == NULL) {
                             lpHeadFile2 = lphf;

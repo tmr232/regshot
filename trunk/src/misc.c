@@ -81,10 +81,10 @@ BOOL ReplaceInValidFileName(LPSTR lpf)
     BOOL    bLegal = FALSE;
     nLen = strlen(lpf);
 
-    for (i = 0; i<nLen; i++) {
-        for (j = 0; j<sizeof(lpInvalid)-1; j++) { // changed at 1.8.2 from 9 to sizeof()-1
+    for (i = 0; i < nLen; i++) {
+        for (j = 0; j < sizeof(lpInvalid)-1; j++) { // changed at 1.8.2 from 9 to sizeof()-1
             if (*(lpf+i) == *(lpInvalid+j)) {
-                *(lpf+i) = '-';                   // 0x2D; check for invalid chars and replace it (return FALSE;)
+                *(lpf+i) = '-';                     // 0x2D; check for invalid chars and replace it (return FALSE;)
             } else if (*(lpf+i) != 0x20 && *(lpf+i) != 0x09) { // At least one non-space, non-tab char needed!
                 bLegal = TRUE;
             }
@@ -108,8 +108,8 @@ LPSTR AtPos(LPSTR lpMaster, LPSTR lp, DWORD size)
         return NULL;
     }
 
-    for (i = 0; i<size-nsizelp; i++) {
-        for (j = 0; j<nsizelp; j++) {
+    for (i = 0; i < size-nsizelp; i++) {
+        for (j = 0; j < nsizelp; j++) {
             if (*(lp+j) != *(lpMaster+i+j)) {
                 break;
             }
@@ -129,7 +129,7 @@ LPSTR AtPos(LPSTR lpMaster, LPSTR lp, DWORD size)
 //-------------------------------------------------------------
 /*LPVOID MyHeapAlloc(DWORD type, DWORD size)
 {
-    if ((bTurboMode == FALSE) && ((lpMyHeap+size)<(lpMyHeap+MYHEAPSIZE)))
+    if ((bTurboMode == FALSE) && ((lpMyHeap+size) < (lpMyHeap+MYHEAPSIZE)))
     {
         lpMyHeap = lpMyHeap+size;
         if (type == LPTR)
