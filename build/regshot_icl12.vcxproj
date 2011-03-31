@@ -73,24 +73,28 @@
     <OutDir>..\bin\ICL12\$(Configuration)_$(Platform)\</OutDir>
     <IntDir>..\bin\ICL12\$(Configuration)_$(Platform)\obj\</IntDir>
     <TargetName>Regshot</TargetName>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\bin\ICL12\$(Configuration)_$(Platform)\</OutDir>
     <IntDir>..\bin\ICL12\$(Configuration)_$(Platform)\obj\</IntDir>
     <TargetName>Regshot</TargetName>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\ICL12\$(Configuration)_$(Platform)\</OutDir>
     <IntDir>..\bin\ICL12\$(Configuration)_$(Platform)\obj\</IntDir>
     <TargetName>Regshot</TargetName>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\ICL12\$(Configuration)_$(Platform)\</OutDir>
     <IntDir>..\bin\ICL12\$(Configuration)_$(Platform)\obj\</IntDir>
     <TargetName>Regshot</TargetName>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -98,14 +102,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Manifest>
-      <AdditionalManifestFiles>..\src\RegShot.exe.manifest</AdditionalManifestFiles>
-    </Manifest>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
@@ -116,6 +118,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WIN64;_DEBUG;_WINDOWS</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -124,9 +127,6 @@
     <ResourceCompile>
       <PreprocessorDefinitions>_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
-    <Manifest>
-      <AdditionalManifestFiles>..\src\RegShot.exe.manifest</AdditionalManifestFiles>
-    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -136,6 +136,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <GenerateAlternateCodePaths>SSSE3</GenerateAlternateCodePaths>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,9 +146,6 @@
       <LargeAddressAware>true</LargeAddressAware>
       <MergeSections>.rdata=.text</MergeSections>
     </Link>
-    <Manifest>
-      <AdditionalManifestFiles>..\src\RegShot.exe.manifest</AdditionalManifestFiles>
-    </Manifest>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -162,6 +160,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <DisableSpecificWarnings>4267</DisableSpecificWarnings>
       <GenerateAlternateCodePaths>SSSE3</GenerateAlternateCodePaths>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -175,9 +174,6 @@
       <PreprocessorDefinitions>_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ResourceCompile>
-    <Manifest>
-      <AdditionalManifestFiles>..\src\RegShot.exe.manifest</AdditionalManifestFiles>
-    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\global.h" />
@@ -198,6 +194,9 @@
     <ClCompile Include="..\src\setup.c" />
     <ClCompile Include="..\src\ui.c" />
     <ClCompile Include="..\src\winmain.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="..\src\res\RegShot.exe.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

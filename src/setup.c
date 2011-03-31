@@ -43,7 +43,7 @@ BOOL GetSnapRegs(HWND hDlg) // tfx 取配置文件信息
     lpSnapRegs = MYALLOC0(sizeof(LPSTR)*MAXREGSHOT);
     lpSnapRegsStr = MYALLOC0(SIZEOF_REGSHOT);
     if (GetPrivateProfileSection(INI_SKIPREGKEY,lpSnapRegsStr,SIZEOF_REGSHOT,lpRegshotIni)>0) {
-        for (i = 0; i<MAXREGSHOT-1; i++) {
+        for (i = 0; i < MAXREGSHOT-1; i++) {
             sprintf(lpSnapKey,"%d%s",i," = ");
             if ((lpSnapReturn = AtPos(lpSnapRegsStr,lpSnapKey,SIZEOF_REGSHOT)) != NULL) {
                 *(lpSnapRegs+i) = (DWORD)lpSnapReturn;
@@ -57,7 +57,7 @@ BOOL GetSnapRegs(HWND hDlg) // tfx 取配置文件信息
     lpSnapFiles = MYALLOC0(sizeof(LPSTR)*MAXREGSHOT);
     lpSnapFilesStr = MYALLOC0(SIZEOF_REGSHOT);
     if (GetPrivateProfileSection(INI_SKIPDIR,lpSnapFilesStr,SIZEOF_REGSHOT,lpRegshotIni)) {
-        for (i = 0; i<MAXREGSHOT-1; i++) {
+        for (i = 0; i < MAXREGSHOT-1; i++) {
             sprintf(lpSnapKey,"%d%s",i," = ");
             if ((lpSnapReturn = AtPos(lpSnapFilesStr,lpSnapKey,SIZEOF_REGSHOT)) != NULL) {
                 *(lpSnapFiles+i) = (DWORD)lpSnapReturn;

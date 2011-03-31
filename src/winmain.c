@@ -384,7 +384,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         nLengthofStr = GetDlgItemText(hDlg,IDC_EDITDIR,lpExtDir,EXTDIRLEN+2);
                         nWholeLen = nLengthofStr+strlen(BrowseInfo1.pszDisplayName);
 
-                        if (nWholeLen<EXTDIRLEN+1) {
+                        if (nWholeLen < EXTDIRLEN+1) {
                             strcat(lpExtDir,";");
                             strcat(lpExtDir,BrowseInfo1.pszDisplayName);
 

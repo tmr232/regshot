@@ -100,7 +100,7 @@ VOID WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor)
         }
 
         for (n = 0; nLen>0;) {
-            nLen<HTMLWRAPLENGTH? (n = nLen):(n = HTMLWRAPLENGTH);
+            nLen < HTMLWRAPLENGTH? (n = nLen):(n = HTMLWRAPLENGTH);
 
             WriteFile(hFile,lpstr,n,&NBW,NULL);
             lpstr = lpstr+n;
