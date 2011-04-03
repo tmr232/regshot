@@ -125,7 +125,7 @@ LPSTR AtPos(LPSTR lpMaster, LPSTR lp, DWORD size)
 
 
 //-------------------------------------------------------------
-// Once, I think about to use own memory allocation method
+// Once, I thought about using own memory allocation method
 //-------------------------------------------------------------
 /*LPVOID MyHeapAlloc(DWORD type, DWORD size)
 {

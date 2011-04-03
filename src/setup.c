@@ -112,7 +112,7 @@ BOOL SetSnapRegs(HWND hDlg) // tfx 保存信息到配置文件
 
     // 1.8.2, someone might not want to create a regshot.ini when there isn't one. :O
     hTest = CreateFile(lpRegshotIni,GENERIC_READ | GENERIC_WRITE,
-                       FILE_SHARE_READ | FILE_SHARE_WRITE,  NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
+                       FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hTest == INVALID_HANDLE_VALUE) {
         return FALSE;
     }
