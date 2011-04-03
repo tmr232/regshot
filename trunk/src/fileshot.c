@@ -21,7 +21,7 @@
 
 #include "global.h"
 // ISDIR, ISFILE added in 1.8.0
-#define ISDIR(x) ( (x&FILE_ATTRIBUTE_DIRECTORY) != 0 )
+#define ISDIR(x)  ( (x&FILE_ATTRIBUTE_DIRECTORY) != 0 )
 #define ISFILE(x) ( (x&FILE_ATTRIBUTE_DIRECTORY) == 0 )
 extern u_char * lan_dir;
 extern u_char * lan_file;
