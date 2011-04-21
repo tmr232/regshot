@@ -64,14 +64,14 @@ LPSTR GetWholeKeyName(LPKEYCONTENT lpKeyContent)
     size_t  nLen = 0;
 
     for (lpf = lpKeyContent; lpf != NULL; lpf = lpf->lpfatherkey) {
-        nLen += strlen(lpf->lpkeyname)+1;
+        nLen += strlen(lpf->lpkeyname) + 1;
     }
     if (nLen == 0) {
         nLen++;
     }
     lpName = MYALLOC(nLen);
 
-    lptail = lpName+nLen-1;
+    lptail = lpName+nLen - 1;
     *lptail = 0x00;
 
     for (lpf = lpKeyContent; lpf != NULL; lpf = lpf->lpfatherkey) {
@@ -97,13 +97,13 @@ LPSTR GetWholeValueName(LPVALUECONTENT lpValueContent)
     LPSTR   lptail;
 
     nLen = strlen(lpValueContent->lpvaluename);
-    nWholeLen = nLen+1;
+    nWholeLen = nLen + 1;
     for (lpf = lpValueContent->lpfatherkey; lpf != NULL; lpf = lpf->lpfatherkey) {
-        nWholeLen += strlen(lpf->lpkeyname)+1;
+        nWholeLen += strlen(lpf->lpkeyname) + 1;
     }
 
     lpName = MYALLOC(nWholeLen);
-    lptail = lpName+nWholeLen-1;
+    lptail = lpName + nWholeLen - 1;
 
     strcpy(lptail -= nLen,lpValueContent->lpvaluename);
     *--lptail = '\\'; // 0x5c = '\\'
@@ -133,7 +133,7 @@ LPSTR TransData(LPVALUECONTENT lpValueContent, DWORD type)
         case REG_SZ:
             // case REG_EXPAND_SZ: Not used any more, they all included in [default],
             // because some non-regular value would corrupt this.
-            lpvaluedata = MYALLOC0(size+5); // 5 is enough
+            lpvaluedata = MYALLOC0(size + 5);    // 5 is enough
             strcpy(lpvaluedata,": \"");
             if (lpValueContent->lpvaluedata != NULL) {
                 strcat(lpvaluedata,lpValueContent->lpvaluedata);
@@ -145,17 +145,17 @@ LPSTR TransData(LPVALUECONTENT lpValueContent, DWORD type)
         case REG_MULTI_SZ:
             // Be sure to add below line outside of following "if",
             // for that GlobalFree(lp) must had lp already located!
-            lpvaluedata = MYALLOC0(size+5);// 5 is enough
+            lpvaluedata = MYALLOC0(size + 5);    // 5 is enough
             for (c = 0; c < size; c++) {
-                if (*((LPBYTE)(lpValueContent->lpvaluedata+c)) == 0) {
-                    if (*((LPBYTE)(lpValueContent->lpvaluedata+c+1)) != 0) {
-                        *((LPBYTE)(lpValueContent->lpvaluedata+c)) = 0x20;    // ???????
+                if (*((LPBYTE)(lpValueContent->lpvaluedata + c)) == 0) {
+                    if (*((LPBYTE)(lpValueContent->lpvaluedata + c + 1)) != 0) {
+                        *((LPBYTE)(lpValueContent->lpvaluedata + c)) = 0x20;    // ???????
                     } else {
                         break;
                     }
                 }
             }
-            //*((LPBYTE)(lpValueContent->lpvaluedata+size)) = 0x00;   // for some illegal multisz
+            //*((LPBYTE)(lpValueContent->lpvaluedata + size)) = 0x00;   // for some illegal multisz
             strcpy(lpvaluedata,": '");
             strcat(lpvaluedata,lpValueContent->lpvaluedata);
             strcat(lpvaluedata,"'");
@@ -167,11 +167,11 @@ LPSTR TransData(LPVALUECONTENT lpValueContent, DWORD type)
             sprintf(lpvaluedata,"%s%08X",": 0x",*(LPDWORD)(lpValueContent->lpvaluedata));
             break;
         default :
-            lpvaluedata = MYALLOC0(3*(size+1));   // 3*(size+1) is enough
+            lpvaluedata = MYALLOC0(3*(size + 1));   // 3*(size + 1) is enough
             *lpvaluedata = 0x3a;
             // for the resttype lengthofvaluedata doesn't contains the 0!
             for (c = 0; c < size; c++) {
-                sprintf(lpvaluedata+3*c+1," %02X",*(lpValueContent->lpvaluedata+c));
+                sprintf(lpvaluedata + 3*c + 1," %02X",*(lpValueContent->lpvaluedata+c));
             }
     }
     return lpvaluedata;
@@ -192,7 +192,7 @@ LPSTR GetWholeValueData(LPVALUECONTENT lpValueContent)
         case REG_SZ:
         case REG_EXPAND_SZ:
             if (lpValueContent->lpvaluedata != NULL) {
-                if (size == (DWORD)strlen(lpValueContent->lpvaluedata)+1) {
+                if (size == (DWORD)strlen(lpValueContent->lpvaluedata) + 1) {
                     lpvaluedata = TransData(lpValueContent,REG_SZ);
                 } else {
                     lpvaluedata = TransData(lpValueContent,REG_BINARY);
@@ -204,11 +204,11 @@ LPSTR GetWholeValueData(LPVALUECONTENT lpValueContent)
         case REG_MULTI_SZ:
             if (*((LPBYTE)(lpValueContent->lpvaluedata)) != 0x00) {
                 for (c = 0;; c++) {
-                    if (*((LPWORD)(lpValueContent->lpvaluedata+c)) == 0) {
+                    if (*((LPWORD)(lpValueContent->lpvaluedata + c)) == 0) {
                         break;
                     }
                 }
-                if (size == c+2) {
+                if (size == c + 2) {
                     lpvaluedata = TransData(lpValueContent,REG_MULTI_SZ);
                 } else {
                     lpvaluedata = TransData(lpValueContent,REG_BINARY);
@@ -309,7 +309,7 @@ VOID LogToMem(DWORD actiontype, LPDWORD lpcount, LPVOID lp)
 
             lpname = GetWholeValueName(lp);
             lpdata = GetWholeValueData(lp);
-            lpall = MYALLOC(strlen(lpname)+strlen(lpdata)+2);
+            lpall = MYALLOC(strlen(lpname) + strlen(lpdata) + 2);
             // do not use:wsprintf(lpall,"%s%s",lpname,lpdata); !!! strlen limit!
             strcpy(lpall,lpname);
             strcat(lpall,lpdata);
@@ -584,7 +584,7 @@ VOID * CompareFirstSubKey(LPKEYCONTENT lpHead1, LPKEYCONTENT lpHead2)
                                             // Same size of valuedata
                                             /*for (i = 0; i < lpvalue1->datasize;i++)
                                             {
-                                                if (*((lpvalue1->lpvaluedata)+i) != *((lpvalue2->lpvaluedata)+i))
+                                                if (*((lpvalue1->lpvaluedata) + i) != *((lpvalue2->lpvaluedata)+i))
                                                     break;
                                             }
                                             if (i == lpvalue1->datasize)*/
@@ -801,9 +801,9 @@ BOOL CompareShots(void)
 
     nLengthofStr = strlen(lpOutputpath);
 
-    if (nLengthofStr>0 && *(lpOutputpath+nLengthofStr-1) != '\\') {
-        *(lpOutputpath+nLengthofStr) = '\\';
-        *(lpOutputpath+nLengthofStr+1) = 0x00;    // bug found by "itschy" <itschy@lycos.de> 1.61d->1.61e
+    if (nLengthofStr > 0 && *(lpOutputpath + nLengthofStr - 1) != '\\') {
+        *(lpOutputpath + nLengthofStr) = '\\';
+        *(lpOutputpath + nLengthofStr + 1) = 0x00;    // bug found by "itschy" <itschy@lycos.de> 1.61d->1.61e
         nLengthofStr++;
     }
     strcpy(lpDestFileName,lpOutputpath);
@@ -820,10 +820,11 @@ BOOL CompareShots(void)
     hFile = CreateFile(lpDestFileName,GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
         DWORD   filetail = 0;
+
         for (filetail = 0; filetail < MAXAMOUNTOFFILE; filetail++) {
             sprintf(lpDestFileName+nLengthofStr,"_%04d",filetail);
-            //*(lpDestFileName+nLengthofStr+5) = 0x00;
-            strcpy(lpDestFileName+nLengthofStr+5,lpExt);
+            //*(lpDestFileName+nLengthofStr + 5) = 0x00;
+            strcpy(lpDestFileName + nLengthofStr + 5,lpExt);
 
             hFile = CreateFile(lpDestFileName,GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,CREATE_NEW,FILE_ATTRIBUTE_NORMAL,NULL);
             if (hFile == INVALID_HANDLE_VALUE) {
@@ -948,7 +949,7 @@ BOOL CompareShots(void)
         WritePart(lpDIRMODIHEAD,isHTML,FALSE);
     }
 
-    nTotal = nKEYADD+nKEYDEL+nVALADD+nVALDEL+nVALMODI+nFILEADD+nFILEDEL+nFILEMODI+nDIRADD+nDIRDEL+nDIRMODI;
+    nTotal = nKEYADD + nKEYDEL + nVALADD + nVALDEL + nVALMODI + nFILEADD + nFILEDEL  +nFILEMODI + nDIRADD + nDIRDEL + nDIRMODI;
     if (isHTML == TRUE) {
         WriteHtmlbr();
     }
@@ -1010,9 +1011,9 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
             ) != ERROR_SUCCESS) {
         return ;
     }
-    LengthOfLongestSubkeyName = LengthOfLongestSubkeyName*2+3;   // yeah, maybe x+1 is enough! x = chars
-    LengthOfLongestValueName  = LengthOfLongestValueName*2+3;    // yeah, maybe x+1 is enough! x = chars
-    LengthOfLongestValueData  = LengthOfLongestValueData+1;
+    LengthOfLongestSubkeyName = LengthOfLongestSubkeyName * 2 + 3;   // yeah, maybe x+1 is enough! x = chars
+    LengthOfLongestValueName  = LengthOfLongestValueName * 2 + 3;    // yeah, maybe x+1 is enough! x = chars
+    LengthOfLongestValueData  = LengthOfLongestValueData + 1;
     lpValueName = MYALLOC(LengthOfLongestValueName);
     lpValueData = MYALLOC(LengthOfLongestValueData);
 
@@ -1049,13 +1050,13 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
         lpValueContent->typecode = TypeCode;
         lpValueContent->datasize = LengthOfValueData;
         lpValueContent->lpfatherkey = lpFatherKeyContent;
-        lpValueContent->lpvaluename = MYALLOC(strlen(lpValueName)+1);
+        lpValueContent->lpvaluename = MYALLOC(strlen(lpValueName) + 1);
         strcpy(lpValueContent->lpvaluename,lpValueName);
 
         if (LengthOfValueData != 0) {
             lpValueContent->lpvaluedata = MYALLOC(LengthOfValueData);
             CopyMemory(lpValueContent->lpvaluedata,lpValueData,LengthOfValueData);
-            //*(lpValueContent->lpvaluedata+LengthOfValueData) = 0x00;
+            //*(lpValueContent->lpvaluedata + LengthOfValueData) = 0x00;
         }
         nGettingValue++;
 
@@ -1093,7 +1094,7 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
             lpKeyContentLast->lpbrotherkey = lpKeyContent;
         }
         lpKeyContentLast = lpKeyContent;
-        lpKeyContent->lpkeyname = MYALLOC(strlen(lpKeyName)+1);
+        lpKeyContent->lpkeyname = MYALLOC(strlen(lpKeyName) + 1);
         strcpy(lpKeyContent->lpkeyname,lpKeyName);
         lpKeyContent->lpfatherkey = lpFatherKeyContent;
         //DebugLog("debug_getkey.log",lpKeyName,hWnd,TRUE);
@@ -1145,13 +1146,13 @@ VOID SaveRegKey(LPKEYCONTENT lpKeyContent, DWORD nFPCurrentFatherKey, DWORD nFPC
     LPVALUECONTENT lpv;
 
 
-    nLenPlus1 = strlen(lpKeyContent->lpkeyname)+1;                          // get len+1
+    nLenPlus1 = strlen(lpKeyContent->lpkeyname) + 1;                        // get len+1
     nFPHeader = SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);          // save head fp
-    nFPTemp4Write = nFPHeader+21;                                           // 5*4+1
+    nFPTemp4Write = nFPHeader + 21;                                         // 5*4+1
     WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);                    // save the location of lpkeyname
-    nFPTemp4Write = (lpKeyContent->lpfirstvalue != NULL) ? (nFPHeader+21+nLenPlus1):0;          // We write lpkeyname plus a "\0"
+    nFPTemp4Write = (lpKeyContent->lpfirstvalue != NULL) ? (nFPHeader + 21 + nLenPlus1):0;    // We write lpkeyname plus a "\0"
     WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);                    // save the location of lpfirstvalue
-    WriteFile(hFileWholeReg,(LPBYTE)lpKeyContent+8,8,&NBW,NULL);            // save lpfirstsubkey and lpbrotherkey
+    WriteFile(hFileWholeReg,(LPBYTE)lpKeyContent + 8,8,&NBW,NULL);          // save lpfirstsubkey and lpbrotherkey
     WriteFile(hFileWholeReg,&nFPCurrentFatherKey,4,&NBW,NULL);              // save nFPCurrentFatherKey passed by caller
     nFPTemp4Write = 0;
     WriteFile(hFileWholeReg,&nFPTemp4Write,1,&NBW,NULL);                    // clear and save bkeymatch
@@ -1161,14 +1162,14 @@ VOID SaveRegKey(LPKEYCONTENT lpKeyContent, DWORD nFPCurrentFatherKey, DWORD nFPC
 
     // Save the sub-value of current KeyContent
     for (lpv = lpKeyContent->lpfirstvalue; lpv != NULL; lpv = lpv->lpnextvalue) {
-        nLenPlus1 = strlen(lpv->lpvaluename)+1;
+        nLenPlus1 = strlen(lpv->lpvaluename) + 1;
         nFPCurrent = SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);     // save fp
         WriteFile(hFileWholeReg,(LPBYTE)lpv,8,&NBW,NULL);
-        nFPTemp4Write = nFPCurrent+25;                                      // 6*4+1
+        nFPTemp4Write = nFPCurrent + 25;                                    // 6*4+1
         WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);                // save the location of lpvaluename
-        nFPTemp4Write = (lpv->datasize>0)?(nFPCurrent+25+nLenPlus1):0;      // if no lpvaluedata,we write 0
+        nFPTemp4Write = (lpv->datasize > 0)?(nFPCurrent + 25 + nLenPlus1):0;    // if no lpvaluedata,we write 0
         WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);                // save the location of lpvaluedata
-        nFPTemp4Write = (lpv->lpnextvalue != NULL)?(nFPCurrent+25+nLenPlus1+lpv->datasize):0;   // if no nextvalue we write 0
+        nFPTemp4Write = (lpv->lpnextvalue != NULL)?(nFPCurrent + 25 + nLenPlus1 + lpv->datasize):0;   // if no nextvalue we write 0
         WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);                // save the location of next subvalue
         nFPTemp4Write = nFPHeader;
         WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);                // save the location of current key
@@ -1181,15 +1182,15 @@ VOID SaveRegKey(LPKEYCONTENT lpKeyContent, DWORD nFPCurrentFatherKey, DWORD nFPC
 
     if (lpKeyContent->lpfirstsubkey != NULL) {
         // pass this keycontent's position as subkey's fatherkey's position and pass the "lpfirstsubkey field"
-        SaveRegKey(lpKeyContent->lpfirstsubkey,nFPHeader,nFPHeader+8);
+        SaveRegKey(lpKeyContent->lpfirstsubkey,nFPHeader,nFPHeader + 8);
     }
 
     if (lpKeyContent->lpbrotherkey != NULL) {
         // pass this key's fatherkey's position as brother's father and pass "lpbrotherkey field"
-        SaveRegKey(lpKeyContent->lpbrotherkey,nFPCurrentFatherKey,nFPHeader+12);
+        SaveRegKey(lpKeyContent->lpbrotherkey,nFPCurrentFatherKey,nFPHeader + 12);
     }
 
-    if (nFPCaller>0) {  // save position of current key in current father key
+    if (nFPCaller > 0) {  // save position of current key in current father key
         nFPCurrent = SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);
         SetFilePointer(hFileWholeReg,nFPCaller,NULL,FILE_BEGIN);
         WriteFile(hFileWholeReg,&nFPHeader,4,&NBW,NULL);
@@ -1222,8 +1223,8 @@ VOID SaveHive(LPKEYCONTENT lpKeyHLM, LPKEYCONTENT lpKeyUSER,
         opfn.lStructSize = sizeof(opfn);
         opfn.hwndOwner = hWnd;
         opfn.lpstrFilter = str_filter;
-        opfn.lpstrFile = MYALLOC0(MAX_PATH+1);
-        opfn.nMaxFile = MAX_PATH*2;
+        opfn.lpstrFile = MYALLOC0(MAX_PATH + 1);
+        opfn.nMaxFile = MAX_PATH * 2;
         opfn.lpstrInitialDir = lpLastSaveDir;
         opfn.lpstrDefExt = "hiv";
         opfn.Flags = OFN_OVERWRITEPROMPT|OFN_HIDEREADONLY;
@@ -1233,7 +1234,7 @@ VOID SaveHive(LPKEYCONTENT lpKeyHLM, LPKEYCONTENT lpKeyUSER,
 
                 UI_BeforeClear();
                 InitProgressBar();
-                WriteFile(hFileWholeReg,str_RegFileSignature,sizeof(str_RegFileSignature)-1,&NBW,NULL); // save lpvaluedata
+                WriteFile(hFileWholeReg,str_RegFileSignature,sizeof(str_RegFileSignature) - 1,&NBW,NULL); // save lpvaluedata
                 // 0   signature( <= 12) last 4 bytes may be used in furture
                 // 16  startoflpkeyhlm (512)
                 // 20  startoflpkeyuser(???)
@@ -1275,7 +1276,7 @@ VOID SaveHive(LPKEYCONTENT lpKeyHLM, LPKEYCONTENT lpKeyUSER,
                     for (lphf = lpHF; lphf != NULL;) {
                         nFPcurrent = SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT); // save place for next filehead in chain
                         SetFilePointer(hFileWholeReg,4,NULL,FILE_CURRENT);  // move 4 bytes, leave space for lpnextfilecontent
-                        nFPcurrent1 = nFPcurrent+8;
+                        nFPcurrent1 = nFPcurrent + 8;
                         WriteFile(hFileWholeReg,&nFPcurrent1,4,&NBW,NULL);  // write lpfilecontent
 
                         SaveFileContent(lphf->lpfilecontent,0,0);
@@ -1295,10 +1296,10 @@ VOID SaveHive(LPKEYCONTENT lpKeyHLM, LPKEYCONTENT lpKeyUSER,
 
 
                 SetFilePointer(hFileWholeReg,32,NULL,FILE_BEGIN);
-                WriteFile(hFileWholeReg,computer,strlen(computer)+1,&NBW,NULL);
-                SetFilePointer(hFileWholeReg,COMPUTERNAMELEN+32,NULL,FILE_BEGIN);
-                WriteFile(hFileWholeReg,user,strlen(user)+1,&NBW,NULL);
-                SetFilePointer(hFileWholeReg,COMPUTERNAMELEN*2+32,NULL,FILE_BEGIN);
+                WriteFile(hFileWholeReg,computer,strlen(computer) + 1,&NBW,NULL);
+                SetFilePointer(hFileWholeReg,COMPUTERNAMELEN + 32,NULL,FILE_BEGIN);
+                WriteFile(hFileWholeReg,user,strlen(user) + 1,&NBW,NULL);
+                SetFilePointer(hFileWholeReg,COMPUTERNAMELEN*2 + 32,NULL,FILE_BEGIN);
                 WriteFile(hFileWholeReg,time,sizeof(SYSTEMTIME),&NBW,NULL);
 
                 ShowWindow(GetDlgItem(hWnd,IDC_PBCOMPARE),SW_HIDE);
@@ -1311,7 +1312,7 @@ VOID SaveHive(LPKEYCONTENT lpKeyHLM, LPKEYCONTENT lpKeyUSER,
             }
 
         }
-        *(opfn.lpstrFile+opfn.nFileOffset) = 0x00;
+        *(opfn.lpstrFile + opfn.nFileOffset) = 0x00;
         strcpy(lpLastSaveDir,opfn.lpstrFile);
         MYFREE(opfn.lpstrFile);
     }
@@ -1349,7 +1350,7 @@ VOID ReAlignReg(LPKEYCONTENT lpKey, DWORD nBase)
     nGettingKey++;
 
     for (lpv = lpKey->lpfirstvalue; lpv != NULL; lpv = lpv->lpnextvalue) {
-        lp = (LPDWORD)lpv+2;
+        lp = (LPDWORD)lpv + 2;
         if ((*lp) != 0) {
             (*lp) += nBase;
         }
@@ -1386,8 +1387,7 @@ BOOL LoadHive(LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER,
     DWORD   nFileSize;
     DWORD   nOffSet = 0;
     DWORD   nBase;
-    DWORD   i;
-    DWORD   j;
+    DWORD   i,j;
     DWORD   nRemain;
     DWORD   nReadSize;
     BOOL    bRet = FALSE;
@@ -1395,7 +1395,7 @@ BOOL LoadHive(LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER,
     opfn.lStructSize = sizeof(opfn);
     opfn.hwndOwner = hWnd;
     opfn.lpstrFilter = str_filter;
-    opfn.lpstrFile = MYALLOC0(MAX_PATH+1);
+    opfn.lpstrFile = MYALLOC0(MAX_PATH + 1);
     opfn.nMaxFile = MAX_PATH*2;
     opfn.lpstrInitialDir = lpLastOpenDir;
     opfn.Flags = OFN_FILEMUSTEXIST|OFN_HIDEREADONLY;
@@ -1423,16 +1423,16 @@ BOOL LoadHive(LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER,
                 *lpHive = MYALLOC(nFileSize);
                 nBase = (DWORD)(*lpHive);
                 ReadFile(hFileWholeReg,&nOffSet,4,&NBW,NULL);
-                *lplpKeyHLM = (LPKEYCONTENT)(nBase+nOffSet);
+                *lplpKeyHLM = (LPKEYCONTENT)(nBase + nOffSet);
 
                 ReadFile(hFileWholeReg,&nOffSet,4,&NBW,NULL);
-                *lplpKeyUSER = (LPKEYCONTENT)(nBase+nOffSet);
+                *lplpKeyUSER = (LPKEYCONTENT)(nBase + nOffSet);
 
                 ReadFile(hFileWholeReg,&nOffSet,4,&NBW,NULL);
                 if (nOffSet == 0) {
                     *lplpHeadFile = NULL;
                 } else {
-                    *lplpHeadFile = (LPHEADFILE)(nBase+nOffSet);
+                    *lplpHeadFile = (LPHEADFILE)(nBase + nOffSet);
                 }
 
                 SetFilePointer(hFileWholeReg,0,NULL,FILE_BEGIN);
@@ -1448,7 +1448,7 @@ BOOL LoadHive(LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER,
                         nReadSize = nRemain;
                     }
                     // Crash bug made in 1.8.0 tianwei, fixed in 1.8.1 tianwei
-                    ReadFile(hFileWholeReg,(*lpHive)+i,nReadSize,&NBW,NULL);    // read the whole file now
+                    ReadFile(hFileWholeReg,(*lpHive) + i,nReadSize,&NBW,NULL);    // read the whole file now
                     if (NBW != nReadSize) {
                         ErrMsg("Reading ERROR!");
                         break;
@@ -1484,13 +1484,13 @@ BOOL LoadHive(LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER,
 
                 if (is1) {
                     // Use copymemory in 1.8, old version direct point to, which is wrong
-                    CopyMemory(lpComputerName1,*lpHive+32,COMPUTERNAMELEN);
-                    CopyMemory(lpUserName1,*lpHive+COMPUTERNAMELEN+32,COMPUTERNAMELEN);
-                    CopyMemory(lpSystemtime1,(SYSTEMTIME FAR *)(*lpHive+COMPUTERNAMELEN*2+32),sizeof(SYSTEMTIME));
+                    CopyMemory(lpComputerName1,*lpHive + 32,COMPUTERNAMELEN);
+                    CopyMemory(lpUserName1,*lpHive+COMPUTERNAMELEN + 32,COMPUTERNAMELEN);
+                    CopyMemory(lpSystemtime1,(SYSTEMTIME FAR *)(*lpHive+COMPUTERNAMELEN*2 + 32),sizeof(SYSTEMTIME));
                 } else {
-                    CopyMemory(lpComputerName2,*lpHive+32,COMPUTERNAMELEN);
-                    CopyMemory(lpUserName2,*lpHive+COMPUTERNAMELEN+32,COMPUTERNAMELEN);
-                    CopyMemory(lpSystemtime2,(SYSTEMTIME FAR *)(*lpHive+COMPUTERNAMELEN*2+32),sizeof(SYSTEMTIME));
+                    CopyMemory(lpComputerName2,*lpHive + 32,COMPUTERNAMELEN);
+                    CopyMemory(lpUserName2,*lpHive+COMPUTERNAMELEN + 32,COMPUTERNAMELEN);
+                    CopyMemory(lpSystemtime2,(SYSTEMTIME FAR *)(*lpHive+COMPUTERNAMELEN*2 + 32),sizeof(SYSTEMTIME));
                 }
 
                 UI_AfterShot();
@@ -1507,7 +1507,7 @@ BOOL LoadHive(LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER,
         bRet = FALSE;
     };
 
-    *(opfn.lpstrFile+opfn.nFileOffset) = 0x00;
+    *(opfn.lpstrFile + opfn.nFileOffset) = 0x00;
     strcpy(lpLastOpenDir,opfn.lpstrFile);
 
     MYFREE(opfn.lpstrFile);

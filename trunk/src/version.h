@@ -44,4 +44,4 @@
 #define REGSHOT_RESULT_FILE       "~res"
 #endif  // _WIN64
 
-#endif
+#endif // REGSHOT_VERSION_H

@@ -43,10 +43,10 @@ BOOL GetSnapRegs(HWND hDlg) // tfx 取配置文件信息
     lpSnapRegs = MYALLOC0(sizeof(LPSTR)*MAXREGSHOT);
     lpSnapRegsStr = MYALLOC0(SIZEOF_REGSHOT);
     if (GetPrivateProfileSection(INI_SKIPREGKEY,lpSnapRegsStr,SIZEOF_REGSHOT,lpRegshotIni)>0) {
-        for (i = 0; i < MAXREGSHOT-1; i++) {
+        for (i = 0; i < MAXREGSHOT - 1; i++) {
             sprintf(lpSnapKey,"%d%s",i," = ");
             if ((lpSnapReturn = AtPos(lpSnapRegsStr,lpSnapKey,SIZEOF_REGSHOT)) != NULL) {
-                *(lpSnapRegs+i) = (DWORD)lpSnapReturn;
+                *(lpSnapRegs + i) = (DWORD)lpSnapReturn;
                 //dwSnapFiles++;
             } else {
                 break;
@@ -57,10 +57,10 @@ BOOL GetSnapRegs(HWND hDlg) // tfx 取配置文件信息
     lpSnapFiles = MYALLOC0(sizeof(LPSTR)*MAXREGSHOT);
     lpSnapFilesStr = MYALLOC0(SIZEOF_REGSHOT);
     if (GetPrivateProfileSection(INI_SKIPDIR,lpSnapFilesStr,SIZEOF_REGSHOT,lpRegshotIni)) {
-        for (i = 0; i < MAXREGSHOT-1; i++) {
+        for (i = 0; i < MAXREGSHOT - 1; i++) {
             sprintf(lpSnapKey,"%d%s",i," = ");
             if ((lpSnapReturn = AtPos(lpSnapFilesStr,lpSnapKey,SIZEOF_REGSHOT)) != NULL) {
-                *(lpSnapFiles+i) = (DWORD)lpSnapReturn;
+                *(lpSnapFiles + i) = (DWORD)lpSnapReturn;
                 //dwSnapFiles++;
             } else {
                 break;
@@ -124,7 +124,7 @@ BOOL SetSnapRegs(HWND hDlg) // tfx 保存信息到配置文件
     nFlag = (BYTE)(SendMessage(GetDlgItem(hDlg,IDC_RADIO1),BM_GETCHECK,(WPARAM)0,(LPARAM)0)|
                    SendMessage(GetDlgItem(hDlg,IDC_CHECKDIR),BM_GETCHECK,(WPARAM)0,(LPARAM)0)<<1);
 
-    lpString = MYALLOC0(EXTDIRLEN+2);
+    lpString = MYALLOC0(EXTDIRLEN + 2);
     //sprintf(lpString,"%s = %d",INI_FLAG,nFlag); // 1.7 solokey
     //WritePrivateProfileSection(INI_SETUP,lpString,lpRegshotIni);  // 1.7 solokey, can only have one key.
 
@@ -135,7 +135,7 @@ BOOL SetSnapRegs(HWND hDlg) // tfx 保存信息到配置文件
     WritePrivateProfileString(INI_SETUP,INI_USELONGREGHEAD,lpString,lpRegshotIni);
 
 
-    if (GetDlgItemText(hDlg,IDC_EDITDIR,lpString,EXTDIRLEN+2) != 0) {
+    if (GetDlgItemText(hDlg,IDC_EDITDIR,lpString,EXTDIRLEN + 2) != 0) {
         WritePrivateProfileString(INI_SETUP,INI_EXTDIR,lpString,lpRegshotIni);
     }
 
@@ -158,8 +158,8 @@ BOOL IsInSkipList(LPSTR lpSnap, LPDWORD lpSkipList) // tfx 跳过黑名单
 {
     int i;
 
-    for (i = 0; (LPSTR)(*(lpSkipList+i)) != NULL && i <= MAXREGSHOT-1; i++) {
-        if (_stricmp(lpSnap, (LPSTR)*(lpSkipList+i)) == 0) {
+    for (i = 0; (LPSTR)(*(lpSkipList + i)) != NULL && i <= MAXREGSHOT - 1; i++) {
+        if (_stricmp(lpSnap, (LPSTR)*(lpSkipList + i)) == 0) {
             return TRUE;
         }
     }

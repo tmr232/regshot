@@ -8,11 +8,7 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#ifdef __GNUC__
-#include <afxres.h>
-#else
-#include "winres.h"
-#endif
+#include <winresrc.h>
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -43,8 +39,8 @@ BEGIN
     PUSHBUTTON      "&About",IDC_ABOUT,137,99,49,13
     COMBOBOX        IDC_COMBOLANGUAGE,137,134,50,55,CBS_DROPDOWNLIST | CBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Plain &TXT",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON,11,19,46,10
-    CONTROL         "&HTML document",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,60,19,66,10
-    CONTROL         "&Scan dir1[;dir2;dir3;...;dir nn]:",IDC_CHECKDIR,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,12,45,113,10
+    CONTROL         "&HTML document",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,60,19,71,10
+    CONTROL         "&Scan dir1[;dir2;dir3;...;dir nn]:",IDC_CHECKDIR,"Button",BS_AUTOCHECKBOX | BS_MULTILINE | WS_TABSTOP,11,45,120,10
     EDITTEXT        IDC_EDITDIR,11,58,94,14,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_BROWSE1,108,58,18,13
     EDITTEXT        IDC_EDITPATH,12,94,94,14,ES_AUTOHSCROLL
@@ -73,6 +69,10 @@ BEGIN
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 187
+        VERTGUIDE, 11
+        VERTGUIDE, 131
+        VERTGUIDE, 137
+        VERTGUIDE, 186
         TOPMARGIN, 7
         BOTTOMMARGIN, 163
     END
@@ -115,13 +115,12 @@ END
 // remains consistent on all systems.
 IDI_MAINICON            ICON                    "res\\regshot.ico"
 
-
 /////////////////////////////////////////////////////////////////////////////
 //
-// Manifest
+// RT_MANIFEST
 //
-IDR_RT_MANIFEST         24                      "res\\Regshot.exe.manifest"
 
+IDR_RT_MANIFEST         RT_MANIFEST             "res\\Regshot.exe.manifest"
 
 /////////////////////////////////////////////////////////////////////////////
 //

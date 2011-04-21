@@ -31,10 +31,10 @@ extern LPSTR lan_menushotsave;
 extern LPSTR lan_menuload;
 
 
-char USERSSTRING_LONG[] = "HKEY_USERS";         // 1.6 using long name, so in 1.8.1 an option in regshot.ini "UseLongRegHead" control this
+char USERSSTRING_LONG[]   = "HKEY_USERS";   // 1.6 using long name, so in 1.8.1 add an option
+char USERSSTRING[]        = "HKU";          // in regshot.ini, "UseLongRegHead" to control this
+char LOCALMACHINESTRING[] = "HKLM";
 char LOCALMACHINESTRING_LONG[] = "HKEY_LOCAL_MACHINE";
-char USERSSTRING[] = "HKU"; // = "HKEY_USERS";  // 1.7 using short name tfx, a good idea
-char LOCALMACHINESTRING[] = "HKLM";             // = "HKEY_LOCAL_MACHINE";
 
 
 void ShowHideCounters(int nCmdShow) // 1.8.2
@@ -86,8 +86,8 @@ VOID UI_BeforeShot(DWORD id)
     hHourGlass = LoadCursor(NULL,IDC_WAIT);
     hSaveCursor = SetCursor(hHourGlass);
     EnableWindow(GetDlgItem(hWnd,id),FALSE);
-    // Added 1.8.2
-    strcpy(lpMESSAGE," ");  // clear counters
+    // Added in 1.8.2
+    strcpy(lpMESSAGE," ");  // clear the counters
     SendDlgItemMessage(hWnd,IDC_TEXTCOUNT1,WM_SETTEXT,(WPARAM)0,(LPARAM)lpMESSAGE);
     SendDlgItemMessage(hWnd,IDC_TEXTCOUNT2,WM_SETTEXT,(WPARAM)0,(LPARAM)lpMESSAGE);
     SendDlgItemMessage(hWnd,IDC_TEXTCOUNT3,WM_SETTEXT,(WPARAM)0,(LPARAM)lpMESSAGE);
@@ -184,11 +184,12 @@ VOID Shot1(VOID)
     }
 
 
-    nGettingKey = 2;
+    nGettingKey   = 2;
     nGettingValue = 0;
-    nGettingTime = 0;
-    nGettingFile = 0,nGettingDir = 0;
-    nBASETIME = GetTickCount();
+    nGettingTime  = 0;
+    nGettingFile  = 0;
+    nGettingDir   = 0;
+    nBASETIME  = GetTickCount();
     nBASETIME1 = nBASETIME;
     UI_BeforeShot(IDC_1STSHOT);
 
@@ -213,11 +214,11 @@ VOID Shot1(VOID)
         if (nLengthofStr > 0)
             for (i = 0; i <= nLengthofStr; i++) {
                 // This is the stupid filename detection routine, [seperate with ";"]
-                if (*(lpExtDir+i) == 0x3b || *(lpExtDir+i) == 0x00) {
-                    *(lpExtDir+i) = 0x00;
+                if (*(lpExtDir + i) == 0x3b || *(lpExtDir + i) == 0x00) {
+                    *(lpExtDir + i) = 0x00;
 
-                    if (*(lpExtDir+i-1) == '\\' && i>0) {
-                        *(lpExtDir+i-1) = 0x00;
+                    if (*(lpExtDir + i - 1) == '\\' && i > 0) {
+                        *(lpExtDir + i - 1) = 0x00;
                     }
 
                     if (*lpSubExtDir != 0x00) {
@@ -234,7 +235,7 @@ VOID Shot1(VOID)
                         lphf->lpfilecontent = (LPFILECONTENT)MYALLOC0(sizeof(FILECONTENT));
                         //lphf->lpfilecontent2 = (LPFILECONTENT)MYALLOC0(sizeof(FILECONTENT));
 
-                        nSubExtDirLen = strlen(lpSubExtDir)+1;
+                        nSubExtDirLen = strlen(lpSubExtDir) + 1;
                         lphf->lpfilecontent->lpfilename = MYALLOC(nSubExtDirLen);
                         //lphf->lpfilecontent2->lpfilename = MYALLOC(nSubExtDirLen);
 
@@ -248,7 +249,7 @@ VOID Shot1(VOID)
                         nGettingTime = GetTickCount();
                         UpdateCounters(lan_dir,lan_file,nGettingDir,nGettingFile);
                     }
-                    lpSubExtDir = lpExtDir+i+1;
+                    lpSubExtDir = lpExtDir + i + 1;
                 }
             }
     }
@@ -282,11 +283,12 @@ VOID Shot2(VOID)
     }
 
 
-    nGettingKey = 2;
+    nGettingKey   = 2;
     nGettingValue = 0;
-    nGettingTime = 0;
-    nGettingFile = 0,nGettingDir = 0;
-    nBASETIME = GetTickCount();
+    nGettingTime  = 0;
+    nGettingFile  = 0;
+    nGettingDir   = 0;
+    nBASETIME  = GetTickCount();
     nBASETIME1 = nBASETIME;
     UI_BeforeShot(IDC_2NDSHOT);
 
@@ -302,7 +304,7 @@ VOID Shot2(VOID)
         LPHEADFILE lphf;
         LPHEADFILE lphftemp;
 
-        GetDlgItemText(hWnd,IDC_EDITDIR,lpExtDir,EXTDIRLEN+2);
+        GetDlgItemText(hWnd,IDC_EDITDIR,lpExtDir,EXTDIRLEN + 2);
         nLengthofStr = strlen(lpExtDir);
 
         lphf = lphftemp = lpHeadFile1;  // changed in 1.8
@@ -311,11 +313,11 @@ VOID Shot2(VOID)
         if (nLengthofStr > 0)
             for (i = 0; i <= nLengthofStr; i++) {
                 // This is the stupid filename detection routine, [seperate with ";"]
-                if (*(lpExtDir+i) == 0x3b || *(lpExtDir+i) == 0x00) {
-                    *(lpExtDir+i) = 0x00;
+                if (*(lpExtDir + i) == 0x3b || *(lpExtDir + i) == 0x00) {
+                    *(lpExtDir + i) = 0x00;
 
-                    if (*(lpExtDir+i-1) == '\\' && i>0) {
-                        *(lpExtDir+i-1) = 0x00;
+                    if (*(lpExtDir + i - 1) == '\\' && i > 0) {
+                        *(lpExtDir + i - 1) = 0x00;
                     }
 
                     if (*lpSubExtDir != 0x00) {
@@ -331,7 +333,7 @@ VOID Shot2(VOID)
                         lphftemp = lphf;
                         lphf->lpfilecontent = (LPFILECONTENT)MYALLOC0(sizeof(FILECONTENT));
 
-                        nSubExtDirLen = strlen(lpSubExtDir)+1;
+                        nSubExtDirLen = strlen(lpSubExtDir) + 1;
                         lphf->lpfilecontent->lpfilename = MYALLOC(nSubExtDirLen);
 
                         strcpy(lphf->lpfilecontent->lpfilename,lpSubExtDir);
@@ -342,7 +344,7 @@ VOID Shot2(VOID)
                         nGettingTime = GetTickCount();
                         UpdateCounters(lan_dir,lan_file,nGettingDir,nGettingFile);
                     }
-                    lpSubExtDir = lpExtDir+i+1;
+                    lpSubExtDir = lpExtDir + i + 1;
                 }
             }
     }

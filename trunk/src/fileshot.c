@@ -38,14 +38,14 @@ LPSTR GetWholeFileName(LPFILECONTENT lpFileContent)
     size_t  nLen = 0;
 
     for (lpf = lpFileContent; lpf != NULL; lpf = lpf->lpfatherfile) {
-        nLen += strlen(lpf->lpfilename)+1;
+        nLen += strlen(lpf->lpfilename) + 1;
     }
     if (nLen == 0) {
         nLen++;
     }
     lpName = MYALLOC(nLen);
 
-    lptail = lpName+nLen-1;
+    lptail = lpName + nLen - 1;
     *lptail = 0x00;
 
     for (lpf = lpFileContent; lpf != NULL; lpf = lpf->lpfatherfile) {
@@ -76,7 +76,7 @@ VOID GetAllSubFile(
     if (ISDIR(lpFileContent->fileattr)) {
         lpTemp = lpFileContent->lpfilename;
         //if (strcmp(lpFileContent->lpfilename,".") != 0  && strcmp(lpFileContent->lpfilename,"..") != 0) // we should add here 1.8.0
-        if (*(unsigned short *)lpTemp != 0x002E && !( *(unsigned short *)lpTemp == 0x2E2E && *(lpTemp+2) == 0x00 )  ) { // 1.8.2
+        if (*(unsigned short *)lpTemp != 0x002E && !( *(unsigned short *)lpTemp == 0x2E2E && *(lpTemp + 2) == 0x00 )  ) { // 1.8.2
             LogToMem(typedir,lpcountdir,lpFileContent);
         }
     } else {
@@ -115,13 +115,13 @@ VOID GetFilesSnap(LPFILECONTENT lpFatherFile)
     //Not used
     //if (bWinNTDetected)
     //{
-    //  lpFilename = MYALLOC(strlen(lpTemp)+5+4);
+    //  lpFilename = MYALLOC(strlen(lpTemp) + 5 + 4);
     //  strcpy(lpFilename,"\\\\?\\");
     //  strcat(lpFilename,lpTemp);
     //}
     //else
     {
-        lpFilename = MYALLOC(strlen(lpTemp)+5);
+        lpFilename = MYALLOC(strlen(lpTemp) + 5);
         strcpy(lpFilename,lpTemp);
     }
     strcat(lpFilename,"\\*.*");
@@ -137,7 +137,7 @@ VOID GetFilesSnap(LPFILECONTENT lpFatherFile)
     lpTemp = finddata.cFileName; // 1.8
 
     lpFileContent = MYALLOC0(sizeof(FILECONTENT));
-    lpFileContent->lpfilename = MYALLOC0(strlen(finddata.cFileName)+1);   // must add one!
+    lpFileContent->lpfilename = MYALLOC0(strlen(finddata.cFileName) + 1);   // must add one!
     strcpy(lpFileContent->lpfilename,finddata.cFileName);
     lpFileContent->writetimelow = finddata.ftLastWriteTime.dwLowDateTime;
     lpFileContent->writetimehigh = finddata.ftLastWriteTime.dwHighDateTime;
@@ -150,7 +150,7 @@ VOID GetFilesSnap(LPFILECONTENT lpFatherFile)
 
     if (ISDIR(lpFileContent->fileattr)) {
         /*
-        if (*(unsigned short *)lpTemp != 0x002E && !( *(unsigned short *)lpTemp == 0x2E2E && *(lpTemp+2) == 0x00 )   // 1.8.2
+        if (*(unsigned short *)lpTemp != 0x002E && !( *(unsigned short *)lpTemp == 0x2E2E && *(lpTemp + 2) == 0x00 )   // 1.8.2
         00401292   66:8B85 E4FEFFFF MOV AX,WORD PTR SS:[EBP-11C]
         00401299   66:3D 2E00       CMP AX,2E
         0040129D   74 43            JE SHORT regshot.004012E2
@@ -164,9 +164,9 @@ VOID GetFilesSnap(LPFILECONTENT lpFatherFile)
         */
         //if (lstrcmp(lpFileContent->lpfilename,".") != 0 && lstrcmp(lpFileContent->lpfilename,"..") != 0 // or we can use that
         //use lpTemp may "optimize" some, note, finddata.cfilename should exists!
-        //if (!(*lpTemp == '.' && *(lpTemp+1) == 0x00 ) && !(*lpTemp == '.' && *(lpTemp+1) == '.' && *(lpTemp+2) == 0x00 ) // 1.8.0
+        //if (!(*lpTemp == '.' && *(lpTemp + 1) == 0x00 ) && !(*lpTemp == '.' && *(lpTemp + 1) == '.' && *(lpTemp + 2) == 0x00 ) // 1.8.0
         //risk! see above.
-        if (*(unsigned short *)lpTemp != 0x002E && !( *(unsigned short *)lpTemp == 0x2E2E && *(lpTemp+2) == 0x00 )   // 1.8.2
+        if (*(unsigned short *)lpTemp != 0x002E && !( *(unsigned short *)lpTemp == 0x2E2E && *(lpTemp + 2) == 0x00 )   // 1.8.2
                 && !IsInSkipList(lpFileContent->lpfilename,lpSnapFiles)) { // tfx
 
             nGettingDir++;
@@ -179,7 +179,7 @@ VOID GetFilesSnap(LPFILECONTENT lpFatherFile)
 
     for (; FindNextFile(filehandle,&finddata) != FALSE;) {
         lpFileContent = MYALLOC0(sizeof(FILECONTENT));
-        lpFileContent->lpfilename = MYALLOC0(strlen(finddata.cFileName)+1);
+        lpFileContent->lpfilename = MYALLOC0(strlen(finddata.cFileName) + 1);
         strcpy(lpFileContent->lpfilename,finddata.cFileName);
         lpFileContent->writetimelow = finddata.ftLastWriteTime.dwLowDateTime;
         lpFileContent->writetimehigh = finddata.ftLastWriteTime.dwHighDateTime;
@@ -191,8 +191,8 @@ VOID GetFilesSnap(LPFILECONTENT lpFatherFile)
         lpFileContentTemp = lpFileContent;
 
         if (ISDIR(lpFileContent->fileattr)) {
-            //if ( !(*lpTemp == '.' && *(lpTemp+1) == 0x00 ) && !(*lpTemp == '.' && *(lpTemp+1) == '.' && *(lpTemp+2) == 0x00 ) // if (lstrcmp(lpFileContent->lpfilename,".") != 0 && lstrcmp(lpFileContent->lpfilename,"..") != 0
-            if (*(unsigned short *)lpTemp != 0x002E && !( *(unsigned short *)lpTemp == 0x2E2E && *(lpTemp+2) == 0x00 )  // 1.8.2
+            //if ( !(*lpTemp == '.' && *(lpTemp + 1) == 0x00 ) && !(*lpTemp == '.' && *(lpTemp + 1) == '.' && *(lpTemp + 2) == 0x00 ) // if (lstrcmp(lpFileContent->lpfilename,".") != 0 && lstrcmp(lpFileContent->lpfilename,"..") != 0
+            if (*(unsigned short *)lpTemp != 0x002E && !( *(unsigned short *)lpTemp == 0x2E2E && *(lpTemp + 2) == 0x00 )  // 1.8.2
                     && !IsInSkipList(lpFileContent->lpfilename,lpSnapFiles)) { // tfx
                 nGettingDir++;
                 GetFilesSnap(lpFileContent);
@@ -275,6 +275,7 @@ VOID CompareFirstSubFile(LPFILECONTENT lpHead1, LPFILECONTENT lpHead2)
                 break;
             }
         }
+
         if (lp2 == NULL) {
             // lp2 looped to the end, that is, we can not find a lp2 matches lp1, so lp1 is deleted!
             if (ISDIR(lp1->fileattr)) {
@@ -284,6 +285,7 @@ VOID CompareFirstSubFile(LPFILECONTENT lpHead1, LPFILECONTENT lpHead2)
             }
         }
     }
+
     // We loop to the end, then we do an extra loop of lp2 use flag we previous made
     for (lp2 = lpHead2; lp2 != NULL; lp2 = lp2->lpbrotherfile) {
         nComparing++;
@@ -296,6 +298,7 @@ VOID CompareFirstSubFile(LPFILECONTENT lpHead1, LPFILECONTENT lpHead2)
             }
         }
     }
+
     // Progress bar update
     if (nGettingFile != 0)
         if (nComparing%nGettingFile>nFileStep) {
@@ -353,15 +356,15 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DW
     DWORD   nFPTemp4Write;
     size_t  nLenPlus1;
 
-    nLenPlus1 = strlen(lpFileContent->lpfilename)+1;                        // get len+1
+    nLenPlus1 = strlen(lpFileContent->lpfilename) + 1;                      // get len+1
     nFPHeader = SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);          // save head fp
-    nFPTemp4Write = nFPHeader+41;                                           // 10*4+1
+    nFPTemp4Write = nFPHeader + 41;                                         // 10*4+1
     WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);                    // save location of lpfilename
-    WriteFile(hFileWholeReg,(LPBYTE)lpFileContent+4,24,&NBW,NULL);          // Write time,size etc. 6*4
+    WriteFile(hFileWholeReg,(LPBYTE)lpFileContent + 4,24,&NBW,NULL);        // Write time,size etc. 6*4
 
-    //nFPTemp4Write = (lpFileContent->lpfirstsubfile != NULL) ? (nFPHeader+41+nLenPlus1):0;         // We write lpfilename plus a "\0"
+    //nFPTemp4Write = (lpFileContent->lpfirstsubfile != NULL) ? (nFPHeader + 41 + nLenPlus1):0;    // We write lpfilename plus a "\0"
     //WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);                  // save location of lpfirstsubfile
-    WriteFile(hFileWholeReg,(LPBYTE)lpFileContent+28,8,&NBW,NULL);          // save lpfirstsubfile and lpbrotherfile
+    WriteFile(hFileWholeReg,(LPBYTE)lpFileContent + 28,8,&NBW,NULL);        // save lpfirstsubfile and lpbrotherfile
     WriteFile(hFileWholeReg,&nFPCurrentFatherFile,4,&NBW,NULL);             // save nFPCurrentFatherKey passed by caller
     nFPTemp4Write = 0;
     WriteFile(hFileWholeReg,&nFPTemp4Write,1,&NBW,NULL);                    // clear and save bfilematch
@@ -370,15 +373,15 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DW
 
     if (lpFileContent->lpfirstsubfile != NULL) {
         // pass this filecontent's position as subfile's fatherfile's position and pass the "lpfirstsubfile field"
-        SaveFileContent(lpFileContent->lpfirstsubfile,nFPHeader,nFPHeader+28);
+        SaveFileContent(lpFileContent->lpfirstsubfile,nFPHeader,nFPHeader + 28);
     }
 
     if (lpFileContent->lpbrotherfile != NULL) {
         // pass this file's fatherfile's position as brother's father and pass "lpbrotherfile field"
-        SaveFileContent(lpFileContent->lpbrotherfile,nFPCurrentFatherFile,nFPHeader+32);
+        SaveFileContent(lpFileContent->lpbrotherfile,nFPCurrentFatherFile,nFPHeader + 32);
     }
 
-    if (nFPCaller>0) { // save position of current file in current father file
+    if (nFPCaller > 0) { // save position of current file in current father file
         nFPCurrent = SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);
         SetFilePointer(hFileWholeReg,nFPCaller,NULL,FILE_BEGIN);
         WriteFile(hFileWholeReg,&nFPHeader,4,&NBW,NULL);
@@ -386,6 +389,7 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DW
     }
     // Need adjust progress bar para!!
     nSavingFile++;
+
     if (nGettingFile != 0)
         if (nSavingFile%nGettingFile>nFileStep) {
             nSavingFile = 0;
@@ -409,14 +413,17 @@ VOID ReAlignFileContent(LPFILECONTENT lpFC, DWORD nBase)
         (*lp) += nBase;
     }
     lp += 7;
+
     if ((*lp) != 0) {
         (*lp) += nBase;
     }
     lp++;
+
     if ((*lp) != 0) {
         (*lp) += nBase;
     }
     lp++;
+
     if ((*lp) != 0) {
         (*lp) += nBase;
     }
@@ -426,6 +433,7 @@ VOID ReAlignFileContent(LPFILECONTENT lpFC, DWORD nBase)
     if (lpFC->lpfirstsubfile != NULL) {
         ReAlignFileContent(lpFC->lpfirstsubfile,nBase);
     }
+
     if (lpFC->lpbrotherfile != NULL) {
         ReAlignFileContent(lpFC->lpbrotherfile,nBase);
     }
@@ -483,11 +491,11 @@ VOID FindDirChain(LPHEADFILE lpHF, LPSTR lpDir, size_t nMaxLen)
     size_t      nLen;
     LPHEADFILE  lphf;
     *lpDir = 0x00;
-    nLen = 0;
+    nLen   = 0;
 
     for (lphf = lpHF; lphf != NULL; lphf = lphf->lpnextheadfile) {
         if (lphf->lpfilecontent != NULL && nLen < nMaxLen) {
-            nLen += strlen(lphf->lpfilecontent->lpfilename)+1;
+            nLen += strlen(lphf->lpfilecontent->lpfilename) + 1;
             strcat(lpDir,lphf->lpfilecontent->lpfilename);
             strcat(lpDir,";");
         }
@@ -500,12 +508,13 @@ VOID FindDirChain(LPHEADFILE lpHF, LPSTR lpDir, size_t nMaxLen)
 //--------------------------------------------------
 BOOL DirChainMatch(LPHEADFILE lphf1, LPHEADFILE lphf2)
 {
-    char lpDir1[EXTDIRLEN+2];
-    char lpDir2[EXTDIRLEN+2];
+    char lpDir1[EXTDIRLEN + 2];
+    char lpDir2[EXTDIRLEN + 2];
     ZeroMemory(lpDir1,sizeof(lpDir1));
     ZeroMemory(lpDir2,sizeof(lpDir2));
     FindDirChain(lphf1,lpDir1,EXTDIRLEN);
     FindDirChain(lphf2,lpDir2,EXTDIRLEN);
+
     if (_stricmp(lpDir1,lpDir2) != 0) {
         return FALSE;
     } else {
