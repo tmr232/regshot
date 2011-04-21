@@ -63,14 +63,14 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             SendDlgItemMessage(hDlg,IDC_EDITCOMMENT,EM_SETLIMITTEXT,(WPARAM)COMMENTLENGTH,(LPARAM)0);
             SendDlgItemMessage(hDlg,IDC_EDITPATH,EM_SETLIMITTEXT,(WPARAM)MAX_PATH,(LPARAM)0);
             SendDlgItemMessage(hDlg,IDC_EDITDIR,EM_SETLIMITTEXT,(WPARAM)EXTDIRLEN,(LPARAM)0);
-            lpExtDir = MYALLOC0(EXTDIRLEN+2);
-            lpOutputpath = MYALLOC0(MAX_PATH+5);
+            lpExtDir = MYALLOC0(EXTDIRLEN + 2);
+            lpOutputpath = MYALLOC0(MAX_PATH + 5);
             lpCurrentLanguage = MYALLOC0(SIZEOF_SINGLE_LANGUAGENAME);
-            lpKeyName = MYALLOC0(MAX_PATH+1);
+            lpKeyName = MYALLOC0(MAX_PATH + 1);
             lpMESSAGE = MYALLOC0(128);
-            lpStartDir = MYALLOC0(MAX_PATH+1);
-            lpWindowsDirName = MYALLOC0(MAX_PATH+5);
-            lpTempPath = MYALLOC0(MAX_PATH+2);
+            lpStartDir = MYALLOC0(MAX_PATH + 1);
+            lpWindowsDirName = MYALLOC0(MAX_PATH + 5);
+            lpTempPath = MYALLOC0(MAX_PATH + 2);
             lpComputerName1 = MYALLOC0(COMPUTERNAMELEN);
             lpComputerName2 = MYALLOC0(COMPUTERNAMELEN);
             lpUserName1 = MYALLOC0(COMPUTERNAMELEN);
@@ -81,8 +81,8 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
             GetWindowsDirectory(lpWindowsDirName,MAX_PATH);
             nLengthofStr = strlen(lpWindowsDirName);
-            if (nLengthofStr > 0 && *(lpWindowsDirName+nLengthofStr-1) == '\\') {
-                *(lpWindowsDirName+nLengthofStr-1) = 0x00;
+            if (nLengthofStr > 0 && *(lpWindowsDirName + nLengthofStr - 1) == '\\') {
+                *(lpWindowsDirName + nLengthofStr - 1) = 0x00;
             }
             GetTempPath(MAX_PATH,lpTempPath);
 
@@ -90,7 +90,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             GetCurrentDirectory(MAX_PATH,lpStartDir);   // fixed at 1.8.2 former version use getcommandline()
             lpIni = MYALLOC0(MAX_PATH*2);
             strcpy(lpIni,lpStartDir);
-            if (*(lpIni+strlen(lpIni)-1) != '\\') {       // 1.8.2
+            if (*(lpIni + strlen(lpIni) - 1) != '\\') {       // 1.8.2
                 strcat(lpIni,"\\");
             }
             strcat(lpIni,REGSHOTLANGUAGEFILE);
@@ -171,7 +171,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
             lpRegshotIni = MYALLOC0(3*MAX_PATH);
             strcpy(lpRegshotIni,lpStartDir);
-            if (*(lpRegshotIni+strlen(lpRegshotIni)-1) != '\\') {
+            if (*(lpRegshotIni + strlen(lpRegshotIni) - 1) != '\\') {
                 strcat(lpRegshotIni,"\\");
             }
             strcat(lpRegshotIni,REGSHOTINI);
@@ -356,7 +356,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                               SendMessage(GetDlgItem(hDlg,IDC_CHECKDIR),BM_GETCHECK,(WPARAM)0,(LPARAM)0)<<1);
                           WriteFile(hFile,&nFlag,1,&NBW,NULL);
                           WriteFile(hFile,&nMask,4,&NBW,NULL);
-                          nLengthofStr = GetDlgItemText(hDlg,IDC_EDITDIR,lpExtDir,EXTDIRLEN+2);
+                          nLengthofStr = GetDlgItemText(hDlg,IDC_EDITDIR,lpExtDir,EXTDIRLEN + 2);
                           WriteFile(hFile,&nLengthofStr,sizeof(nLengthofStr),&NBW,NULL);
                           WriteFile(hFile,lpExtDir,nLengthofStr,&NBW,NULL);
                           nLengthofStr = GetDlgItemText(hDlg,IDC_EDITPATH,lpOutputpath,MAX_PATH);
@@ -373,7 +373,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                     LPITEMIDLIST lpidlist;
                     BrowseInfo1.hwndOwner = hDlg;
-                    BrowseInfo1.pszDisplayName = MYALLOC0(MAX_PATH+1);
+                    BrowseInfo1.pszDisplayName = MYALLOC0(MAX_PATH + 1);
                     //BrowseInfo1.lpszTitle = "Select:";
                     BrowseInfo1.ulFlags = 0;     // 3 lines added in 1.8.2
                     BrowseInfo1.lpfn = NULL;
@@ -385,10 +385,10 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         size_t  nWholeLen;
 
                         SHGetPathFromIDList(lpidlist,BrowseInfo1.pszDisplayName);
-                        nLengthofStr = GetDlgItemText(hDlg,IDC_EDITDIR,lpExtDir,EXTDIRLEN+2);
-                        nWholeLen = nLengthofStr+strlen(BrowseInfo1.pszDisplayName);
+                        nLengthofStr = GetDlgItemText(hDlg,IDC_EDITDIR,lpExtDir,EXTDIRLEN + 2);
+                        nWholeLen = nLengthofStr + strlen(BrowseInfo1.pszDisplayName);
 
-                        if (nWholeLen < EXTDIRLEN+1) {
+                        if (nWholeLen < EXTDIRLEN + 1) {
                             strcat(lpExtDir,";");
                             strcat(lpExtDir,BrowseInfo1.pszDisplayName);
 
@@ -408,7 +408,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                     LPITEMIDLIST lpidlist;
                     BrowseInfo1.hwndOwner = hDlg;
-                    BrowseInfo1.pszDisplayName = MYALLOC0(MAX_PATH+1);
+                    BrowseInfo1.pszDisplayName = MYALLOC0(MAX_PATH + 1);
                     //BrowseInfo1.lpszTitle = "Select:";
 
                     //-----------------

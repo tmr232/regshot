@@ -2,6 +2,7 @@
 // Microsoft Developer Studio generated include file.
 // Used by regshot.rc
 //
+#define IDC_STATIC                      -1
 #define IDR_RT_MANIFEST                 1
 
 #define IDD_DIALOG1                     100

@@ -204,12 +204,20 @@ DWORD   nDIRMODI;
 
 // Some DWORD used to show the progress bar and etc
 DWORD   nGettingValue;
-DWORD   nGettingKey,nComparing,nRegStep,nFileStep,nSavingKey;
-DWORD   nGettingTime,nBASETIME,nBASETIME1;
-DWORD   nGettingFile,nGettingDir,nSavingFile;
+DWORD   nGettingKey;
+DWORD   nComparing;
+DWORD   nRegStep;
+DWORD   nFileStep;
+DWORD   nSavingKey;
+DWORD   nGettingTime;
+DWORD   nBASETIME;
+DWORD   nBASETIME1;
+DWORD   nGettingFile;
+DWORD   nGettingDir;
+DWORD   nSavingFile;
 //DWORD nMask = 0xf7fd;   // not used now, but should be added
 //DWORD nRegMessageCount = 0;
-DWORD   NBW; // that is: NumberOfBytesWritten;
+DWORD   NBW;    // that is: NumberOfBytesWritten;
 
 
 // Pointers to Registry Key
@@ -228,7 +236,7 @@ LPSTR           lpUserName2;
 SYSTEMTIME FAR * lpSystemtime1,* lpSystemtime2;
 
 
-//Some pointers need to allocate enough space to working
+// Some pointers need to allocate enough space to working
 LPSTR   lpKeyName;
 LPSTR   lpMESSAGE;
 LPSTR   lpExtDir;
@@ -259,10 +267,10 @@ LPDWORD ldwTempStrings;
 //#define DIOCPARAMSSIZE    20      // 4+4+4+8 bytes DIOCParams size!
 //#define MAXLISTBOXLEN 1024
 //#define RING3TDLEN        8       // ring3 td name length
-//LPSTR     str_errorini = "Error create Dialog!";
-//INT       tabarray[] = {40,106,426,466};        // the tabstops is the len addup!
-//BOOL      bWinNTDetected;
-//UINT      WM_REGSHOT = 0;
+//LPSTR str_errorini = "Error create Dialog!";
+//INT   tabarray[] = {40,106,426,466};      // the tabstops is the len addup!
+//BOOL  bWinNTDetected;
+//UINT  WM_REGSHOT = 0;
 
 #ifdef  DEBUGLOG
 LPSTR   lstrdb1;
