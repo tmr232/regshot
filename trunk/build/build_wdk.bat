@@ -24,7 +24,7 @@ rem *    Batch file "wrapper" for makefile.mak, used to build Regshot with WDK
 rem ******************************************************************************
 
 
-SETLOCAL
+SETLOCAL ENABLEEXTENSIONS
 CD /D %~dp0
 
 rem Set the WDK directory
@@ -39,31 +39,8 @@ IF /I "%1"=="/help"  GOTO SHOWHELP
 IF /I "%1"=="-help"  GOTO SHOWHELP
 IF /I "%1"=="--help" GOTO SHOWHELP
 IF /I "%1"=="/?"     GOTO SHOWHELP
-GOTO CHECKFIRSTARG
 
 
-:SHOWHELP
-TITLE "%~nx0 %1"
-ECHO.
-ECHO Usage:  %~nx0 [Clean^|Build^|Rebuild] [x86^|x64^|all]
-ECHO.
-ECHO Note:   You can also prefix the commands with "-", "--" or "/".
-ECHO.
-ECHO.
-ECHO Edit "%~nx0" and set your WDK directory.
-ECHO You shouldn't need to make any changes other than that.
-ECHO.
-ECHO.
-ECHO Executing "%~nx0" will use the defaults: "%~nx0 build all"
-ECHO If you skip the second argument the default one will be used. Example:
-ECHO "%~nx0 rebuild" is equivalent to "%~nx0 rebuild all"
-ECHO NOTE: "%~nx0 x86" won't work.
-ECHO.
-ENDLOCAL
-EXIT /B
-
-
-:CHECKFIRSTARG
 rem Check for the first switch
 IF "%~1" == "" (
   SET "BUILDTYPE=Build"
@@ -118,53 +95,53 @@ SET "INCLUDE=%WDKBASEDIR%\inc\api;%WDKBASEDIR%\inc\api\crt\stl60;%WDKBASEDIR%\in
 SET "LIB=%WDKBASEDIR%\lib\crt\i386;%WDKBASEDIR%\lib\win7\i386"
 SET "PATH=%WDKBASEDIR%\bin\x86;%WDKBASEDIR%\bin\x86\x86"
 
-IF /I "%ARCH%" == "x64" GOTO x64
+IF "%ARCH%" == "x64" GOTO x64
 
 TITLE Building Regshot x86...
 ECHO. & ECHO.
 
-IF /I "%BUILDTYPE%" == "Build" (
+IF "%BUILDTYPE%" == "Build" (
   CALL :SUBNMAKE
 
-  IF /I "%ARCH%" == "x86" GOTO END
-  IF /I "%ARCH%" == "x64" GOTO x64
-  IF /I "%ARCH%" == "all" GOTO x64
+  IF "%ARCH%" == "x86" GOTO END
+  IF "%ARCH%" == "x64" GOTO x64
+  IF "%ARCH%" == "all" GOTO x64
 )
 
-IF /I "%BUILDTYPE%" == "Rebuild" (
+IF "%BUILDTYPE%" == "Rebuild" (
   CALL :SUBNMAKE
 
-  IF /I "%ARCH%" == "x86" GOTO END
-  IF /I "%ARCH%" == "x64" GOTO x64
-  IF /I "%ARCH%" == "all" GOTO x64
+  IF "%ARCH%" == "x86" GOTO END
+  IF "%ARCH%" == "x64" GOTO x64
+  IF "%ARCH%" == "all" GOTO x64
 )
 
-IF /I "%BUILDTYPE%" == "Clean" CALL :SUBNMAKE clean
-IF /I "%ARCH%" == "x86" GOTO END
-IF /I "%ARCH%" == "x64" GOTO x64
-IF /I "%ARCH%" == "all" GOTO x64
+IF "%BUILDTYPE%" == "Clean" CALL :SUBNMAKE clean
+IF "%ARCH%" == "x86" GOTO END
+IF "%ARCH%" == "x64" GOTO x64
+IF "%ARCH%" == "all" GOTO x64
 
 
 :x64
 SET "LIB=%WDKBASEDIR%\lib\crt\amd64;%WDKBASEDIR%\lib\win7\amd64"
 SET "PATH=%WDKBASEDIR%\bin\x86;%WDKBASEDIR%\bin\x86\amd64"
 
-IF /I "%ARCH%" == "x86" GOTO END
+IF "%ARCH%" == "x86" GOTO END
 
 TITLE Building Regshot x64...
 ECHO. & ECHO.
 
-IF /I "%BUILDTYPE%" == "Build" (
+IF "%BUILDTYPE%" == "Build" (
   CALL :SUBNMAKE "x64=1"
   GOTO END
 )
 
-IF /I "%BUILDTYPE%" == "Rebuild" (
+IF "%BUILDTYPE%" == "Rebuild" (
   CALL :SUBNMAKE "x64=1"
   GOTO END
 )
 
-IF /I "%BUILDTYPE%" == "Clean" CALL :SUBNMAKE "x64=1" clean
+IF "%BUILDTYPE%" == "Clean" CALL :SUBNMAKE "x64=1" clean
 
 
 :END
@@ -176,6 +153,28 @@ EXIT /B
 :SUBNMAKE
 nmake /NOLOGO /f "makefile.mak" %BUILDTYPE% %1
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
+EXIT /B
+
+
+:SHOWHELP
+TITLE "%~nx0 %1"
+ECHO. & ECHO.
+ECHO Usage:   %~nx0 [Clean^|Build^|Rebuild] [x86^|x64^|all]
+ECHO.
+ECHO Notes:   You can also prefix the commands with "-", "--" or "/".
+ECHO          The arguments are case insesitive.
+ECHO. & ECHO.
+ECHO Edit "%~nx0" and set your WDK directory.
+ECHO You shouldn't need to make any changes other than that.
+ECHO. & ECHO.
+ECHO Executing "%~nx0" will use the defaults: "%~nx0 build all"
+ECHO.
+ECHO If you skip the second argument the default one will be used. Example:
+ECHO "%~nx0 rebuild" is the same as "%~nx0 rebuild all"
+ECHO.
+ECHO WARNING: "%~nx0 x86" won't work.
+ECHO.
+ENDLOCAL
 EXIT /B
 
 

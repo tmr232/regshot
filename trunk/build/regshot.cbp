@@ -39,13 +39,11 @@
 					<Add option="-march=i686" />
 					<Add option="-O3" />
 					<Add option="-w" />
-					<Add option="-flto" />
 					<Add option="-DWIN32" />
 					<Add option="-D_WIN32_WINNT=0x0500" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-flto" />
 				</Linker>
 			</Target>
 			<Target title="Release_x64">
@@ -56,13 +54,11 @@
 				<Compiler>
 					<Add option="-O3" />
 					<Add option="-w" />
-					<Add option="-flto" />
 					<Add option="-D_WIN64" />
 					<Add option="-D_WIN32_WINNT=0x0502" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-flto" />
 				</Linker>
 			</Target>
 		</Build>

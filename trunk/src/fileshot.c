@@ -347,29 +347,36 @@ VOID FreeAllFileHead(LPHEADFILE lp)
 
 //--------------------------------------------------
 //File save engine (It is stupid again!) added in 1.8
+//1.8.3s changed some struct
 //--------------------------------------------------
-VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DWORD nFPCaller)
+VOID    SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DWORD nFPCaller)
 {
 
     DWORD   nFPHeader;
     DWORD   nFPCurrent;
     DWORD   nFPTemp4Write;
-    size_t  nLenPlus1;
+    DWORD   nLenPlus1;
+    int     nPad;
 
-    nLenPlus1 = strlen(lpFileContent->lpfilename) + 1;                      // get len+1
-    nFPHeader = SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);          // save head fp
-    nFPTemp4Write = nFPHeader + 41;                                         // 10*4+1
-    WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);                    // save location of lpfilename
-    WriteFile(hFileWholeReg,(LPBYTE)lpFileContent + 4,24,&NBW,NULL);        // Write time,size etc. 6*4
+    nLenPlus1 = strlen(lpFileContent->lpfilename) + 1;                      // Get len+1
+    nFPHeader = SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);          // Save head fp
+    nFPTemp4Write = nFPHeader + 44;                                         // 1.8.3s 11*4 former is 10*4+1
+    WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);                    // Save the location of lpfilename
 
-    //nFPTemp4Write = (lpFileContent->lpfirstsubfile != NULL) ? (nFPHeader + 41 + nLenPlus1):0;    // We write lpfilename plus a "\0"
-    //WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);                  // save location of lpfirstsubfile
-    WriteFile(hFileWholeReg,(LPBYTE)lpFileContent + 28,8,&NBW,NULL);        // save lpfirstsubfile and lpbrotherfile
-    WriteFile(hFileWholeReg,&nFPCurrentFatherFile,4,&NBW,NULL);             // save nFPCurrentFatherKey passed by caller
+    WriteFile(hFileWholeReg,(LPBYTE)lpFileContent + 4,24,&NBW,NULL);        // Write time, size etc. 6*4
+
+    //nFPTemp4Write = (lpFileContent->lpfirstsubfile!=NULL) ? (nFPHeader + 41 + nLenPlus1) : 0;     // We write lpfilename plus a "\0"
+    //WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);                  // Save the location of lpfirstsubfile
+    WriteFile(hFileWholeReg,(LPBYTE)lpFileContent + 28,8,&NBW,NULL);        // Save lpfirstsubfile and lpbrotherfile
+    WriteFile(hFileWholeReg,&nFPCurrentFatherFile,4,&NBW,NULL);             // Save nFPCurrentFatherKey passed by caller
     nFPTemp4Write = 0;
-    WriteFile(hFileWholeReg,&nFPTemp4Write,1,&NBW,NULL);                    // clear and save bfilematch
+    WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);                    // Clear and save bfilematch
     WriteFile(hFileWholeReg,lpFileContent->lpfilename,nLenPlus1,&NBW,NULL); // Save the current filename
 
+    nPad = (nLenPlus1 % 4 == 0 ) ? 0 : (4 - nLenPlus1 % 4);
+    if (nPad > 0) {
+        WriteFile(hFileWholeReg,&nFPTemp4Write,nPad,&NBW,NULL);             // Save the current filename
+    }
 
     if (lpFileContent->lpfirstsubfile != NULL) {
         // pass this filecontent's position as subfile's fatherfile's position and pass the "lpfirstsubfile field"
@@ -382,24 +389,25 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DW
     }
 
     if (nFPCaller > 0) { // save position of current file in current father file
-        nFPCurrent = SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);
+        nFPCurrent=SetFilePointer(hFileWholeReg,0,NULL,FILE_CURRENT);
         SetFilePointer(hFileWholeReg,nFPCaller,NULL,FILE_BEGIN);
         WriteFile(hFileWholeReg,&nFPHeader,4,&NBW,NULL);
         SetFilePointer(hFileWholeReg,nFPCurrent,NULL,FILE_BEGIN);
     }
+
     // Need adjust progress bar para!!
     nSavingFile++;
 
     if (nGettingFile != 0)
-        if (nSavingFile%nGettingFile>nFileStep) {
+        if (nSavingFile % nGettingFile>nFileStep) {
             nSavingFile = 0;
             SendDlgItemMessage(hWnd,IDC_PBCOMPARE,PBM_STEPIT,(WPARAM)0,(LPARAM)0);
             UpdateWindow(hWnd);
             PeekMessage(&msg,hWnd,WM_ACTIVATE,WM_ACTIVATE,PM_REMOVE);
         }
 
-}
 
+}
 
 //--------------------------------------------------
 //Realign filecontent, called by ReAlignFile()
