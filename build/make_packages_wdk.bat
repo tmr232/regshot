@@ -48,12 +48,12 @@ EXIT /B
 TITLE Creating the %2 ZIP file...
 CALL :SUBMSG "INFO" "Creating the %2 ZIP file..."
 
-MD "temp_zip" >NUL 2>&1
-COPY /Y /V "..\gpl.txt" "temp_zip\GPL.txt"
-COPY /Y /V "..\files\history.txt" "temp_zip\History.txt"
-COPY /Y /V "..\files\language.ini" "temp_zip\"
-COPY /Y /V "..\files\readme.txt" "temp_zip\Readme.txt"
-COPY /Y /V "..\files\regshot.ini" "temp_zip\"
+IF NOT EXIST "temp_zip" MD "temp_zip"
+COPY /Y /V "..\gpl.txt"                "temp_zip\GPL.txt"
+COPY /Y /V "..\files\history.txt"      "temp_zip\History.txt"
+COPY /Y /V "..\files\language.ini"     "temp_zip\"
+COPY /Y /V "..\files\readme.txt"       "temp_zip\Readme.txt"
+COPY /Y /V "..\files\regshot.ini"      "temp_zip\"
 COPY /Y /V "..\bin\WDK\%1\Regshot.exe" "temp_zip\"
 
 PUSHD "temp_zip"
@@ -62,9 +62,9 @@ IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
 CALL :SUBMSG "INFO" "Regshot_%REGSHOTVER%_%2_WDK.zip created successfully!"
 
-MOVE /Y "Regshot_%REGSHOTVER%_%2_WDK.zip" "..\" >NUL 2>&1
+MOVE /Y "Regshot_%REGSHOTVER%_%2_WDK.zip" "..\" >NUL
 POPD
-RD /S /Q "temp_zip" >NUL 2>&1
+IF EXIST "temp_zip" RD /S /Q "temp_zip"
 EXIT /B
 
 

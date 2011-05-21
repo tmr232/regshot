@@ -24,7 +24,7 @@
 
 
 #define DO_STRINGIFY(x) #x
-#define STRINGIFY(x) DO_STRINGIFY(x)
+#define STRINGIFY(x)    DO_STRINGIFY(x)
 
 #define REGSHOT_VERSION_MAJOR     1
 #define REGSHOT_VERSION_MINOR     8
@@ -42,6 +42,6 @@
 #else
 #define REGSHOT_TITLE             "Regshot"
 #define REGSHOT_RESULT_FILE       "~res"
-#endif  // _WIN64
+#endif // _WIN64
 
 #endif // REGSHOT_VERSION_H

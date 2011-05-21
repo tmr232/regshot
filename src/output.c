@@ -113,7 +113,7 @@ VOID WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor)
             }
             //else
             //    WriteFile(hFile,str_CR,sizeof(str_CR) - 1,&NBW,NULL);
-                // for some reason, txt doesn't wrap anymore since 1.50e, check below!
+            // for some reason, txt doesn't wrap anymore since 1.50e, check below!
         }
 
         if (isHTML) {
