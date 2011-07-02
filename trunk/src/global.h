@@ -346,4 +346,4 @@ VOID    ReAlignFile(LPHEADFILE lpHF, DWORD nBase);
 LPFILECONTENT SearchDirChain(LPSTR lpname, LPHEADFILE lpHF);
 VOID    GetAllSubFile(BOOL needbrother, DWORD typedir, DWORD typefile, LPDWORD lpcountdir, LPDWORD lpcountfile, LPFILECONTENT lpFileContent);
 
-#endif // REGSHOT_GLOBAL_H
+#endif //REGSHOT_GLOBAL_H

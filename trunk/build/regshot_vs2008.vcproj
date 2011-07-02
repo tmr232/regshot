@@ -218,6 +218,8 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				LargeAddressAware="2"
+				SetChecksum="true"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -295,6 +297,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				SetChecksum="true"
 				TargetMachine="17"
 			/>
 			<Tool

@@ -28,6 +28,11 @@
 # Remove the .SILENT directive in order to display all the commands
 .SILENT:
 
+
+CC = cl.exe
+LD = link.exe
+RC = rc.exe
+
 !IFDEF x64
 BINDIR  = ..\bin\WDK\Release_x64
 !ELSE
@@ -56,7 +61,7 @@ RFLAGS  = $(RFLAGS) /d "_WIN64"
 !ELSE
 CFLAGS  = $(CFLAGS) /D "WIN32" /D "_WIN32_WINNT=0x0500"
 LIBS    = $(LIBS) msvcrt_win2000.obj
-LDFLAGS = $(LDFLAGS) /SUBSYSTEM:WINDOWS,5.0 /MACHINE:X86
+LDFLAGS = $(LDFLAGS) /LARGEADDRESSAWARE /SUBSYSTEM:WINDOWS,5.0 /MACHINE:X86
 RFLAGS  = $(RFLAGS) /d "WIN32"
 !ENDIF
 
@@ -100,15 +105,15 @@ OBJECTS= \
 ##  Batch rule  ##
 ##################
 {$(SRC)}.c{$(OBJDIR)}.obj::
-    cl $(CFLAGS) /Tc $<
+    $(CC) $(CFLAGS) /Tc $<
 
 
 ################
 ##  Commands  ##
 ################
 $(EXE): $(OBJECTS)
-	rc $(RFLAGS) /fo"$(OBJDIR)\regshot.res" "$(SRC)\regshot.rc" >NUL
-	link $(LDFLAGS) $(LIBS) $(OBJECTS) /OUT:"$(EXE)"
+	$(RC) $(RFLAGS) /fo"$(OBJDIR)\regshot.res" "$(SRC)\regshot.rc" >NUL
+	$(LD) $(LDFLAGS) $(LIBS) $(OBJECTS) /OUT:"$(EXE)"
 
 
 ####################

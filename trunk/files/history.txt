@@ -14,6 +14,7 @@ V1.8.3 upcoming
 ! Add support for various compilers
 ! Add a proper manifest file
 ! Various code cleanup
+! Struct of .hiv file slightly changed. (testing)
 
 V1.8.2 2007-11-03
 ! Change some calls to ANSI version (lstrcmp->strcmp...)
