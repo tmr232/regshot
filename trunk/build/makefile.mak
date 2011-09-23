@@ -49,7 +49,6 @@ CFLAGS  = /nologo /c /Fo"$(OBJDIR)/" /W3 /WX /wd4819 /EHsc /MD /O2 /GL /MP $(DEF
 LDFLAGS = /NOLOGO /WX /INCREMENTAL:NO /RELEASE /OPT:REF /OPT:ICF /DYNAMICBASE /NXCOMPAT \
           /LTCG /DEBUG
 LIBS    = user32.lib comdlg32.lib advapi32.lib shell32.lib
-MTFLAGS = -nologo
 RFLAGS  = /l 0x0409
 
 

@@ -137,6 +137,9 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <GenerateAlternateCodePaths>SSSE3</GenerateAlternateCodePaths>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,6 +148,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <LargeAddressAware>true</LargeAddressAware>
       <MergeSections>.rdata=.text</MergeSections>
+      <SetChecksum>true</SetChecksum>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -161,14 +165,17 @@
       <DisableSpecificWarnings>4267</DisableSpecificWarnings>
       <GenerateAlternateCodePaths>SSSE3</GenerateAlternateCodePaths>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <LargeAddressAware>true</LargeAddressAware>
       <MergeSections>.rdata=.text</MergeSections>
+      <SetChecksum>true</SetChecksum>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
