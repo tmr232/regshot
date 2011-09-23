@@ -28,7 +28,7 @@ extern u_char * lan_error;
 //-------------------------------------------------------------
 VOID ErrMsg(char * note)
 {
-    MessageBox(hWnd,note,lan_error,MB_ICONHAND);
+    MessageBox(hWnd, note, lan_error, MB_ICONHAND);
 }
 
 
@@ -45,23 +45,23 @@ VOID DebugLog(LPSTR filename, LPSTR lpstr, HWND hDlg, BOOL bisCR)
     DWORD   length;
     DWORD   nPos;
 
-    hFile = CreateFile(filename,GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,OPEN_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+    hFile = CreateFile(filename, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
         ErrMsg(lan_errorcreatefile);
     } else {
-        nPos = SetFilePointer(hFile,0,NULL,FILE_END);
+        nPos = SetFilePointer(hFile, 0, NULL, FILE_END);
         if (nPos == 0xFFFFFFFF) {
             ErrMsg(lan_errormovefp);
         } else {
 
             length = strlen(lpstr);
-            WriteFile(hFile,lpstr,length,&NBW,NULL);
+            WriteFile(hFile, lpstr, length, &NBW, NULL);
             if (NBW != length) {
                 //ErrMsg(lan_errorwritefile);
 
             }
             if (bisCR == TRUE) {
-                WriteFile(hFile,str_CR,sizeof(str_CR) - 1,&NBW,NULL);
+                WriteFile(hFile, str_CR, sizeof(str_CR) - 1, &NBW, NULL);
             }
         }
     }

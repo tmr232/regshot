@@ -26,39 +26,39 @@ LPSTR   str_SectionCurrent  = "CURRENT";
 LPSTR   str_Original        = "[Original]";
 
 // This is the Pointer to Language Strings
-u_char *    lan_key;
-u_char *    lan_value;
-u_char *    lan_dir;
-u_char *    lan_file;
-u_char *    lan_time;
-u_char *    lan_keyadd;
-u_char *    lan_keydel;
-u_char *    lan_valadd;
-u_char *    lan_valdel;
-u_char *    lan_valmodi;
-u_char *    lan_fileadd;
-u_char *    lan_filedel;
-u_char *    lan_filemodi;
-u_char *    lan_diradd;
-u_char *    lan_dirdel;
-u_char *    lan_dirmodi;
-u_char *    lan_total;
-u_char *    lan_comments;
-u_char *    lan_datetime;
-u_char *    lan_computer;
-u_char *    lan_username;
-u_char *    lan_about;
-u_char *    lan_error;
-u_char *    lan_errorexecviewer;
-u_char *    lan_errorcreatefile;
-u_char *    lan_erroropenfile;
-u_char *    lan_errormovefp;
-u_char *    lan_menushot;
-u_char *    lan_menushotsave;
-u_char *    lan_menuload;
-u_char *    lan_menuclearallshots;
-u_char *    lan_menuclearshot1;
-u_char *    lan_menuclearshot2;
+u_char   *  lan_key;
+u_char   *  lan_value;
+u_char   *  lan_dir;
+u_char   *  lan_file;
+u_char   *  lan_time;
+u_char   *  lan_keyadd;
+u_char   *  lan_keydel;
+u_char   *  lan_valadd;
+u_char   *  lan_valdel;
+u_char   *  lan_valmodi;
+u_char   *  lan_fileadd;
+u_char   *  lan_filedel;
+u_char   *  lan_filemodi;
+u_char   *  lan_diradd;
+u_char   *  lan_dirdel;
+u_char   *  lan_dirmodi;
+u_char   *  lan_total;
+u_char   *  lan_comments;
+u_char   *  lan_datetime;
+u_char   *  lan_computer;
+u_char   *  lan_username;
+u_char   *  lan_about;
+u_char   *  lan_error;
+u_char   *  lan_errorexecviewer;
+u_char   *  lan_errorcreatefile;
+u_char   *  lan_erroropenfile;
+u_char   *  lan_errormovefp;
+u_char   *  lan_menushot;
+u_char   *  lan_menushotsave;
+u_char   *  lan_menuload;
+u_char   *  lan_menuclearallshots;
+u_char   *  lan_menuclearshot1;
+u_char   *  lan_menuclearshot2;
 
 // This is the dimension for MultiLanguage Default Strings[English]
 unsigned char lan_default[][22] = {
@@ -123,21 +123,21 @@ BOOL GetLanguageType(HWND hDlg)
     //LPSTR   lpCurrentLanguage = MYALLOC0(SIZEOF_SINGLE_LANGUAGENAME);
 
 
-    nReturn = GetPrivateProfileSectionNames(lpSectionNames,SIZEOF_LANGUAGE_SECTIONNAMES_BUFFER,lpIni);
-    if (nReturn>1) {
+    nReturn = GetPrivateProfileSectionNames(lpSectionNames, SIZEOF_LANGUAGE_SECTIONNAMES_BUFFER, lpIni);
+    if (nReturn > 1) {
         bRet = TRUE;
         for (lp = lpSectionNames; *lp != 0; lp = lp + strlen(lp) + 1) {
-            if (_stricmp(lp,str_SectionCurrent) != 0) {
-                SendDlgItemMessage(hDlg,IDC_COMBOLANGUAGE,CB_ADDSTRING,(WPARAM)0,(LPARAM)lp);
+            if (_stricmp(lp, str_SectionCurrent) != 0) {
+                SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_ADDSTRING, (WPARAM)0, (LPARAM)lp);
             }
         }
-        GetPrivateProfileString(str_SectionCurrent,str_SectionCurrent,
-                                str_DefaultLanguage,lpCurrentLanguage,16,lpIni);
+        GetPrivateProfileString(str_SectionCurrent, str_SectionCurrent,
+                                str_DefaultLanguage, lpCurrentLanguage, 16, lpIni);
 
-        nReturn = SendDlgItemMessage(hDlg,IDC_COMBOLANGUAGE,CB_FINDSTRINGEXACT,(WPARAM)0,(LPARAM)lpCurrentLanguage);
+        nReturn = SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_FINDSTRINGEXACT, (WPARAM)0, (LPARAM)lpCurrentLanguage);
         if (nReturn != CB_ERR) {
             bRet = TRUE;
-            SendDlgItemMessage(hDlg,IDC_COMBOLANGUAGE,CB_SETCURSEL,(WPARAM)nReturn,(LPARAM)0);
+            SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_SETCURSEL, (WPARAM)nReturn, (LPARAM)0);
         } else {
             bRet = FALSE;
         }
@@ -282,18 +282,18 @@ BOOL GetLanguageStrings(HWND hDlg)
     LPDWORD lp;
     char    lpIniKey[8];    // 1.8.2 LPSTR   lpIniKey = MYALLOC0(8);
 
-    nIndex = SendDlgItemMessage(hDlg,IDC_COMBOLANGUAGE,CB_GETCURSEL,(WPARAM)0,(LPARAM)0);
+    nIndex = SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
     if (nIndex != CB_ERR) {
 
-        SendDlgItemMessage(hDlg,IDC_COMBOLANGUAGE,CB_GETLBTEXT,(WPARAM)nIndex,(LPARAM)lpCurrentLanguage);
-        WritePrivateProfileString(str_SectionCurrent,str_SectionCurrent,lpCurrentLanguage,lpIni);
-        ZeroMemory(lpFreeStrings,SIZEOF_FREESTRINGS);
-        GetPrivateProfileSection(lpCurrentLanguage,lpFreeStrings,SIZEOF_FREESTRINGS,lpIni);
-        for (i = 1,lp = ldwTempStrings; i < 47; i++) {
+        SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_GETLBTEXT, (WPARAM)nIndex, (LPARAM)lpCurrentLanguage);
+        WritePrivateProfileString(str_SectionCurrent, str_SectionCurrent, lpCurrentLanguage, lpIni);
+        ZeroMemory(lpFreeStrings, SIZEOF_FREESTRINGS);
+        GetPrivateProfileSection(lpCurrentLanguage, lpFreeStrings, SIZEOF_FREESTRINGS, lpIni);
+        for (i = 1, lp = ldwTempStrings; i < 47; i++) {
 
-            sprintf(lpIniKey,"%d%s",i,"=");
+            sprintf(lpIniKey, "%d%s", i, "=");
             // pointer returned was pointed to char just after "="
-            if ((lpReturn = AtPos(lpFreeStrings,lpIniKey,SIZEOF_FREESTRINGS)) != NULL) {
+            if ((lpReturn = AtPos(lpFreeStrings, lpIniKey, SIZEOF_FREESTRINGS)) != NULL) {
                 //_asm int 3;
                 *(lp + i - 1) = (DWORD)lpReturn;
             } else {
@@ -301,13 +301,13 @@ BOOL GetLanguageStrings(HWND hDlg)
             }
 
             if (i >= 28 && i < 41 && i != 34) {
-                SetDlgItemText(hDlg,ID_BASE + 3 + i - 28,(LPSTR)(*(lp + i - 1)));
+                SetDlgItemText(hDlg, ID_BASE + 3 + i - 28, (LPSTR)(*(lp + i - 1)));
             }
 
         }
 
-        lpReturn = AtPos(lpFreeStrings,str_ItemTranslator,SIZEOF_FREESTRINGS);
-        lpCurrentTranslator = (lpReturn != NULL)?(lpReturn+1):str_Original;
+        lpReturn = AtPos(lpFreeStrings, str_ItemTranslator, SIZEOF_FREESTRINGS);
+        lpCurrentTranslator = (lpReturn != NULL) ? (lpReturn + 1) : str_Original;
         PointToNewStrings();
         bRet = TRUE;
     } else {
