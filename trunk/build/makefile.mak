@@ -48,7 +48,7 @@ DEFINES = /D "_WINDOWS" /D "NDEBUG" /D "_CRT_SECURE_NO_WARNINGS"
 CFLAGS  = /nologo /c /Fo"$(OBJDIR)/" /W3 /WX /wd4819 /EHsc /MD /O2 /GL /MP $(DEFINES)
 LDFLAGS = /NOLOGO /WX /INCREMENTAL:NO /RELEASE /OPT:REF /OPT:ICF /DYNAMICBASE /NXCOMPAT \
           /LTCG /DEBUG
-LIBS    = user32.lib comdlg32.lib advapi32.lib shell32.lib
+LIBS    = advapi32.lib comdlg32.lib kernel32.lib shell32.lib user32.lib
 RFLAGS  = /l 0x0409
 
 

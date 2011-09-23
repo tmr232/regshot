@@ -1,0 +1,2 @@
+command line used:
+astyle -s4 --indent-switches --indent-namespaces --add-brackets --indent-col1-comments --pad-header --align-pointer=middle --align-reference=middle --preserve-date --pad-oper --unpad-paren *.h *.c

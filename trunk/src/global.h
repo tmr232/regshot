@@ -106,7 +106,7 @@ struct _KEYCONTENT {
     DWORD  bkeymatch;                          // Flag used at comparing, former is byte
 
 };
-typedef struct _KEYCONTENT KEYCONTENT,FAR * LPKEYCONTENT;
+typedef struct _KEYCONTENT KEYCONTENT, FAR * LPKEYCONTENT;
 
 
 // Struct used for Windows Registry Value
@@ -119,7 +119,7 @@ struct _VALUECONTENT {
     struct _KEYCONTENT FAR * lpfatherkey;      // Pointer to value's father[Key]
     DWORD  bvaluematch;                        // Flag used at comparing, former is byte
 };
-typedef struct _VALUECONTENT VALUECONTENT,FAR * LPVALUECONTENT;
+typedef struct _VALUECONTENT VALUECONTENT, FAR * LPVALUECONTENT;
 
 
 // Struct used for Windows File System
@@ -136,7 +136,7 @@ struct _FILECONTENT {
     struct _FILECONTENT FAR * lpfatherfile;    // Pointer to files father
     DWORD  bfilematch;                         // Flag used at comparing, former is byte
 };
-typedef struct _FILECONTENT FILECONTENT,FAR * LPFILECONTENT;
+typedef struct _FILECONTENT FILECONTENT, FAR * LPFILECONTENT;
 
 
 // Struct used for file tree comparison
@@ -155,7 +155,7 @@ struct _HEADFILE {
     struct _HEADFILE FAR * lpnextheadfile;      // Pointer to next headfile struc
     LPFILECONTENT   lpfilecontent;              // Pointer to filecontent
 };
-typedef struct  _HEADFILE HEADFILE,FAR * LPHEADFILE;
+typedef struct  _HEADFILE HEADFILE, FAR * LPHEADFILE;
 
 
 // Struct used for comparing result output
@@ -163,7 +163,7 @@ struct _COMRESULT {
     LPSTR  lpresult;                           // Pointer to result string
     struct _COMRESULT FAR * lpnextresult;      // Pointer to next _COMRESULT
 };
-typedef struct _COMRESULT COMRESULT,FAR * LPCOMRESULT;
+typedef struct _COMRESULT COMRESULT, FAR * LPCOMRESULT;
 
 
 // Pointers to compare result [see above]
@@ -238,7 +238,7 @@ LPSTR           lpComputerName1;
 LPSTR           lpComputerName2;
 LPSTR           lpUserName1;
 LPSTR           lpUserName2;
-SYSTEMTIME FAR * lpSystemtime1,* lpSystemtime2;
+SYSTEMTIME FAR * lpSystemtime1, * lpSystemtime2;
 
 
 // Some pointers need to allocate enough space to working
@@ -332,7 +332,7 @@ VOID    InitProgressBar(VOID);
 VOID    CompareFirstSubFile(LPFILECONTENT lpHead1, LPFILECONTENT lpHead2);
 BOOL    ReplaceInValidFileName(LPSTR lpf);
 VOID    ErrMsg(char * note);
-VOID    WriteHead(u_char * lpstr,DWORD count, BOOL isHTML);
+VOID    WriteHead(u_char * lpstr, DWORD count, BOOL isHTML);
 VOID    WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor);
 VOID    WriteTitle(LPSTR lph, LPSTR lpb, BOOL isHTML);
 VOID    SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DWORD nFPCaller);

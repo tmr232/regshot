@@ -54,23 +54,23 @@ char htm_s3[]         = "</span>\r\n";
 VOID WriteHead(u_char * lpstr, DWORD count, BOOL isHTML)
 {
     unsigned char lpcount[8];
-    sprintf(lpcount,"%d",count);
+    sprintf(lpcount, "%d", count);
 
     if (isHTML == TRUE) {
-        WriteFile(hFile,htm_BR,sizeof(htm_BR) - 1,&NBW,NULL);
-        WriteFile(hFile,htm_TableBegin,sizeof(htm_TableBegin) - 1,&NBW,NULL);
-        WriteFile(hFile,htm_Td1Begin,sizeof(htm_Td1Begin) - 1,&NBW,NULL);
+        WriteFile(hFile, htm_BR, sizeof(htm_BR) - 1, &NBW, NULL);
+        WriteFile(hFile, htm_TableBegin, sizeof(htm_TableBegin) - 1, &NBW, NULL);
+        WriteFile(hFile, htm_Td1Begin, sizeof(htm_Td1Begin) - 1, &NBW, NULL);
     } else {
-        WriteFile(hFile,txt_line,sizeof(txt_line) - 1,&NBW,NULL);
+        WriteFile(hFile, txt_line, sizeof(txt_line) - 1, &NBW, NULL);
     }
-    WriteFile(hFile,lpstr,strlen(lpstr),&NBW,NULL);
-    WriteFile(hFile,lpcount,strlen(lpcount),&NBW,NULL);
+    WriteFile(hFile, lpstr, strlen(lpstr), &NBW, NULL);
+    WriteFile(hFile, lpcount, strlen(lpcount), &NBW, NULL);
 
     if (isHTML == TRUE) {
-        WriteFile(hFile,htm_Td1Over,sizeof(htm_Td1Over) - 1,&NBW,NULL);
-        WriteFile(hFile,htm_TableOver,sizeof(htm_TableOver) - 1,&NBW,NULL);
+        WriteFile(hFile, htm_Td1Over, sizeof(htm_Td1Over) - 1, &NBW, NULL);
+        WriteFile(hFile, htm_TableOver, sizeof(htm_TableOver) - 1, &NBW, NULL);
     } else {
-        WriteFile(hFile,txt_line,sizeof(txt_line) - 1,&NBW,NULL);
+        WriteFile(hFile, txt_line, sizeof(txt_line) - 1, &NBW, NULL);
     }
 }
 
@@ -85,31 +85,31 @@ VOID WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor)
     LPCOMRESULT lp;
 
     if (isHTML) {
-        WriteFile(hFile,htm_TableBegin,sizeof(htm_TableBegin) - 1,&NBW,NULL);
-        WriteFile(hFile,htm_Td2Begin,sizeof(htm_Td2Begin) - 1,&NBW,NULL);
+        WriteFile(hFile, htm_TableBegin, sizeof(htm_TableBegin) - 1, &NBW, NULL);
+        WriteFile(hFile, htm_Td2Begin, sizeof(htm_Td2Begin) - 1, &NBW, NULL);
     }
 
-    for (i = 0,lp = lpcomhead; lp != NULL; i++,lp = lp->lpnextresult) {
+    for (i = 0, lp = lpcomhead; lp != NULL; i++, lp = lp->lpnextresult) {
         nLen = strlen(lp->lpresult);
         lpstr = lp->lpresult;
         if (isHTML) {
             // 1.8.0
-            if (usecolor && i%2 == 0) {
-                WriteFile(hFile,htm_s1,sizeof(htm_s1) - 1,&NBW,NULL);
+            if (usecolor && i % 2 == 0) {
+                WriteFile(hFile, htm_s1, sizeof(htm_s1) - 1, &NBW, NULL);
             } else {
-                WriteFile(hFile,htm_s2,sizeof(htm_s2) - 1,&NBW,NULL);
+                WriteFile(hFile, htm_s2, sizeof(htm_s2) - 1, &NBW, NULL);
             }
         }
 
         for (n = 0; nLen > 0;) {
-            nLen < HTMLWRAPLENGTH? (n = nLen):(n = HTMLWRAPLENGTH);
+            nLen < HTMLWRAPLENGTH ? (n = nLen) : (n = HTMLWRAPLENGTH);
 
-            WriteFile(hFile,lpstr,n,&NBW,NULL);
+            WriteFile(hFile, lpstr, n, &NBW, NULL);
             lpstr = lpstr + n;
             nLen = nLen - n;
             // WriteFile(hFile,lp->lpresult,strlen(lp->lpresult),&NBW,NULL);
             if (isHTML) {
-                WriteFile(hFile,htm_BR,sizeof(htm_BR) - 1,&NBW,NULL);
+                WriteFile(hFile, htm_BR, sizeof(htm_BR) - 1, &NBW, NULL);
             }
             //else
             //    WriteFile(hFile,str_CR,sizeof(str_CR) - 1,&NBW,NULL);
@@ -118,18 +118,18 @@ VOID WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor)
 
         if (isHTML) {
             if (usecolor) {
-                WriteFile(hFile,htm_s3,sizeof(htm_s3) - 1,&NBW,NULL);
+                WriteFile(hFile, htm_s3, sizeof(htm_s3) - 1, &NBW, NULL);
             }
         } else {
-            WriteFile(hFile,str_CR,sizeof(str_CR) - 1,&NBW,NULL);     // this!
+            WriteFile(hFile, str_CR, sizeof(str_CR) - 1, &NBW, NULL); // this!
         }
 
 
     }
 
     if (isHTML) {
-        WriteFile(hFile,htm_Td2Over,sizeof(htm_Td2Over) - 1,&NBW,NULL);
-        WriteFile(hFile,htm_TableOver,sizeof(htm_TableOver) - 1,&NBW,NULL);
+        WriteFile(hFile, htm_Td2Over, sizeof(htm_Td2Over) - 1, &NBW, NULL);
+        WriteFile(hFile, htm_TableOver, sizeof(htm_TableOver) - 1, &NBW, NULL);
     }
 
 }
@@ -139,17 +139,17 @@ VOID WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor)
 VOID WriteTitle(LPSTR lph, LPSTR lpb, BOOL isHTML)
 {
     if (isHTML) {
-        WriteFile(hFile,htm_TableBegin,sizeof(htm_TableBegin) - 1,&NBW,NULL);
-        WriteFile(hFile,htm_Td1Begin,sizeof(htm_Td1Begin) - 1,&NBW,NULL);
+        WriteFile(hFile, htm_TableBegin, sizeof(htm_TableBegin) - 1, &NBW, NULL);
+        WriteFile(hFile, htm_Td1Begin, sizeof(htm_Td1Begin) - 1, &NBW, NULL);
     }
-    WriteFile(hFile,lph,strlen(lph),&NBW,NULL);
-    WriteFile(hFile,lpb,strlen(lpb),&NBW,NULL);
+    WriteFile(hFile, lph, strlen(lph), &NBW, NULL);
+    WriteFile(hFile, lpb, strlen(lpb), &NBW, NULL);
 
     if (isHTML) {
-        WriteFile(hFile,htm_Td1Over,sizeof(htm_Td1Over) - 1,&NBW,NULL);
-        WriteFile(hFile,htm_TableOver,sizeof(htm_TableOver) - 1,&NBW,NULL);
+        WriteFile(hFile, htm_Td1Over, sizeof(htm_Td1Over) - 1, &NBW, NULL);
+        WriteFile(hFile, htm_TableOver, sizeof(htm_TableOver) - 1, &NBW, NULL);
     } else {
-        WriteFile(hFile,str_CR,sizeof(str_CR) - 1,&NBW,NULL);
+        WriteFile(hFile, str_CR, sizeof(str_CR) - 1, &NBW, NULL);
     }
 }
 
@@ -157,23 +157,23 @@ VOID WriteTitle(LPSTR lph, LPSTR lpb, BOOL isHTML)
 // 1.8.0
 VOID WriteHtmlbegin(void)
 {
-    WriteFile(hFile,htm_HTMLbegin,sizeof(htm_HTMLbegin) - 1,&NBW,NULL);
-    WriteFile(hFile,htm_HEADbegin,sizeof(htm_HEADbegin) - 1,&NBW,NULL);
-    WriteFile(hFile,htm_style,sizeof(htm_style) - 1,&NBW,NULL);
-    WriteFile(hFile,htm_HEADover,sizeof(htm_HEADover) - 1,&NBW,NULL);
-    WriteFile(hFile,htm_BodyBegin,sizeof(htm_BodyBegin) - 1,&NBW,NULL);
+    WriteFile(hFile, htm_HTMLbegin, sizeof(htm_HTMLbegin) - 1, &NBW, NULL);
+    WriteFile(hFile, htm_HEADbegin, sizeof(htm_HEADbegin) - 1, &NBW, NULL);
+    WriteFile(hFile, htm_style, sizeof(htm_style) - 1, &NBW, NULL);
+    WriteFile(hFile, htm_HEADover, sizeof(htm_HEADover) - 1, &NBW, NULL);
+    WriteFile(hFile, htm_BodyBegin, sizeof(htm_BodyBegin) - 1, &NBW, NULL);
 }
 
 
 VOID WriteHtmlover(void)
 {
     //WriteFile(hFile,htm_website,sizeof(htm_website) - 1,&NBW,NULL); // omit at 1.8
-    WriteFile(hFile,htm_BodyOver,sizeof(htm_BodyOver) - 1,&NBW,NULL);
-    WriteFile(hFile,htm_HTMLover,sizeof(htm_HTMLover) - 1,&NBW,NULL);
+    WriteFile(hFile, htm_BodyOver, sizeof(htm_BodyOver) - 1, &NBW, NULL);
+    WriteFile(hFile, htm_HTMLover, sizeof(htm_HTMLover) - 1, &NBW, NULL);
 }
 
 
 VOID WriteHtmlbr(void)
 {
-    WriteFile(hFile,htm_BR,sizeof(htm_BR) - 1,&NBW,NULL);
+    WriteFile(hFile, htm_BR, sizeof(htm_BR) - 1, &NBW, NULL);
 }
