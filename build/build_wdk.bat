@@ -28,17 +28,18 @@ SETLOCAL ENABLEEXTENSIONS
 CD /D %~dp0
 
 rem Set the WDK directory
-SET "WDKBASEDIR=C:\WinDDK\7600.16385.1"
+IF NOT DEFINED WDKBASEDIR SET "WDKBASEDIR=C:\WinDDK\7600.16385.1"
 
 rem Check the building environment
 IF NOT EXIST "%WDKBASEDIR%" CALL :SUBMSG "ERROR" "Specify your WDK directory!"
 
-rem check for the help switches
-IF /I "%1"=="help"   GOTO SHOWHELP
-IF /I "%1"=="/help"  GOTO SHOWHELP
-IF /I "%1"=="-help"  GOTO SHOWHELP
-IF /I "%1"=="--help" GOTO SHOWHELP
-IF /I "%1"=="/?"     GOTO SHOWHELP
+
+rem Check for the help switches
+IF /I "%~1" == "help"   GOTO SHOWHELP
+IF /I "%~1" == "/help"  GOTO SHOWHELP
+IF /I "%~1" == "-help"  GOTO SHOWHELP
+IF /I "%~1" == "--help" GOTO SHOWHELP
+IF /I "%~1" == "/?"     GOTO SHOWHELP
 
 
 rem Check for the first switch
@@ -70,18 +71,18 @@ rem Check for the second switch
 IF "%~2" == "" (
   SET "ARCH=all"
 ) ELSE (
-  IF /I "%~2" == "x86"   SET "ARCH=x86" & GOTO x86
-  IF /I "%~2" == "/x86"  SET "ARCH=x86" & GOTO x86
-  IF /I "%~2" == "-x86"  SET "ARCH=x86" & GOTO x86
-  IF /I "%~2" == "--x86" SET "ARCH=x86" & GOTO x86
-  IF /I "%~2" == "x64"   SET "ARCH=x64" & GOTO x86
-  IF /I "%~2" == "/x64"  SET "ARCH=x64" & GOTO x86
-  IF /I "%~2" == "-x64"  SET "ARCH=x64" & GOTO x86
-  IF /I "%~2" == "--x64" SET "ARCH=x64" & GOTO x86
-  IF /I "%~2" == "all"   SET "ARCH=all" & GOTO x86
-  IF /I "%~2" == "/all"  SET "ARCH=all" & GOTO x86
-  IF /I "%~2" == "-all"  SET "ARCH=all" & GOTO x86
-  IF /I "%~2" == "--all" SET "ARCH=all" & GOTO x86
+  IF /I "%~2" == "x86"   SET "ARCH=x86" & GOTO START
+  IF /I "%~2" == "/x86"  SET "ARCH=x86" & GOTO START
+  IF /I "%~2" == "-x86"  SET "ARCH=x86" & GOTO START
+  IF /I "%~2" == "--x86" SET "ARCH=x86" & GOTO START
+  IF /I "%~2" == "x64"   SET "ARCH=x64" & GOTO START
+  IF /I "%~2" == "/x64"  SET "ARCH=x64" & GOTO START
+  IF /I "%~2" == "-x64"  SET "ARCH=x64" & GOTO START
+  IF /I "%~2" == "--x64" SET "ARCH=x64" & GOTO START
+  IF /I "%~2" == "all"   SET "ARCH=all" & GOTO START
+  IF /I "%~2" == "/all"  SET "ARCH=all" & GOTO START
+  IF /I "%~2" == "-all"  SET "ARCH=all" & GOTO START
+  IF /I "%~2" == "--all" SET "ARCH=all" & GOTO START
 
   ECHO.
   ECHO Unsupported commandline switch!
@@ -90,62 +91,37 @@ IF "%~2" == "" (
 )
 
 
+:START
+IF "%ARCH%" == "x64" GOTO x64
+IF "%ARCH%" == "x86" GOTO x86
+
+
 :x86
 SET "INCLUDE=%WDKBASEDIR%\inc\api;%WDKBASEDIR%\inc\api\crt\stl60;%WDKBASEDIR%\inc\crt;%WDKBASEDIR%\inc\ddk"
 SET "LIB=%WDKBASEDIR%\lib\crt\i386;%WDKBASEDIR%\lib\win7\i386"
 SET "PATH=%WDKBASEDIR%\bin\x86;%WDKBASEDIR%\bin\x86\x86"
 
-IF "%ARCH%" == "x64" GOTO x64
-
-TITLE Building Regshot x86...
+TITLE Building Regshot x86 with WDK...
 ECHO. & ECHO.
 
-IF "%BUILDTYPE%" == "Build" (
-  CALL :SUBNMAKE
+CALL :SUBNMAKE
 
-  IF "%ARCH%" == "x86" GOTO END
-  IF "%ARCH%" == "x64" GOTO x64
-  IF "%ARCH%" == "all" GOTO x64
-)
-
-IF "%BUILDTYPE%" == "Rebuild" (
-  CALL :SUBNMAKE
-
-  IF "%ARCH%" == "x86" GOTO END
-  IF "%ARCH%" == "x64" GOTO x64
-  IF "%ARCH%" == "all" GOTO x64
-)
-
-IF "%BUILDTYPE%" == "Clean" CALL :SUBNMAKE clean
 IF "%ARCH%" == "x86" GOTO END
-IF "%ARCH%" == "x64" GOTO x64
-IF "%ARCH%" == "all" GOTO x64
 
 
 :x64
+SET "INCLUDE=%WDKBASEDIR%\inc\api;%WDKBASEDIR%\inc\api\crt\stl60;%WDKBASEDIR%\inc\crt;%WDKBASEDIR%\inc\ddk"
 SET "LIB=%WDKBASEDIR%\lib\crt\amd64;%WDKBASEDIR%\lib\win7\amd64"
 SET "PATH=%WDKBASEDIR%\bin\x86;%WDKBASEDIR%\bin\x86\amd64"
 
-IF "%ARCH%" == "x86" GOTO END
-
-TITLE Building Regshot x64...
+TITLE Building Regshot x64 with WDK...
 ECHO. & ECHO.
 
-IF "%BUILDTYPE%" == "Build" (
-  CALL :SUBNMAKE "x64=1"
-  GOTO END
-)
-
-IF "%BUILDTYPE%" == "Rebuild" (
-  CALL :SUBNMAKE "x64=1"
-  GOTO END
-)
-
-IF "%BUILDTYPE%" == "Clean" CALL :SUBNMAKE "x64=1" clean
+CALL :SUBNMAKE "x64=1"
 
 
 :END
-TITLE Building Regshot - Finished!
+TITLE Building Regshot with WDK - Finished!
 ENDLOCAL
 EXIT /B
 
@@ -182,7 +158,7 @@ EXIT /B
 ECHO. & ECHO ______________________________
 ECHO [%~1] %~2
 ECHO ______________________________ & ECHO.
-IF /I "%~1"=="ERROR" (
+IF /I "%~1" == "ERROR" (
   PAUSE
   EXIT
 ) ELSE (

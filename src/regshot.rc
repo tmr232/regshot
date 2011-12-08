@@ -120,7 +120,7 @@ IDI_MAINICON            ICON                    "res\\regshot.ico"
 // RT_MANIFEST
 //
 
-IDR_RT_MANIFEST         RT_MANIFEST             "res\\Regshot.exe.manifest"
+1                       RT_MANIFEST             "res\\Regshot.exe.manifest"
 
 /////////////////////////////////////////////////////////////////////////////
 //
