@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2003,2007 TiANWEi
+    Copyright 1999-2003,2007,2011 TiANWEi
     Copyright 2004 tulipfan
 
     This file is part of Regshot.
@@ -22,7 +22,14 @@
 #ifndef REGSHOT_GLOBAL_H
 #define REGSHOT_GLOBAL_H
 
-
+//just to disable compiler warning in vs2010 for secure version of strlen,sprintf ....
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+#if defined(_MSC_VER)
+//This make Debug build does not crash on "Stack Overflow" in recursive calling , this is 32M, you can change it to a proper number.
+#pragma comment(linker, "/STACK:33554432")
+#endif
 #ifdef __GNUC__
 #include <unistd.h>
 #endif
@@ -45,9 +52,10 @@
 
 #ifdef USEHEAPALLOC_DANGER
 
-#define MYALLOC(x)  HeapAlloc(hHeap,1,x)
-#define MYALLOC0(x) HeapAlloc(hHeap,9,x) // HEAP_NO_SERIALIZE|HEAP_ZERO_MEMORY ,1|8
-#define MYFREE(x)   HeapFree(hHeap,1,x)
+//MSDN doc say use HEAP_NO_SERIALIZE is not good for process heap :( so change fromm 1 to 0 20111216 ,slower than using 1
+#define MYALLOC(x)  HeapAlloc(hHeap,0,x)
+#define MYALLOC0(x) HeapAlloc(hHeap,8,x) // HEAP_NO_SERIALIZE|HEAP_ZERO_MEMORY ,1|8
+#define MYFREE(x)   HeapFree(hHeap,0,x)
 
 #else
 
@@ -96,14 +104,14 @@
 
 
 // Struct used for Windows Registry Key
-// 1.8.3s  following 3 structs are "slightly" changed
+// 1.8.3  following 3 structs are "slightly" changed
 struct _KEYCONTENT {
     LPSTR  lpkeyname;                          // Pointer to key's name
     struct _VALUECONTENT FAR * lpfirstvalue;   // Pointer to key's first value
     struct _KEYCONTENT FAR * lpfirstsubkey;    // Pointer to key's first subkey
     struct _KEYCONTENT FAR * lpbrotherkey;     // Pointer to key's brother
     struct _KEYCONTENT FAR * lpfatherkey;      // Pointer to key's father
-    DWORD  bkeymatch;                          // Flag used at comparing, former is byte
+    size_t bkeymatch;                          // Flag used at comparing, 1.8.2<= is byte
 
 };
 typedef struct _KEYCONTENT KEYCONTENT, FAR * LPKEYCONTENT;
@@ -117,7 +125,7 @@ struct _VALUECONTENT {
     LPBYTE lpvaluedata;                        // Pointer to value data
     struct _VALUECONTENT FAR * lpnextvalue;    // Pointer to value's brother
     struct _KEYCONTENT FAR * lpfatherkey;      // Pointer to value's father[Key]
-    DWORD  bvaluematch;                        // Flag used at comparing, former is byte
+    size_t bvaluematch;                        // Flag used at comparing, 1.8.2<= is byte
 };
 typedef struct _VALUECONTENT VALUECONTENT, FAR * LPVALUECONTENT;
 
@@ -134,7 +142,7 @@ struct _FILECONTENT {
     struct _FILECONTENT FAR * lpfirstsubfile;  // Pointer to files[DIRS] first sub file
     struct _FILECONTENT FAR * lpbrotherfile;   // Pointer to files[DIRS] brother
     struct _FILECONTENT FAR * lpfatherfile;    // Pointer to files father
-    DWORD  bfilematch;                         // Flag used at comparing, former is byte
+    size_t bfilematch;                         // Flag used at comparing, 1.8.2<= is byte
 };
 typedef struct _FILECONTENT FILECONTENT, FAR * LPFILECONTENT;
 
@@ -164,6 +172,51 @@ struct _COMRESULT {
     struct _COMRESULT FAR * lpnextresult;      // Pointer to next _COMRESULT
 };
 typedef struct _COMRESULT COMRESULT, FAR * LPCOMRESULT;
+
+
+//------------------- 1.8.3  maddes  -----------------------------
+//Following 3 structs are maddes's idea :)
+//Struct for saving windows registry key,must be the same size as _KEYCONTENT,and careful with boundary
+struct _SAVEKEYCONTENT {
+    size_t  fpos_keyname;                          // Pointer to key's name
+    size_t  fpos_firstvalue;   // Pointer to key's first value
+    size_t  fpos_firstsubkey;    // Pointer to key's first subkey
+    size_t  fpos_brotherkey;     // Pointer to key's brother
+    size_t  fpos_fatherkey;      // Pointer to key's father
+    size_t  bkeymatch;                          // Flag used at comparing, 1.8.2<= is byte
+
+};
+typedef struct _SAVEKEYCONTENT SAVEKEYCONTENT, FAR * LPSAVEKEYCONTENT;
+
+
+// Struct used for saving Windows Registry Value,must be the same size as _VALUECONTENT
+struct _SAVEVALUECONTENT {
+    DWORD  typecode;                           // Type of value [DWORD,STRING...]
+    DWORD  datasize;                           // Value data size in bytes
+    size_t fpos_valuename;                        // Pointer to value name
+    size_t fpos_valuedata;                        // Pointer to value data
+    size_t fpos_nextvalue;    // Pointer to value's brother
+    size_t fpos_fatherkey;      // Pointer to value's father[Key]
+    size_t bvaluematch;                        // Flag used at comparing, 1.8.2<= is byte
+};
+typedef struct _SAVEVALUECONTENT SAVEVALUECONTENT, FAR * LPSAVEVALUECONTENT;
+
+//struct for saving file content,must be the same size as _FILECONTENT
+struct _SAVEFILECONTENT {
+    size_t fpos_filename;                         // Pointer to filename
+    DWORD  writetimelow;                       // File write time [LOW  DWORD]
+    DWORD  writetimehigh;                      // File write time [HIGH DWORD]
+    DWORD  filesizelow;                        // File size [LOW  DWORD]
+    DWORD  filesizehigh;                       // File size [HIGH DWORD]
+    DWORD  fileattr;                           // File attributes
+    DWORD  cksum;                              // File checksum(plan to add in 1.8 not used now)
+    size_t fpos_firstsubfile;  // Pointer to files[DIRS] first sub file
+    size_t fpos_brotherfile;   // Pointer to files[DIRS] brother
+    size_t fpos_fatherfile;    // Pointer to files father
+    size_t bfilematch;                         // Flag used at comparing, 1.8.2<= is byte
+};
+typedef struct _SAVEFILECONTENT SAVEFILECONTENT, FAR * LPSAVEFILECONTENT;
+//------------------------------------------------------------------------------------
 
 
 // Pointers to compare result [see above]
@@ -232,8 +285,8 @@ LPKEYCONTENT    lpHeadUsers1;           // Pointer to HKEY_USERS 1
 LPKEYCONTENT    lpHeadUsers2;
 LPHEADFILE      lpHeadFile1;            // Pointer to headfile
 LPHEADFILE      lpHeadFile2;
-LPSTR           lpTempHive1;            // Pointer for loading hive files
-LPSTR           lpTempHive2;
+LPBYTE          lpTempHive1;            // Pointer for loading hive files
+LPBYTE          lpTempHive2;
 LPSTR           lpComputerName1;
 LPSTR           lpComputerName2;
 LPSTR           lpUserName1;
@@ -319,7 +372,7 @@ VOID    Shot1(void);
 VOID    Shot2(void);
 BOOL    CompareShots(void);
 VOID    SaveHive(LPKEYCONTENT lpKeyHLM, LPKEYCONTENT lpKeyUSER, LPHEADFILE lpHF, LPSTR computer, LPSTR user, LPVOID time);
-BOOL    LoadHive(LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER, LPHEADFILE FAR * lpHF, LPSTR FAR * lpHive);
+BOOL    LoadHive(LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER, LPHEADFILE FAR * lpHF, LPBYTE FAR * lpHive);
 VOID    FreeAllCompareResults(void);
 VOID    FreeAllKeyContent1(void);
 VOID    FreeAllKeyContent2(void);
@@ -335,14 +388,14 @@ VOID    ErrMsg(char * note);
 VOID    WriteHead(u_char * lpstr, DWORD count, BOOL isHTML);
 VOID    WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor);
 VOID    WriteTitle(LPSTR lph, LPSTR lpb, BOOL isHTML);
-VOID    SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DWORD nFPCaller);
+VOID    SaveFileContent(LPFILECONTENT lpFileContent, size_t nFPCurrentFatherFile, DWORD nFPCaller);
 VOID    ClearHeadFileMatchTag(LPHEADFILE lpHF);
 VOID    FindDirChain(LPHEADFILE lpHF, LPSTR lpDir, size_t nMaxLen);
 BOOL    DirChainMatch(LPHEADFILE lphf1, LPHEADFILE lphf2);
 VOID    WriteHtmlbegin(void);
 VOID    WriteHtmlover(void);
 VOID    WriteHtmlbr(void);
-VOID    ReAlignFile(LPHEADFILE lpHF, DWORD nBase);
+VOID    ReAlignFile(LPHEADFILE lpHF, size_t nBase);
 LPFILECONTENT SearchDirChain(LPSTR lpname, LPHEADFILE lpHF);
 VOID    GetAllSubFile(BOOL needbrother, DWORD typedir, DWORD typefile, LPDWORD lpcountdir, LPDWORD lpcountfile, LPFILECONTENT lpFileContent);
 

@@ -157,7 +157,7 @@
       <PreprocessorDefinitions>_WIN64;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <DisableSpecificWarnings>4267;4819</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4819</DisableSpecificWarnings>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>

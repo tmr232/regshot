@@ -45,7 +45,7 @@ RES     = $(SRC)\res
 
 
 DEFINES = /D "_WINDOWS" /D "NDEBUG" /D "_CRT_SECURE_NO_WARNINGS"
-CFLAGS  = /nologo /c /Fo"$(OBJDIR)/" /W3 /WX /wd4819 /EHsc /MD /O2 /GL /MP $(DEFINES)
+CFLAGS  = /nologo /c /Fo"$(OBJDIR)/" /W3 /wd4819 /EHsc /MD /O2 /GL /MP $(DEFINES)
 LDFLAGS = /NOLOGO /WX /INCREMENTAL:NO /RELEASE /OPT:REF /OPT:ICF /DYNAMICBASE /NXCOMPAT \
           /LTCG /DEBUG
 LIBS    = advapi32.lib comdlg32.lib kernel32.lib shell32.lib user32.lib
@@ -53,7 +53,7 @@ RFLAGS  = /l 0x0409
 
 
 !IFDEF x64
-CFLAGS  = $(CFLAGS) /D "_WIN64" /D "_WIN32_WINNT=0x0502" /wd4267
+CFLAGS  = $(CFLAGS) /D "_WIN64" /D "_WIN32_WINNT=0x0502"
 LIBS    = $(LIBS) msvcrt_win2003.obj
 LDFLAGS = $(LDFLAGS) /SUBSYSTEM:WINDOWS,5.02 /MACHINE:X64
 RFLAGS  = $(RFLAGS) /d "_WIN64"

@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2003,2007 TiANWEi
+    Copyright 1999-2003,2007,2011 TiANWEi
     Copyright 2007 Belogorokhov Youri
 
     This file is part of Regshot.
@@ -63,8 +63,8 @@ VOID WriteHead(u_char * lpstr, DWORD count, BOOL isHTML)
     } else {
         WriteFile(hFile, txt_line, sizeof(txt_line) - 1, &NBW, NULL);
     }
-    WriteFile(hFile, lpstr, strlen(lpstr), &NBW, NULL);
-    WriteFile(hFile, lpcount, strlen(lpcount), &NBW, NULL);
+    WriteFile(hFile, lpstr, (DWORD)strlen(lpstr), &NBW, NULL);
+    WriteFile(hFile, lpcount, (DWORD)strlen(lpcount), &NBW, NULL);
 
     if (isHTML == TRUE) {
         WriteFile(hFile, htm_Td1Over, sizeof(htm_Td1Over) - 1, &NBW, NULL);
@@ -104,7 +104,7 @@ VOID WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor)
         for (n = 0; nLen > 0;) {
             nLen < HTMLWRAPLENGTH ? (n = nLen) : (n = HTMLWRAPLENGTH);
 
-            WriteFile(hFile, lpstr, n, &NBW, NULL);
+            WriteFile(hFile, lpstr, (DWORD)n, &NBW, NULL);
             lpstr = lpstr + n;
             nLen = nLen - n;
             // WriteFile(hFile,lp->lpresult,strlen(lp->lpresult),&NBW,NULL);
@@ -142,8 +142,8 @@ VOID WriteTitle(LPSTR lph, LPSTR lpb, BOOL isHTML)
         WriteFile(hFile, htm_TableBegin, sizeof(htm_TableBegin) - 1, &NBW, NULL);
         WriteFile(hFile, htm_Td1Begin, sizeof(htm_Td1Begin) - 1, &NBW, NULL);
     }
-    WriteFile(hFile, lph, strlen(lph), &NBW, NULL);
-    WriteFile(hFile, lpb, strlen(lpb), &NBW, NULL);
+    WriteFile(hFile, lph, (DWORD)strlen(lph), &NBW, NULL);
+    WriteFile(hFile, lpb, (DWORD)strlen(lpb), &NBW, NULL);
 
     if (isHTML) {
         WriteFile(hFile, htm_Td1Over, sizeof(htm_Td1Over) - 1, &NBW, NULL);
