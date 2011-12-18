@@ -144,6 +144,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <LargeAddressAware>true</LargeAddressAware>
+      <MergeSections>.rdata=.text</MergeSections>
       <SetChecksum>true</SetChecksum>
     </Link>
     <ResourceCompile>
@@ -165,6 +166,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <MergeSections>.rdata=.text</MergeSections>
       <SetChecksum>true</SetChecksum>
     </Link>
     <ResourceCompile>
