@@ -49,7 +49,7 @@ char htm_s3[]         = "</span>\r\n";
 
 
 //------------------------------------------------------------
-//Several routines to write to output file
+// Several routines to write to output file
 //------------------------------------------------------------
 VOID WriteHead(u_char * lpstr, DWORD count, BOOL isHTML)
 {
@@ -107,7 +107,7 @@ VOID WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor)
             WriteFile(hFile, lpstr, (DWORD)n, &NBW, NULL);
             lpstr = lpstr + n;
             nLen = nLen - n;
-            // WriteFile(hFile,lp->lpresult,strlen(lp->lpresult),&NBW,NULL);
+            //WriteFile(hFile,lp->lpresult,strlen(lp->lpresult),&NBW,NULL);
             if (isHTML) {
                 WriteFile(hFile, htm_BR, sizeof(htm_BR) - 1, &NBW, NULL);
             }

@@ -125,7 +125,7 @@ BOOL SetSnapRegs(HWND hDlg) // tfx 保存信息到配置文件
                    SendMessage(GetDlgItem(hDlg, IDC_CHECKDIR), BM_GETCHECK, (WPARAM)0, (LPARAM)0) << 1);
 
     lpString = MYALLOC0(EXTDIRLEN + 2);
-    //sprintf(lpString,"%s = %d",INI_FLAG,nFlag); // 1.7 solokey
+    //sprintf(lpString,"%s = %d",INI_FLAG,nFlag);                   // 1.7 solokey
     //WritePrivateProfileSection(INI_SETUP,lpString,lpRegshotIni);  // 1.7 solokey, can only have one key.
 
     // 1.8.1

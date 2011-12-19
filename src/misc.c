@@ -33,7 +33,7 @@ VOID ErrMsg(char * note)
 
 
 //-------------------------------------------------------------
-//Routine to debug
+// Routine to debug
 //-------------------------------------------------------------
 #ifdef  DEBUGLOG
 extern char * str_CR;
@@ -58,7 +58,6 @@ VOID DebugLog(LPSTR filename, LPSTR lpstr, HWND hDlg, BOOL bisCR)
             WriteFile(hFile, lpstr, length, &NBW, NULL);
             if (NBW != length) {
                 //ErrMsg(lan_errorwritefile);
-
             }
             if (bisCR == TRUE) {
                 WriteFile(hFile, str_CR, sizeof(str_CR) - 1, &NBW, NULL);
@@ -71,7 +70,7 @@ VOID DebugLog(LPSTR filename, LPSTR lpstr, HWND hDlg, BOOL bisCR)
 
 
 //------------------------------------------------------------
-//Routine to replace invalid chars in comment fields
+// Routine to replace invalid chars in comment fields
 //------------------------------------------------------------
 BOOL ReplaceInValidFileName(LPSTR lpf)
 {

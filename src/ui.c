@@ -31,9 +31,9 @@ extern LPSTR lan_menushotsave;
 extern LPSTR lan_menuload;
 
 
-char USERSSTRING_LONG[]   = "HKEY_USERS";   // 1.6 using long name, so in 1.8.1 add an option
-char USERSSTRING[]        = "HKU";          // in regshot.ini, "UseLongRegHead" to control this
-char LOCALMACHINESTRING[] = "HKLM";
+char USERSSTRING_LONG[]        = "HKEY_USERS";   // 1.6 using long name, so in 1.8.1 add an option
+char USERSSTRING[]             = "HKU";          // in regshot.ini, "UseLongRegHead" to control this
+char LOCALMACHINESTRING[]      = "HKLM";
 char LOCALMACHINESTRING_LONG[] = "HKEY_LOCAL_MACHINE";
 
 
@@ -358,7 +358,7 @@ VOID Shot2(VOID)
 
 
 //--------------------------------------------------
-//Show popup shortcut menu
+// Show popup shortcut menu
 //--------------------------------------------------
 VOID CreateShotPopupMenu(VOID)
 {

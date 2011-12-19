@@ -50,12 +50,12 @@ int CALLBACK SelectBrowseFolder(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpDa
 
 
 //--------------------------------------------------
-//Main Dialog Proc
+// Main Dialog Proc
 //--------------------------------------------------
 BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     size_t  nLengthofStr;
-    //BYTE  nFlag;
+    //BYTE    nFlag;
 
     switch (message) {
         case WM_INITDIALOG:
@@ -87,10 +87,10 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             GetTempPath(MAX_PATH, lpTempPath);
 
             //_asm int 3;
-            GetCurrentDirectory(MAX_PATH, lpStartDir);  // fixed at 1.8.2 former version use getcommandline()
+            GetCurrentDirectory(MAX_PATH, lpStartDir);      // fixed at 1.8.2 former version use getcommandline()
             lpIni = MYALLOC0(MAX_PATH * 2);
             strcpy(lpIni, lpStartDir);
-            if (*(lpIni + strlen(lpIni) - 1) != '\\') {       // 1.8.2
+            if (*(lpIni + strlen(lpIni) - 1) != '\\') {     // 1.8.2
                 strcat(lpIni, "\\");
             }
             strcat(lpIni, REGSHOTLANGUAGEFILE);
@@ -415,7 +415,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     // Added by Youri in 1.8.2 ,Thanks!
                     // if you add this code, the browse dialog will be expand path and have button "Create Folder"
                     BrowseInfo1.ulFlags |= 0x0040; // BIF_NEWDIALOGSTYLE;    // button "Create Folder" and resizable
-                    BrowseInfo1.lpfn = SelectBrowseFolder;                  // function for expand path
+                    BrowseInfo1.lpfn = SelectBrowseFolder;                   // function for expand path
                     BrowseInfo1.lParam = (LPARAM)BrowseInfo1.pszDisplayName;
                     // Initilize selection path
                     GetDlgItemText(hDlg, IDC_EDITPATH, BrowseInfo1.pszDisplayName, MAX_PATH);
