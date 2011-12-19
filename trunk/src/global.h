@@ -22,14 +22,17 @@
 #ifndef REGSHOT_GLOBAL_H
 #define REGSHOT_GLOBAL_H
 
-//just to disable compiler warning in vs2010 for secure version of strlen,sprintf ....
+#if defined(_MSC_VER)
+// Disable compiler warning for secure version of strlen, sprintf...
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #endif
-#if defined(_MSC_VER)
-//This make Debug build does not crash on "Stack Overflow" in recursive calling , this is 32M, you can change it to a proper number.
+
+// This make Debug build not crash on "Stack Overflow" in recursive calling,
+// this is 32M, you can change it to a proper number.
 #pragma comment(linker, "/STACK:33554432")
-#endif
+#endif // MSC_VER
+
 #ifdef __GNUC__
 #include <unistd.h>
 #endif
@@ -52,7 +55,7 @@
 
 #ifdef USEHEAPALLOC_DANGER
 
-//MSDN doc say use HEAP_NO_SERIALIZE is not good for process heap :( so change fromm 1 to 0 20111216 ,slower than using 1
+// MSDN doc say use HEAP_NO_SERIALIZE is not good for process heap :( so change fromm 1 to 0 20111216 ,slower than using 1
 #define MYALLOC(x)  HeapAlloc(hHeap,0,x)
 #define MYALLOC0(x) HeapAlloc(hHeap,8,x) // HEAP_NO_SERIALIZE|HEAP_ZERO_MEMORY ,1|8
 #define MYFREE(x)   HeapFree(hHeap,0,x)
@@ -174,49 +177,6 @@ struct _COMRESULT {
 typedef struct _COMRESULT COMRESULT, FAR * LPCOMRESULT;
 
 
-//------------------- 1.8.3  maddes  -----------------------------
-//Following 3 structs are maddes's idea :)
-//Struct for saving windows registry key,must be the same size as _KEYCONTENT,and careful with boundary
-struct _SAVEKEYCONTENT {
-    size_t  fpos_keyname;                          // Pointer to key's name
-    size_t  fpos_firstvalue;   // Pointer to key's first value
-    size_t  fpos_firstsubkey;    // Pointer to key's first subkey
-    size_t  fpos_brotherkey;     // Pointer to key's brother
-    size_t  fpos_fatherkey;      // Pointer to key's father
-    size_t  bkeymatch;                          // Flag used at comparing, 1.8.2<= is byte
-
-};
-typedef struct _SAVEKEYCONTENT SAVEKEYCONTENT, FAR * LPSAVEKEYCONTENT;
-
-
-// Struct used for saving Windows Registry Value,must be the same size as _VALUECONTENT
-struct _SAVEVALUECONTENT {
-    DWORD  typecode;                           // Type of value [DWORD,STRING...]
-    DWORD  datasize;                           // Value data size in bytes
-    size_t fpos_valuename;                        // Pointer to value name
-    size_t fpos_valuedata;                        // Pointer to value data
-    size_t fpos_nextvalue;    // Pointer to value's brother
-    size_t fpos_fatherkey;      // Pointer to value's father[Key]
-    size_t bvaluematch;                        // Flag used at comparing, 1.8.2<= is byte
-};
-typedef struct _SAVEVALUECONTENT SAVEVALUECONTENT, FAR * LPSAVEVALUECONTENT;
-
-//struct for saving file content,must be the same size as _FILECONTENT
-struct _SAVEFILECONTENT {
-    size_t fpos_filename;                         // Pointer to filename
-    DWORD  writetimelow;                       // File write time [LOW  DWORD]
-    DWORD  writetimehigh;                      // File write time [HIGH DWORD]
-    DWORD  filesizelow;                        // File size [LOW  DWORD]
-    DWORD  filesizehigh;                       // File size [HIGH DWORD]
-    DWORD  fileattr;                           // File attributes
-    DWORD  cksum;                              // File checksum(plan to add in 1.8 not used now)
-    size_t fpos_firstsubfile;  // Pointer to files[DIRS] first sub file
-    size_t fpos_brotherfile;   // Pointer to files[DIRS] brother
-    size_t fpos_fatherfile;    // Pointer to files father
-    size_t bfilematch;                         // Flag used at comparing, 1.8.2<= is byte
-};
-typedef struct _SAVEFILECONTENT SAVEFILECONTENT, FAR * LPSAVEFILECONTENT;
-//------------------------------------------------------------------------------------
 
 
 // Pointers to compare result [see above]
@@ -273,8 +233,8 @@ DWORD   nBASETIME1;
 DWORD   nGettingFile;
 DWORD   nGettingDir;
 DWORD   nSavingFile;
-//DWORD nMask = 0xf7fd;   // not used now, but should be added
-//DWORD nRegMessageCount = 0;
+//DWORD   nMask = 0xf7fd;   // not used now, but should be added
+//DWORD   nRegMessageCount = 0;
 DWORD   NBW;    // that is: NumberOfBytesWritten;
 
 
@@ -322,9 +282,9 @@ LPDWORD ldwTempStrings;
 
 
 // Former definations used at Dynamic Monitor Engine. Not Used NOW
-//#define DIOCPARAMSSIZE    20      // 4+4+4+8 bytes DIOCParams size!
-//#define MAXLISTBOXLEN 1024
-//#define RING3TDLEN        8       // ring3 td name length
+//#define DIOCPARAMSSIZE 20      // 4+4+4+8 bytes DIOCParams size!
+//#define MAXLISTBOXLEN  1024
+//#define RING3TDLEN     8       // ring3 td name length
 //LPSTR str_errorini = "Error create Dialog!";
 //INT   tabarray[] = {40,106,426,466};      // the tabstops is the len addup!
 //BOOL  bWinNTDetected;
@@ -399,4 +359,4 @@ VOID    ReAlignFile(LPHEADFILE lpHF, size_t nBase);
 LPFILECONTENT SearchDirChain(LPSTR lpname, LPHEADFILE lpHF);
 VOID    GetAllSubFile(BOOL needbrother, DWORD typedir, DWORD typefile, LPDWORD lpcountdir, LPDWORD lpcountfile, LPFILECONTENT lpFileContent);
 
-#endif //REGSHOT_GLOBAL_H
+#endif // REGSHOT_GLOBAL_H
