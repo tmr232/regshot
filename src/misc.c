@@ -20,15 +20,15 @@
 
 #include "global.h"
 
-extern u_char * lan_error;
+extern LPBYTE lan_error;
 
 
 //-------------------------------------------------------------
 // Show error message
 //-------------------------------------------------------------
-VOID ErrMsg(char * note)
+VOID ErrMsg(LPCTSTR note)
 {
-    MessageBox(hWnd, note, lan_error, MB_ICONHAND);
+    MessageBox(hWnd, note, (LPCTSTR)lan_error, MB_ICONHAND);
 }
 
 
@@ -47,11 +47,11 @@ VOID DebugLog(LPSTR filename, LPSTR lpstr, HWND hDlg, BOOL bisCR)
 
     hFile = CreateFile(filename, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
-        ErrMsg(lan_errorcreatefile);
+        ErrMsg((LPCTSTR)lan_errorcreatefile);
     } else {
         nPos = SetFilePointer(hFile, 0, NULL, FILE_END);
         if (nPos == 0xFFFFFFFF) {
-            ErrMsg(lan_errormovefp);
+            ErrMsg((LPCTSTR)lan_errormovefp);
         } else {
 
             length = strlen(lpstr);
@@ -96,26 +96,27 @@ BOOL ReplaceInValidFileName(LPSTR lpf)
 
 //--------------------------------------------------
 // Find lp's position in lpMaster (like At(), but not limit to str)
+// add sizep :the size of lp, not using strlen
 //--------------------------------------------------
-LPSTR AtPos(LPSTR lpMaster, LPSTR lp, DWORD size)
+LPBYTE AtPos(LPBYTE lpMaster, LPBYTE lp, size_t size, size_t sizep)
 {
     DWORD   i, j;
-    size_t  nsizelp;
-    nsizelp = strlen(lp);
+    //size_t  nsizelp;
+    //nsizelp = strlen(lp);
 
-    if (size <= nsizelp || nsizelp < 1) {
+    if (size <= sizep || sizep < 1) {
         return NULL;
     }
 
-    for (i = 0; i < size - nsizelp; i++) {
-        for (j = 0; j < nsizelp; j++) {
+    for (i = 0; i < size - sizep; i++) {
+        for (j = 0; j < sizep; j++) {
             if (*(lp + j) != *(lpMaster + i + j)) {
                 break;
             }
         }
         //_asm int 3;
-        if (j == nsizelp) {
-            return lpMaster + i + nsizelp;
+        if (j == sizep) {
+            return lpMaster + i + sizep;
         }
     }
     return NULL;

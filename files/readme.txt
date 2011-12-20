@@ -61,6 +61,9 @@ File shots are now saved in hive file.
 "UseLongRegHead=1" means using "HKEY_LOCAL_MACHINE" instead of "HKLM", default 0
 Do not compare shots saved with different "UseLongRegHead" option!
 
+(12) New to 1.8.3 (beta):
+Regshot hive's structure is changed in this version, so old hive cannot load into this version
+
 -----------------
 Thanks:
 -----------------
@@ -103,19 +106,26 @@ kazakh                -- Erzhan Erbolatuly
 
 Nick Reid             -- Advice
 tongjiawang           -- Many help!
-Belogorokhov Youri    -- Coder
 
 Franck Uberto, Patrick Whitted, Walter Bergner, Jim McMahon, Fred Bailey,
 Dchenka, itschy, HANDLE and all those we forgot to mention!!
+
 
 -----------------
 LICENSE:
 -----------------
 
-Copyright 2011 The Regshot Team
-Copyright 1999-2003,2007 TiANWEi
+Copyright 2011 The Regshot Team :TiANWEi, Maddes, XhmikosR
+Copyright 1999-2003,2007,2011 TiANWEi
 Copyright 2004 tulipfan
 Copyright 2007 Belogorokhov Youri
+
+* License remark:
+* TiANWEi - Original Author of Regshot, 1999-now
+* Maddes  http://www.maddes.net/ - Coder and Maintainer, 2011-now
+* XhmikosR - Coder and project maintainer, 2011-now
+* tulipfan (tfx) was the designer & coder of "Skiplist functions, regshot.ini setup, REGSHOT_TITLE define", he made the release 1.7.
+* Belogorokhov Youri (HANDLE) was the contributor of "a better html color idea, a new style browse dialog function" in 1.8.
 
 Multi-language translations are the property of their respective owner.
 
@@ -137,14 +147,3 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 The Regshot Team:
 -----------------
 http://sourceforge.net/projects/regshot/
-
-TiANWEi
- - Original Author of Regshot, 1999-now
-Maddes  http://www.maddes.net/
- - Coder and Maintainer, 2011-now
-XhmikosR
- - Coder, 2011-now
-Belogorokhov Youri <handle@wgapatcher.ru>
- - Coder, 2007
-tulipfan <tulipfan@163.com>
- - Coder and Maintainer, 2004

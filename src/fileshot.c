@@ -1,6 +1,7 @@
 /*
     Copyright 1999-2003,2007,2011 TiANWEi
     Copyright 2004 tulipfan
+    Copyright 2011 maddes
 
     This file is part of Regshot.
 
@@ -23,8 +24,8 @@
 // ISDIR, ISFILE added in 1.8.0
 #define ISDIR(x)  ( (x&FILE_ATTRIBUTE_DIRECTORY) != 0 )
 #define ISFILE(x) ( (x&FILE_ATTRIBUTE_DIRECTORY) == 0 )
-extern u_char * lan_dir;
-extern u_char * lan_file;
+extern LPBYTE lan_dir;
+extern LPBYTE lan_file;
 
 
 //-------------------------------------------------------------
@@ -167,7 +168,7 @@ VOID GetFilesSnap(LPFILECONTENT lpFatherFile)
         //if (!(*lpTemp == '.' && *(lpTemp + 1) == 0x00 ) && !(*lpTemp == '.' && *(lpTemp + 1) == '.' && *(lpTemp + 2) == 0x00 ) // 1.8.0
         //risk! see above.
         if (*(unsigned short *)lpTemp != 0x002E && !(*(unsigned short *)lpTemp == 0x2E2E && *(lpTemp + 2) == 0x00)     // 1.8.2
-                && !IsInSkipList(lpFileContent->lpfilename, lpSnapFiles)) { // tfx
+                && !IsInSkipList(lpFileContent->lpfilename, lplpFileSkipStrings)) { // tfx
 
             nGettingDir++;
             GetFilesSnap(lpFileContent);
@@ -193,7 +194,7 @@ VOID GetFilesSnap(LPFILECONTENT lpFatherFile)
         if (ISDIR(lpFileContent->fileattr)) {
             //if ( !(*lpTemp == '.' && *(lpTemp + 1) == 0x00 ) && !(*lpTemp == '.' && *(lpTemp + 1) == '.' && *(lpTemp + 2) == 0x00 ) // if (lstrcmp(lpFileContent->lpfilename,".") != 0 && lstrcmp(lpFileContent->lpfilename,"..") != 0
             if (*(unsigned short *)lpTemp != 0x002E && !(*(unsigned short *)lpTemp == 0x2E2E && *(lpTemp + 2) == 0x00)    // 1.8.2
-                    && !IsInSkipList(lpFileContent->lpfilename, lpSnapFiles)) { // tfx
+                    && !IsInSkipList(lpFileContent->lpfilename, lplpFileSkipStrings)) { // tfx
                 nGettingDir++;
                 GetFilesSnap(lpFileContent);
             }
@@ -362,7 +363,7 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, size_t nFPCurrentFatherFile, D
 
     nLenPlus1 = (DWORD)strlen(lpFileContent->lpfilename) + 1;                       // Get len+1
     nFPHeader = SetFilePointer(hFileWholeReg, 0, NULL, FILE_CURRENT);               // Save head fp
-
+    // using struct, idea from maddes
     sfc.lpfilename = (LPSTR)(nFPHeader + sizeof(FILECONTENT));                      // 1.8.3 11*4 former is 10*4+1
     sfc.writetimelow = lpFileContent->writetimelow;
     sfc.writetimehigh = lpFileContent->writetimehigh;
@@ -438,16 +439,16 @@ VOID ReAlignFileContent(LPFILECONTENT lpFC, size_t nBase)
 {
 
     if (lpFC->lpfilename != NULL) {
-        (LPBYTE)lpFC->lpfilename += nBase;
+        lpFC->lpfilename += nBase;
     }
     if (lpFC->lpfirstsubfile != NULL) {
-        (LPBYTE)lpFC->lpfirstsubfile += nBase;
+        lpFC->lpfirstsubfile = (LPFILECONTENT)((LPBYTE)lpFC->lpfirstsubfile + nBase);
     }
     if (lpFC->lpbrotherfile != NULL) {
-        (LPBYTE)lpFC->lpbrotherfile += nBase;
+        lpFC->lpbrotherfile = (LPFILECONTENT)((LPBYTE)lpFC->lpbrotherfile + nBase);
     }
     if (lpFC->lpfatherfile != NULL) {
-        (LPBYTE)lpFC->lpfatherfile += nBase;
+        lpFC->lpfatherfile = (LPFILECONTENT)((LPBYTE)lpFC->lpfatherfile + nBase);
     }
 
 
@@ -476,10 +477,10 @@ VOID ReAlignFile(LPHEADFILE lpHF, size_t nBase)
 
 
         if (lphf->lpnextheadfile != NULL) {
-            (LPBYTE)lphf->lpnextheadfile += nBase;
+            lphf->lpnextheadfile = (LPHEADFILE)((LPBYTE)lphf->lpnextheadfile + nBase);
         }
         if (lphf->lpfilecontent != NULL) {
-            (LPBYTE)lphf->lpfilecontent += nBase;
+            lphf->lpfilecontent = (LPFILECONTENT)((LPBYTE)lphf->lpfilecontent + nBase);
         }
 
 

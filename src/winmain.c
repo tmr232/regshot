@@ -31,10 +31,10 @@ http://sourceforge.net/projects/regshot/\n\n";
 LPSTR   REGSHOTINI          = "regshot.ini"; // tfx
 LPSTR   REGSHOTLANGUAGEFILE = "language.ini";
 
-extern u_char * lan_menuclearallshots;  // Be careful of extern ref! must be the same when declare them,
-extern u_char * lan_menuclearshot1;     // otherwise pointer would mis-point, and I can not use sizeof
-extern u_char * lan_menuclearshot2;     // to get real array size in extern ref
-extern u_char * lan_about;
+extern LPBYTE lan_menuclearallshots;  // Be careful of extern ref! must be the same when declare them,
+extern LPBYTE lan_menuclearshot1;     // otherwise pointer would mis-point, and I can not use sizeof
+extern LPBYTE lan_menuclearshot2;     // to get real array size in extern ref
+extern LPBYTE lan_about;
 extern LPSTR str_DefaultLanguage;
 extern LPSTR str_Original;
 
@@ -42,6 +42,7 @@ extern LPSTR str_Original;
 // this new function added by Youri in 1.8.2, for expanding path in browse dialog
 int CALLBACK SelectBrowseFolder(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
 {
+    UNREFERENCED_PARAMETER(lParam);
     if (uMsg == BFFM_INITIALIZED) {
         SendMessage(hWnd, BFFM_SETSELECTION, 1, lpData);
     }
@@ -56,6 +57,8 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     size_t  nLengthofStr;
     //BYTE    nFlag;
+
+    UNREFERENCED_PARAMETER(lParam);
 
     switch (message) {
         case WM_INITDIALOG:
@@ -95,8 +98,8 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             }
             strcat(lpIni, REGSHOTLANGUAGEFILE);
 
-            lpFreeStrings = MYALLOC(SIZEOF_FREESTRINGS);
-            ldwTempStrings = MYALLOC0(4 * 60); // max is 60 strings
+            lpLangStrings = MYALLOC(SIZEOF_LANGSTRINGS);
+            lplpLangStrings = MYALLOC0(sizeof(LPSTR) * 60);  // max is 60 strings
 
             if (GetLanguageType(hDlg)) {
                 GetLanguageStrings(hDlg);
@@ -176,7 +179,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             }
             strcat(lpRegshotIni, REGSHOTINI);
 
-            GetSnapRegs(hDlg); // tfx
+            LoadSettingsFromIni(hDlg); // tfx
 
             return TRUE;
 
@@ -253,10 +256,10 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                 case IDC_CLEAR1:
                     hMenuClear = CreatePopupMenu();
-                    AppendMenu(hMenuClear, MF_STRING, IDM_CLEARALLSHOTS, lan_menuclearallshots);
+                    AppendMenu(hMenuClear, MF_STRING, IDM_CLEARALLSHOTS, (LPCSTR)lan_menuclearallshots);
                     AppendMenu(hMenuClear, MF_MENUBARBREAK, IDM_BREAK, NULL);
-                    AppendMenu(hMenuClear, MF_STRING, IDM_CLEARSHOT1, lan_menuclearshot1);
-                    AppendMenu(hMenuClear, MF_STRING, IDM_CLEARSHOT2, lan_menuclearshot2);
+                    AppendMenu(hMenuClear, MF_STRING, IDM_CLEARSHOT1, (LPCSTR)lan_menuclearshot1);
+                    AppendMenu(hMenuClear, MF_STRING, IDM_CLEARSHOT2, (LPCSTR)lan_menuclearshot2);
                     //AppendMenu(hMenuClear,MF_STRING,IDM_CLEARRESULT,"Clear comparison result");
                     SetMenuDefaultItem(hMenuClear, IDM_CLEARALLSHOTS, FALSE);
 
@@ -365,7 +368,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                           CloseHandle(hFile);
                       }*/
-                    SetSnapRegs(hDlg);  // tfx
+                    SaveSettingsToIni(hDlg);  // tfx
                     PostQuitMessage(0);
                     return(TRUE);
 
@@ -442,7 +445,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                     lpAboutBox = MYALLOC0(SIZEOF_ABOUTBOX);
                     // it is silly that when wsprintf encounters a NULL string, it will write the whole string to NULL!
                     sprintf(lpAboutBox, "%s%s%s%s%s%s", str_aboutme, "[", (strlen(lpCurrentLanguage) == 0) ? str_DefaultLanguage : lpCurrentLanguage, "]", " by: ", lpCurrentTranslator);
-                    MessageBox(hDlg, lpAboutBox, lan_about, MB_OK);
+                    MessageBox(hDlg, lpAboutBox, (LPCSTR)lan_about, MB_OK);
                     MYFREE(lpAboutBox);
                     return(TRUE);
                 }
@@ -482,6 +485,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                    LPSTR lpszCmdLine, int nCmdShow)
 {
+
     /*
     BOOL    bWinNTDetected;
     HANDLE  hToken = 0;
@@ -494,9 +498,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     //FARPROC       lpfnDlgProc;
     //lpfnDlgProc = MakeProcInstance((FARPROC)DialogProc,hInstance);    // old style of create dialogproc
     */
+    UNREFERENCED_PARAMETER(lpszCmdLine);
+    UNREFERENCED_PARAMETER(hPrevInstance);
 
     hHeap = GetProcessHeap(); // 1.8.2
     hWnd = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, (WNDPROC)DialogProc);
+
 
     SetClassLongPtr(hWnd, GCLP_HICON, (LONG_PTR)LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MAINICON)));
 

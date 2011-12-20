@@ -53,7 +53,7 @@ char htm_s3[]         = "</span>\r\n";
 //------------------------------------------------------------
 VOID WriteHead(u_char * lpstr, DWORD count, BOOL isHTML)
 {
-    unsigned char lpcount[8];
+    char lpcount[8];
     sprintf(lpcount, "%d", count);
 
     if (isHTML == TRUE) {
@@ -63,7 +63,7 @@ VOID WriteHead(u_char * lpstr, DWORD count, BOOL isHTML)
     } else {
         WriteFile(hFile, txt_line, sizeof(txt_line) - 1, &NBW, NULL);
     }
-    WriteFile(hFile, lpstr, (DWORD)strlen(lpstr), &NBW, NULL);
+    WriteFile(hFile, lpstr, (DWORD)strlen((LPSTR)lpstr), &NBW, NULL);
     WriteFile(hFile, lpcount, (DWORD)strlen(lpcount), &NBW, NULL);
 
     if (isHTML == TRUE) {
@@ -81,7 +81,7 @@ VOID WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor)
     DWORD   i;
     size_t  n;
     size_t  nLen;
-    LPBYTE  lpstr;
+    LPSTR   lpstr;
     LPCOMRESULT lp;
 
     if (isHTML) {

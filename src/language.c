@@ -26,39 +26,39 @@ LPSTR   str_SectionCurrent  = "CURRENT";
 LPSTR   str_Original        = "[Original]";
 
 // This is the Pointer to Language Strings
-u_char   *  lan_key;
-u_char   *  lan_value;
-u_char   *  lan_dir;
-u_char   *  lan_file;
-u_char   *  lan_time;
-u_char   *  lan_keyadd;
-u_char   *  lan_keydel;
-u_char   *  lan_valadd;
-u_char   *  lan_valdel;
-u_char   *  lan_valmodi;
-u_char   *  lan_fileadd;
-u_char   *  lan_filedel;
-u_char   *  lan_filemodi;
-u_char   *  lan_diradd;
-u_char   *  lan_dirdel;
-u_char   *  lan_dirmodi;
-u_char   *  lan_total;
-u_char   *  lan_comments;
-u_char   *  lan_datetime;
-u_char   *  lan_computer;
-u_char   *  lan_username;
-u_char   *  lan_about;
-u_char   *  lan_error;
-u_char   *  lan_errorexecviewer;
-u_char   *  lan_errorcreatefile;
-u_char   *  lan_erroropenfile;
-u_char   *  lan_errormovefp;
-u_char   *  lan_menushot;
-u_char   *  lan_menushotsave;
-u_char   *  lan_menuload;
-u_char   *  lan_menuclearallshots;
-u_char   *  lan_menuclearshot1;
-u_char   *  lan_menuclearshot2;
+LPBYTE  lan_key;
+LPBYTE  lan_value;
+LPBYTE  lan_dir;
+LPBYTE  lan_file;
+LPBYTE  lan_time;
+LPBYTE  lan_keyadd;
+LPBYTE  lan_keydel;
+LPBYTE  lan_valadd;
+LPBYTE  lan_valdel;
+LPBYTE  lan_valmodi;
+LPBYTE  lan_fileadd;
+LPBYTE  lan_filedel;
+LPBYTE  lan_filemodi;
+LPBYTE  lan_diradd;
+LPBYTE  lan_dirdel;
+LPBYTE  lan_dirmodi;
+LPBYTE  lan_total;
+LPBYTE  lan_comments;
+LPBYTE  lan_datetime;
+LPBYTE  lan_computer;
+LPBYTE  lan_username;
+LPBYTE  lan_about;
+LPBYTE  lan_error;
+LPBYTE  lan_errorexecviewer;
+LPBYTE  lan_errorcreatefile;
+LPBYTE  lan_erroropenfile;
+LPBYTE  lan_errormovefp;
+LPBYTE  lan_menushot;
+LPBYTE  lan_menushotsave;
+LPBYTE  lan_menuload;
+LPBYTE  lan_menuclearallshots;
+LPBYTE  lan_menuclearshot1;
+LPBYTE  lan_menuclearshot2;
 
 // This is the dimension for MultiLanguage Default Strings[English]
 unsigned char lan_default[][22] = {
@@ -201,72 +201,74 @@ VOID GetDefaultStrings(VOID)
 //--------------------------------------------------
 VOID PointToNewStrings(VOID)
 {
-    LPDWORD lp = ldwTempStrings;
-    lan_key             = (u_char *)(*lp);
+    //LPDWORD lp = ldwTempStrings;
+    LPBYTE * lp = (LPBYTE *)lplpLangStrings;
+
+    lan_key             = *lp;
     lp++;
-    lan_value           = (u_char *)(*lp);
+    lan_value           = *lp;
     lp++;
-    lan_dir             = (u_char *)(*lp);
+    lan_dir             = *lp;
     lp++;
-    lan_file            = (u_char *)(*lp);
+    lan_file            = *lp;
     lp++;
-    lan_time            = (u_char *)(*lp);
+    lan_time            = *lp;
     lp++;
-    lan_keyadd          = (u_char *)(*lp);
+    lan_keyadd          = *lp;
     lp++;
-    lan_keydel          = (u_char *)(*lp);
+    lan_keydel          = *lp;
     lp++;
-    lan_valadd          = (u_char *)(*lp);
+    lan_valadd          = *lp;
     lp++;
-    lan_valdel          = (u_char *)(*lp);
+    lan_valdel          = *lp;
     lp++;
-    lan_valmodi         = (u_char *)(*lp);
+    lan_valmodi         = *lp;
     lp++;
-    lan_fileadd         = (u_char *)(*lp);
+    lan_fileadd         = *lp;
     lp++;
-    lan_filedel         = (u_char *)(*lp);
+    lan_filedel         = *lp;
     lp++;
-    lan_filemodi        = (u_char *)(*lp);
+    lan_filemodi        = *lp;
     lp++;
-    lan_diradd          = (u_char *)(*lp);
+    lan_diradd          = *lp;
     lp++;
-    lan_dirdel          = (u_char *)(*lp);
+    lan_dirdel          = *lp;
     lp++;
-    lan_dirmodi         = (u_char *)(*lp);
+    lan_dirmodi         = *lp;
     lp++;
-    lan_total           = (u_char *)(*lp);
+    lan_total           = *lp;
     lp++;
-    lan_comments        = (u_char *)(*lp);
+    lan_comments        = *lp;
     lp++;
-    lan_datetime        = (u_char *)(*lp);
+    lan_datetime        = *lp;
     lp++;
-    lan_computer        = (u_char *)(*lp);
+    lan_computer        = *lp;
     lp++;
-    lan_username        = (u_char *)(*lp);
+    lan_username        = *lp;
     lp++;
-    lan_about           = (u_char *)(*lp);
+    lan_about           = *lp;
     lp++;
-    lan_error           = (u_char *)(*lp);
+    lan_error           = *lp;
     lp++;
-    lan_errorexecviewer = (u_char *)(*lp);
+    lan_errorexecviewer = *lp;
     lp++;
-    lan_errorcreatefile = (u_char *)(*lp);
+    lan_errorcreatefile = *lp;
     lp++;
-    lan_erroropenfile   = (u_char *)(*lp);
+    lan_erroropenfile   = *lp;
     lp++;
-    lan_errormovefp     = (u_char *)(*lp);
+    lan_errormovefp     = *lp;
     lp += 14;
-    lan_menushot        = (u_char *)(*lp);
+    lan_menushot        = *lp;
     lp++;
-    lan_menushotsave    = (u_char *)(*lp);
+    lan_menushotsave    = *lp;
     lp++;
-    lan_menuload        = (u_char *)(*lp);
+    lan_menuload        = *lp;
     lp++;
-    lan_menuclearallshots = (u_char *)(*lp);
+    lan_menuclearallshots = *lp;
     lp++;
-    lan_menuclearshot1  = (u_char *)(*lp);
+    lan_menuclearshot1  = *lp;
     lp++;
-    lan_menuclearshot2  = (u_char *)(*lp);
+    lan_menuclearshot2  = *lp;
 }
 
 
@@ -278,26 +280,28 @@ BOOL GetLanguageStrings(HWND hDlg)
     LRESULT nIndex;
     DWORD   i;
     BOOL    bRet;
-    LPSTR   lpReturn;
-    LPDWORD lp;
-    char    lpIniKey[8];    // 1.8.2 LPSTR   lpIniKey = MYALLOC0(8);
+    LPBYTE  lpReturn;
+    //LPDWORD lp;
+    LPBYTE * lp;
+    char    lpIniKey[16];    // 1.8.2 LPSTR   lpIniKey = MYALLOC0(8);
 
     nIndex = SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
     if (nIndex != CB_ERR) {
 
         SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_GETLBTEXT, (WPARAM)nIndex, (LPARAM)lpCurrentLanguage);
         WritePrivateProfileString(str_SectionCurrent, str_SectionCurrent, lpCurrentLanguage, lpIni);
-        ZeroMemory(lpFreeStrings, SIZEOF_FREESTRINGS);
-        GetPrivateProfileSection(lpCurrentLanguage, lpFreeStrings, SIZEOF_FREESTRINGS, lpIni);
-        for (i = 1, lp = ldwTempStrings; i < 47; i++) {
+        ZeroMemory(lpLangStrings, SIZEOF_LANGSTRINGS);
+        GetPrivateProfileSection(lpCurrentLanguage, lpLangStrings, SIZEOF_LANGSTRINGS, lpIni);
+        for (i = 1, lp = (LPBYTE *)lplpLangStrings; i < 47; i++) {
 
             sprintf(lpIniKey, "%d%s", i, "=");
             // pointer returned was pointed to char just after "="
-            if ((lpReturn = AtPos(lpFreeStrings, lpIniKey, SIZEOF_FREESTRINGS)) != NULL) {
+            if ((lpReturn = AtPos((LPBYTE)lpLangStrings, (LPBYTE)lpIniKey, SIZEOF_LANGSTRINGS, strlen(lpIniKey))) != NULL) {
                 //_asm int 3;
-                *(lp + i - 1) = (DWORD)lpReturn;
+                //*(lp + i - 1) = (DWORD)lpReturn;
+                *(lp + i - 1) = lpReturn;
             } else {
-                *(lp + i - 1) = (DWORD)lan_default[i - 1];
+                *(lp + i - 1) = lan_default[i - 1];
             }
 
             if (i >= 28 && i < 41 && i != 34) {
@@ -306,8 +310,8 @@ BOOL GetLanguageStrings(HWND hDlg)
 
         }
 
-        lpReturn = AtPos(lpFreeStrings, str_ItemTranslator, SIZEOF_FREESTRINGS);
-        lpCurrentTranslator = (lpReturn != NULL) ? (lpReturn + 1) : str_Original;
+        lpReturn = AtPos((LPBYTE)lpLangStrings, (LPBYTE)str_ItemTranslator, SIZEOF_LANGSTRINGS, strlen(str_ItemTranslator));
+        lpCurrentTranslator = (lpReturn != NULL) ? ((LPSTR)lpReturn + 1) : str_Original;
         PointToNewStrings();
         bRet = TRUE;
     } else {
