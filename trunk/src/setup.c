@@ -18,10 +18,14 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+/* This file orignal coded by tulipfan
+ * Change some name and fix for x64 by tianwei
+*/
+
 #include "global.h"
 // 1.8.2 move defination from global.h to this place
-#define SIZEOF_REGSHOT  65535
-#define MAXREGSHOT      100
+#define SIZEOF_INI_SKIPBLOCK  65535
+#define MAX_INI_SKIPITEMS      100
 
 // setup based on regshot.ini by tulipfan (tfx)
 LPSTR INI_SETUP           = "Setup";
@@ -33,20 +37,21 @@ LPSTR INI_SKIPDIR         = "SkipDir";
 LPSTR INI_USELONGREGHEAD  = "UseLongRegHead";  // 1.8.1 tianwei for compatible to undoreg 1.46 again
 
 
-BOOL GetSnapRegs(HWND hDlg) // tfx 取配置文件信息
+BOOL LoadSettingsFromIni(HWND hDlg) // tfx 取配置文件信息
 {
     int     i;
+    LPBYTE  lpReturn;
     BYTE    nFlag;
 
-    lpSnapKey = MYALLOC(20);
+    char    lpIniKey[16];
 
-    lpSnapRegs = MYALLOC0(sizeof(LPSTR) * MAXREGSHOT);
-    lpSnapRegsStr = MYALLOC0(SIZEOF_REGSHOT);
-    if (GetPrivateProfileSection(INI_SKIPREGKEY, lpSnapRegsStr, SIZEOF_REGSHOT, lpRegshotIni) > 0) {
-        for (i = 0; i < MAXREGSHOT - 1; i++) {
-            sprintf(lpSnapKey, "%d%s", i, " = ");
-            if ((lpSnapReturn = AtPos(lpSnapRegsStr, lpSnapKey, SIZEOF_REGSHOT)) != NULL) {
-                *(lpSnapRegs + i) = (DWORD)lpSnapReturn;
+    lplpRegSkipStrings = MYALLOC0(sizeof(LPSTR) * MAX_INI_SKIPITEMS);
+    lpRegSkipStrings = MYALLOC0(SIZEOF_INI_SKIPBLOCK);
+    if (GetPrivateProfileSection(INI_SKIPREGKEY, (LPTSTR)lpRegSkipStrings, SIZEOF_INI_SKIPBLOCK, lpRegshotIni) > 0) {
+        for (i = 0; i < MAX_INI_SKIPITEMS - 1; i++) {
+            sprintf(lpIniKey, "%d%s", i, "=");
+            if ((lpReturn = AtPos(lpRegSkipStrings, (LPBYTE)lpIniKey, SIZEOF_INI_SKIPBLOCK, strlen(lpIniKey))) != NULL) {
+                *(lplpRegSkipStrings + i) = lpReturn;
                 //dwSnapFiles++;
             } else {
                 break;
@@ -54,13 +59,13 @@ BOOL GetSnapRegs(HWND hDlg) // tfx 取配置文件信息
         }
     }
 
-    lpSnapFiles = MYALLOC0(sizeof(LPSTR) * MAXREGSHOT);
-    lpSnapFilesStr = MYALLOC0(SIZEOF_REGSHOT);
-    if (GetPrivateProfileSection(INI_SKIPDIR, lpSnapFilesStr, SIZEOF_REGSHOT, lpRegshotIni)) {
-        for (i = 0; i < MAXREGSHOT - 1; i++) {
-            sprintf(lpSnapKey, "%d%s", i, " = ");
-            if ((lpSnapReturn = AtPos(lpSnapFilesStr, lpSnapKey, SIZEOF_REGSHOT)) != NULL) {
-                *(lpSnapFiles + i) = (DWORD)lpSnapReturn;
+    lplpFileSkipStrings = MYALLOC0(sizeof(LPSTR) * MAX_INI_SKIPITEMS);
+    lpFileSkipStrings = MYALLOC0(SIZEOF_INI_SKIPBLOCK);
+    if (GetPrivateProfileSection(INI_SKIPDIR, (LPTSTR)lpFileSkipStrings, SIZEOF_INI_SKIPBLOCK, lpRegshotIni)) {
+        for (i = 0; i < MAX_INI_SKIPITEMS - 1; i++) {
+            sprintf(lpIniKey, "%d%s", i, "=");
+            if ((lpReturn = AtPos(lpFileSkipStrings, (LPBYTE)lpIniKey, SIZEOF_INI_SKIPBLOCK, strlen(lpIniKey))) != NULL) {
+                *(lplpFileSkipStrings + i) = lpReturn;
                 //dwSnapFiles++;
             } else {
                 break;
@@ -104,7 +109,7 @@ BOOL GetSnapRegs(HWND hDlg) // tfx 取配置文件信息
 }
 
 
-BOOL SetSnapRegs(HWND hDlg) // tfx 保存信息到配置文件
+BOOL SaveSettingsToIni(HWND hDlg) // tfx 保存信息到配置文件
 {
     BYTE    nFlag;
     LPSTR   lpString;
@@ -145,21 +150,21 @@ BOOL SetSnapRegs(HWND hDlg) // tfx 保存信息到配置文件
 
     MYFREE(lpString);
     MYFREE(lpRegshotIni);
-    MYFREE(lpSnapRegsStr);
-    MYFREE(lpSnapFilesStr);
-    MYFREE(lpSnapKey);
-    MYFREE(lpSnapReturn);
+    MYFREE(lpRegSkipStrings);
+    MYFREE(lpFileSkipStrings);
+    //MYFREE(lpSnapKey);
+    //MYFREE(lpSnapReturn);
 
     return TRUE;
 }
 
 
-BOOL IsInSkipList(LPSTR lpSnap, LPDWORD lpSkipList) // tfx 跳过黑名单
+BOOL IsInSkipList(LPSTR lpStr, LPBYTE * lpSkipList) // tfx 跳过黑名单
 {
     int i;
-
-    for (i = 0; (LPSTR)(*(lpSkipList + i)) != NULL && i <= MAXREGSHOT - 1; i++) {
-        if (_stricmp(lpSnap, (LPSTR) * (lpSkipList + i)) == 0) {
+    // todo: it seems bypass null item. But the getsetting is get all. Is it safe without the null thing? tianwei
+    for (i = 0; (LPSTR)(*(lpSkipList + i)) != NULL && i <= MAX_INI_SKIPITEMS - 1; i++) {
+        if (_stricmp(lpStr, (LPSTR)(*(lpSkipList + i))) == 0) {
             return TRUE;
         }
     }

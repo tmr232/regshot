@@ -21,14 +21,14 @@
 
 #include "global.h"
 
-extern LPSTR lan_time;
-extern LPSTR lan_key;
-extern LPSTR lan_value;
-extern LPSTR lan_dir;
-extern LPSTR lan_file;
-extern LPSTR lan_menushot;
-extern LPSTR lan_menushotsave;
-extern LPSTR lan_menuload;
+extern LPBYTE lan_time;
+extern LPBYTE lan_key;
+extern LPBYTE lan_value;
+extern LPBYTE lan_dir;
+extern LPBYTE lan_file;
+extern LPBYTE lan_menushot;
+extern LPBYTE lan_menushotsave;
+extern LPBYTE lan_menuload;
 
 
 char USERSSTRING_LONG[]        = "HKEY_USERS";   // 1.6 using long name, so in 1.8.1 add an option
@@ -61,7 +61,7 @@ VOID InitProgressBar(VOID)
 }
 
 
-void UpdateCounters(LPSTR title1, LPSTR title2, DWORD count1, DWORD count2)
+void UpdateCounters(LPBYTE title1, LPBYTE title2, DWORD count1, DWORD count2)
 {
     //nGettingTime = GetTickCount();
     nBASETIME1 = nGettingTime;
@@ -363,9 +363,9 @@ VOID Shot2(VOID)
 VOID CreateShotPopupMenu(VOID)
 {
     hMenu = CreatePopupMenu();
-    AppendMenu(hMenu, MF_STRING, IDM_SHOTONLY, lan_menushot);
-    AppendMenu(hMenu, MF_STRING, IDM_SHOTSAVE, lan_menushotsave);
+    AppendMenu(hMenu, MF_STRING, IDM_SHOTONLY, (LPCSTR)lan_menushot);
+    AppendMenu(hMenu, MF_STRING, IDM_SHOTSAVE, (LPCSTR)lan_menushotsave);
     AppendMenu(hMenu, MF_SEPARATOR, IDM_BREAK, NULL);
-    AppendMenu(hMenu, MF_STRING, IDM_LOAD, lan_menuload);
+    AppendMenu(hMenu, MF_STRING, IDM_LOAD, (LPCSTR)lan_menuload);
     SetMenuDefaultItem(hMenu, IDM_SHOTONLY, FALSE);
 }

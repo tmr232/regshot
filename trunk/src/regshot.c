@@ -1,6 +1,7 @@
 /*
     Copyright 1999-2003,2007,2011 TiANWEi
     Copyright 2004 tulipfan
+    Copyright 2011 maddes
 
     This file is part of Regshot.
 
@@ -27,27 +28,27 @@ char str_filter[]    = {"Regshot hive files [*.hiv]\0*.hiv\0All files\0*.*\0\0"}
 char str_RegFileSignature[] = "RSHIVE183";  // Need [] to use with sizeof() must <12, changed 1.8.3 for new hive file
 
 
-extern u_char * lan_errorcreatefile;
-extern u_char * lan_comments;
-extern u_char * lan_datetime;
-extern u_char * lan_computer;
-extern u_char * lan_username;
-extern u_char * lan_keydel;
-extern u_char * lan_keyadd;
-extern u_char * lan_valdel;
-extern u_char * lan_valadd;
-extern u_char * lan_valmodi;
-extern u_char * lan_filedel;
-extern u_char * lan_fileadd;
-extern u_char * lan_filemodi;
-extern u_char * lan_diradd;
-extern u_char * lan_dirdel;
-extern u_char * lan_dirmodi;
-extern u_char * lan_total;
-extern u_char * lan_key;
-extern u_char * lan_value;
-extern u_char * lan_errorexecviewer;
-extern u_char * lan_erroropenfile;
+extern LPBYTE lan_errorcreatefile;
+extern LPBYTE lan_comments;
+extern LPBYTE lan_datetime;
+extern LPBYTE lan_computer;
+extern LPBYTE lan_username;
+extern LPBYTE lan_keydel;
+extern LPBYTE lan_keyadd;
+extern LPBYTE lan_valdel;
+extern LPBYTE lan_valadd;
+extern LPBYTE lan_valmodi;
+extern LPBYTE lan_filedel;
+extern LPBYTE lan_fileadd;
+extern LPBYTE lan_filemodi;
+extern LPBYTE lan_diradd;
+extern LPBYTE lan_dirdel;
+extern LPBYTE lan_dirmodi;
+extern LPBYTE lan_total;
+extern LPBYTE lan_key;
+extern LPBYTE lan_value;
+extern LPBYTE lan_errorexecviewer;
+extern LPBYTE lan_erroropenfile;
 
 extern char * str_prgname;  // be careful of extern ref! Must be the same when declaring them, otherwise pointer would mis-point!
 extern char str_CR[];
@@ -136,7 +137,7 @@ LPSTR TransData(LPVALUECONTENT lpValueContent, DWORD type)
             lpvaluedata = MYALLOC0(size + 5);    // 5 is enough
             strcpy(lpvaluedata, ": \"");
             if (lpValueContent->lpvaluedata != NULL) {
-                strcat(lpvaluedata, lpValueContent->lpvaluedata);
+                strcat(lpvaluedata, (const char *)lpValueContent->lpvaluedata);
             }
             strcat(lpvaluedata, "\"");
             // wsprintf has a bug that can not print string too long one time!);
@@ -157,7 +158,7 @@ LPSTR TransData(LPVALUECONTENT lpValueContent, DWORD type)
             }
             //*((LPBYTE)(lpValueContent->lpvaluedata + size)) = 0x00;   // for some illegal multisz
             strcpy(lpvaluedata, ": '");
-            strcat(lpvaluedata, lpValueContent->lpvaluedata);
+            strcat(lpvaluedata, (const char *)lpValueContent->lpvaluedata);
             strcat(lpvaluedata, "'");
             //wsprintf(lpvaluedata,"%s%s%s",": \"",lpValueContent->lpvaluedata,"\"");
             break;
@@ -192,7 +193,7 @@ LPSTR GetWholeValueData(LPVALUECONTENT lpValueContent)
         case REG_SZ:
         case REG_EXPAND_SZ:
             if (lpValueContent->lpvaluedata != NULL) {
-                if (size == (DWORD)strlen(lpValueContent->lpvaluedata) + 1) {
+                if (size == (DWORD)strlen((const char *)(lpValueContent->lpvaluedata)) + 1) {
                     lpvaluedata = TransData(lpValueContent, REG_SZ);
                 } else {
                     lpvaluedata = TransData(lpValueContent, REG_BINARY);
@@ -692,6 +693,7 @@ BOOL CompareShots(void)
     FILETIME ftime1;
     FILETIME ftime2;
 
+
     if (!DirChainMatch(lpHeadFile1, lpHeadFile2)) {
         MessageBox(hWnd, "Found two shots with different DIR chain! (or with different order)\r\nYou can continue, but file comparison result would be abnormal!", "Warning", MB_ICONWARNING);
     }
@@ -831,7 +833,7 @@ BOOL CompareShots(void)
                 if (GetLastError() == ERROR_FILE_EXISTS) {    // My God! I use stupid ERROR_ALREADY_EXISTS first!!
                     continue;
                 } else {
-                    ErrMsg(lan_errorcreatefile);
+                    ErrMsg((LPCTSTR)lan_errorcreatefile);
                     return FALSE;
                 }
             } else {
@@ -839,7 +841,7 @@ BOOL CompareShots(void)
             }
         }
         if (filetail >= MAXAMOUNTOFFILE) {
-            ErrMsg(lan_errorcreatefile);
+            ErrMsg((LPCTSTR)lan_errorcreatefile);
             return FALSE;
         }
 
@@ -854,7 +856,7 @@ BOOL CompareShots(void)
 
     //_asm int 3;
     GetDlgItemText(hWnd, IDC_EDITCOMMENT, lpstrcomp, COMMENTLENGTH);
-    WriteTitle(lan_comments, lpstrcomp, isHTML);
+    WriteTitle((LPSTR)lan_comments, lpstrcomp, isHTML);
 
 
     sprintf(lpstrcomp, "%d%s%d%s%d %02d%s%02d%s%02d %s %d%s%d%s%d %02d%s%02d%s%02d",
@@ -873,7 +875,7 @@ BOOL CompareShots(void)
 
            );
 
-    WriteTitle(lan_datetime, lpstrcomp, isHTML);
+    WriteTitle((LPSTR)lan_datetime, lpstrcomp, isHTML);
 
 
     *lpstrcomp = 0x00;    //ZeroMemory(lpstrcomp,buffersize);
@@ -881,7 +883,7 @@ BOOL CompareShots(void)
     strcpy(lpstrcomp, lpComputerName1);
     strcat(lpstrcomp, " , ");
     strcat(lpstrcomp, lpComputerName2);
-    WriteTitle(lan_computer, lpstrcomp, isHTML);
+    WriteTitle((LPSTR)lan_computer, lpstrcomp, isHTML);
 
     *lpstrcomp = 0x00;    //ZeroMemory(lpstrcomp,buffersize);
     //GetUserName(lpstrcomp,&buffersize);
@@ -889,7 +891,7 @@ BOOL CompareShots(void)
     strcat(lpstrcomp, " , ");
     strcat(lpstrcomp, lpUserName2);
 
-    WriteTitle(lan_username, lpstrcomp, isHTML);
+    WriteTitle((LPSTR)lan_username, lpstrcomp, isHTML);
 
     MYFREE(lpstrcomp);
 
@@ -961,8 +963,8 @@ BOOL CompareShots(void)
 
     CloseHandle(hFile);
 
-    if ((DWORD)ShellExecute(hWnd, "open", lpDestFileName, NULL, NULL, SW_SHOW) <= 32) {
-        ErrMsg(lan_errorexecviewer);
+    if ((size_t)ShellExecute(hWnd, "open", lpDestFileName, NULL, NULL, SW_SHOW) <= 32) {
+        ErrMsg((LPCTSTR)lan_errorexecviewer);
     }
     MYFREE(lpDestFileName);
 
@@ -988,7 +990,7 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
     DWORD   LengthOfLongestValueData;
     DWORD   LengthOfLongestSubkeyName;
     LPSTR   lpValueName;
-    LPSTR   lpValueData;
+    LPBYTE  lpValueData;
     LPKEYCONTENT    lpKeyContent;
     LPKEYCONTENT    lpKeyContentLast;
     LPVALUECONTENT  lpValueContent;
@@ -1113,7 +1115,7 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
         if (RegOpenKeyEx(hkey, lpKeyName, 0, KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS, &Subhkey) != ERROR_SUCCESS) {
             continue;
         }
-        if (IsInSkipList(lpKeyName, lpSnapRegs)) {
+        if (IsInSkipList(lpKeyName, lplpRegSkipStrings)) {
             // tfx
             RegCloseKey(Subhkey);  // 1.8.2 seperate
             continue;
@@ -1194,17 +1196,17 @@ VOID SaveRegKey(LPKEYCONTENT lpKeyContent, size_t nFPCurrentFatherKey, DWORD nFP
         nPad1 = (lpv->datasize % sizeof(int) == 0) ? 0 : (sizeof(int) - lpv->datasize % sizeof(int));
 
         nFPCurrent = SetFilePointer(hFileWholeReg, 0, NULL, FILE_CURRENT);  // Save fp
+        nFPTemp4Write = nFPHeader;
         svc.typecode = lpv->typecode;
         svc.datasize = lpv->datasize;
         svc.lpvaluename = (LPSTR)(nFPCurrent + sizeof(VALUECONTENT));       // size must same for valuecontent and savevaluecontent
         svc.lpvaluedata = (LPBYTE)((lpv->datasize > 0) ? (nFPCurrent + sizeof(VALUECONTENT) + nLenPlus1 + nPad) : 0);    // if no lpvaluedata, we write 0
         svc.lpnextvalue = (LPVALUECONTENT)((lpv->lpnextvalue != NULL) ? (nFPCurrent + sizeof(VALUECONTENT) + nLenPlus1 + nPad + lpv->datasize + nPad1) : 0);   // if no nextvalue we write 0
-        svc.lpfatherkey = (LPKEYCONTENT) nFPHeader;
+        svc.lpfatherkey = (LPKEYCONTENT)nFPTemp4Write;
         svc.bvaluematch = 0;
         WriteFile(hFileWholeReg, &svc, sizeof(svc), &NBW, NULL);
 
 /*
-
         WriteFile(hFileWholeReg, (LPBYTE)lpv, sizeof(DWORD)*2, &NBW, NULL);
 
         nFPTemp4Write = nFPCurrent + sizeof(VALUECONTENT);                                      // 1.8.3 7*4, former is 6*4+1
@@ -1375,7 +1377,7 @@ VOID SaveHive(LPKEYCONTENT lpKeyHLM, LPKEYCONTENT lpKeyUSER,
                 MessageBeep(0xffffffff);
                 CloseHandle(hFileWholeReg);
             } else {
-                ErrMsg(lan_errorcreatefile);
+                ErrMsg((LPCTSTR)lan_errorcreatefile);
             }
 
         }
@@ -1395,19 +1397,19 @@ VOID ReAlignReg(LPKEYCONTENT lpKey, size_t nBase)
     LPVALUECONTENT lpv;
 
     if (lpKey->lpkeyname != NULL) {
-        (LPBYTE)lpKey->lpkeyname += nBase;
+        lpKey->lpkeyname += nBase;
     }
     if (lpKey->lpfirstvalue != NULL) {
-        (LPBYTE)lpKey->lpfirstvalue += nBase;
+        lpKey->lpfirstvalue = (LPVALUECONTENT)((LPBYTE)lpKey->lpfirstvalue + nBase);
     }
     if (lpKey->lpfirstsubkey != NULL) {
-        (LPBYTE)lpKey->lpfirstsubkey += nBase;
+        lpKey->lpfirstsubkey = (LPKEYCONTENT)((LPBYTE)lpKey->lpfirstsubkey + nBase);
     }
     if (lpKey->lpbrotherkey != NULL) {
-        (LPBYTE)lpKey->lpbrotherkey += nBase;
+        lpKey->lpbrotherkey = (LPKEYCONTENT)((LPBYTE)lpKey->lpbrotherkey + nBase);
     }
     if (lpKey->lpfatherkey != NULL) {
-        (LPBYTE)lpKey->lpfatherkey += nBase;
+        lpKey->lpfatherkey = (LPKEYCONTENT)((LPBYTE)lpKey->lpfatherkey + nBase);
     }
 
     nGettingKey++;
@@ -1415,16 +1417,16 @@ VOID ReAlignReg(LPKEYCONTENT lpKey, size_t nBase)
     for (lpv = lpKey->lpfirstvalue; lpv != NULL; lpv = lpv->lpnextvalue) {
 
         if (lpv->lpvaluename != NULL) {
-            (LPBYTE)lpv->lpvaluename += nBase;
+            lpv->lpvaluename += nBase;
         }
         if (lpv->lpvaluedata != NULL) {
-            (LPBYTE)lpv->lpvaluedata += nBase;
+            lpv->lpvaluedata += nBase;
         }
         if (lpv->lpnextvalue != NULL) {
-            (LPBYTE)lpv->lpnextvalue += nBase;
+            lpv->lpnextvalue = (LPVALUECONTENT)((LPBYTE)lpv->lpnextvalue + nBase);
         }
         if (lpv->lpfatherkey != NULL) {
-            (LPBYTE)lpv->lpfatherkey += nBase;
+            lpv->lpfatherkey = (LPKEYCONTENT)((LPBYTE)lpv->lpfatherkey + nBase);
         }
 
     }
@@ -1467,8 +1469,8 @@ BOOL LoadHive(LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER,
             *lpHive = MYALLOC0(16);
             ReadFile(hFileWholeReg, *lpHive, 16, &NBW, NULL);
 
-            if (strcmp(str_RegFileSignature, *lpHive) != 0) {
-                ErrMsg("It is not a compatible hive to current version or it is not a valid Regshot hive file!"); //changed in 1.8.3
+            if (strcmp(str_RegFileSignature, (const char *)(*lpHive)) != 0) {
+                ErrMsg((LPCTSTR)"It is not a compatible hive to current version or it is not a valid Regshot hive file!"); //changed in 1.8.3
                 bRet = FALSE;
             } else {
                 nGettingKey = 0;
@@ -1512,7 +1514,7 @@ BOOL LoadHive(LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER,
                     // Crash bug made in 1.8.0 tianwei, fixed in 1.8.1 tianwei
                     ReadFile(hFileWholeReg, (*lpHive) + i, nReadSize, &NBW, NULL); // read the whole file now
                     if (NBW != nReadSize) {
-                        ErrMsg("Reading ERROR!");
+                        ErrMsg((LPCTSTR)"Reading ERROR!");
                         break;
                     }
                     nRemain -= nReadSize;
@@ -1561,7 +1563,7 @@ BOOL LoadHive(LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER,
             }
             CloseHandle(hFileWholeReg);
         } else {
-            ErrMsg(lan_erroropenfile);
+            ErrMsg((LPCTSTR)lan_erroropenfile);
             bRet = FALSE;
         }
 
