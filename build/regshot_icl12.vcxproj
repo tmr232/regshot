@@ -153,6 +153,8 @@
       <LargeAddressAware>true</LargeAddressAware>
       <MergeSections>.rdata=.text</MergeSections>
       <SetChecksum>true</SetChecksum>
+      <WPOAsmListLocation>$(IntDir)</WPOAsmListLocation>
+      <WPOObjectFile>$(IntDir)</WPOObjectFile>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -181,6 +183,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <MergeSections>.rdata=.text</MergeSections>
       <SetChecksum>true</SetChecksum>
+      <WPOAsmListLocation>$(IntDir)</WPOAsmListLocation>
+      <WPOObjectFile>$(IntDir)</WPOObjectFile>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
