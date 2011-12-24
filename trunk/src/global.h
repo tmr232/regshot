@@ -46,6 +46,9 @@
 #ifndef GCLP_HICON
 #define GCLP_HICON GCL_HICON
 #endif
+#if !defined(LONG_PTR)
+typedef long LONG_PTR;
+#endif
 #endif  // _MSC_VER
 
 // !!!WARNING!!! HEAP_NO_SERIALIZE means we can not use this in multithread.
@@ -70,8 +73,8 @@
 
 
 // Some definations
-#define SIZEOFREG_DWORD 4       // In current windows, reg_dword's size=4
-#define NOTMATCH        0       // Define modification type in comparison results
+#define SIZEOFREG_DWORD 4            // In current windows, reg_dword's size=4
+#define NOTMATCH        0            // Define modification type in comparison results
 #define ISMATCH         1
 #define ISDEL           2
 #define ISADD           3
@@ -89,14 +92,15 @@
 #define DIRDEL          10
 #define DIRMODI         11
 
-#define REFRESHINTERVAL 110         // Define progress refresh rate
-#define MAXPBPOSITION   100         // Define progress bar length
-#define COMMENTLENGTH   50          // Define commentfield length on the MainForm
-#define HTMLWRAPLENGTH  1000        // Define html out put wrap length
-#define MAXAMOUNTOFFILE 10000       // Define out put file counts
-#define EXTDIRLEN       MAX_PATH*3  // Define searching directory field length
-#define COMPUTERNAMELEN 64          // Define COMPUTER name length
-#define HIVEBEGINOFFSET 512         // Hive file out put header computerlen*2+sizeof(systemtime)+32 must <hivebeginoffset!!!!!!!!!!!!!!
+#define REFRESHINTERVAL 110          // Define progress refresh rate
+#define MAXPBPOSITION   100          // Define progress bar length
+#define COMMENTLENGTH   50           // Define commentfield length on the MainForm
+#define HTMLWRAPLENGTH  1000         // Define html out put wrap length
+#define MAXAMOUNTOFFILE 10000        // Define out put file counts
+#define EXTDIRLEN       MAX_PATH * 3 // Define searching directory field length
+#define COMPUTERNAMELEN 64           // Define COMPUTER name length,do not change
+#define HIVEBEGINOFFSET 512          // Hive file out put header computerlen*2+sizeof(systemtime)+32 must <hivebeginoffset!!!!!!!!!!!!!!
+#define REGSHOT_HIVE_SIGNATURE "RSHIVE183"
 
 
 // Some definitions of MutiLanguage strings [Free space length]
@@ -150,21 +154,10 @@ struct _FILECONTENT {
 typedef struct _FILECONTENT FILECONTENT, FAR * LPFILECONTENT;
 
 
-// Struct used for file tree comparison
-/* <= 1.7.3
-struct _HEADFILE
-{
-    LPFILECONTENT   lpfilecontent1;             // Pointer to file content at 1st shot
-    LPFILECONTENT   lpfilecontent2;             // Pointer to file content at 2nd shot
-    struct _HEADFILE FAR * lpnextheadfile;      // Pointer to next headfile struc
-};
-*/
-
-
 // Adjusted for filecontent saving. 1.8
 struct _HEADFILE {
-    struct _HEADFILE FAR * lpnextheadfile;      // Pointer to next headfile struc
-    LPFILECONTENT   lpfilecontent;              // Pointer to filecontent
+    struct _HEADFILE FAR * lpnextheadfile;     // Pointer to next headfile struc
+    LPFILECONTENT   lpfilecontent;             // Pointer to filecontent
 };
 typedef struct  _HEADFILE HEADFILE, FAR * LPHEADFILE;
 
@@ -176,7 +169,71 @@ struct _COMRESULT {
 };
 typedef struct _COMRESULT COMRESULT, FAR * LPCOMRESULT;
 
+// At last, I define it in 1.8.3-beta2, should have done it long ago
+struct _HIVEHEADER {
+    unsigned char signature[16];    // 16bytes offset 0
+    DWORD  offsetkeyhklm;           // 4 offset 16 ( 512)
+    DWORD  offsetkeyuser;           // 4 offset 20
+    DWORD  offsetheadfile;          // 4 offset 24
+    DWORD  reserved1;               // 4 offset 28 future use!
+    unsigned char computername[64]; // 64 offset 32
+    unsigned char username[64];     // 64 offset 96 username
+    SYSTEMTIME systemtime;          // 8 * 2 = 16 bytes offset 160
+    unsigned char reserved2[336];   // HIVEBEGINOFFSET(512) - sum(176) = 336
+};
+typedef struct _HIVEHEADER HIVEHEADER , FAR * LPHIVEHEADER;
 
+
+//-------------------------------------------------------------------
+
+struct _SAVEKEYCONTENT {
+    DWORD  fpos_keyname;            // Pointer to key's name
+    DWORD  fpos_firstvalue;         // Pointer to key's first value
+    DWORD  fpos_firstsubkey;        // Pointer to key's first subkey
+    DWORD  fpos_brotherkey;         // Pointer to key's brother
+    DWORD  fpos_fatherkey;          // Pointer to key's father
+    DWORD  bkeymatch;               // Flag used at comparing, 1.8.2 <= is byte
+
+};
+typedef struct _SAVEKEYCONTENT SAVEKEYCONTENT, FAR * LPSAVEKEYCONTENT;
+
+
+// Struct used for Windows Registry Value
+struct _SAVEVALUECONTENT {
+    DWORD  typecode;                // Type of value [DWORD,STRING...]
+    DWORD  datasize;                // Value data size in bytes
+    DWORD  fpos_valuename;          // Pointer to value name
+    DWORD  fpos_valuedata;          // Pointer to value data
+    DWORD  fpos_nextvalue;          // Pointer to value's brother
+    DWORD  fpos_fatherkey;          // Pointer to value's father[Key]
+    DWORD  bvaluematch;             // Flag used at comparing, 1.8.2 <= is byte
+};
+typedef struct _SAVEVALUECONTENT SAVEVALUECONTENT, FAR * LPSAVEVALUECONTENT;
+
+
+// Struct used for Windows File System
+struct _SAVEFILECONTENT {
+    DWORD  fpos_filename;            // Pointer to filename
+    DWORD  writetimelow;             // File write time [LOW  DWORD]
+    DWORD  writetimehigh;            // File write time [HIGH DWORD]
+    DWORD  filesizelow;              // File size [LOW  DWORD]
+    DWORD  filesizehigh;             // File size [HIGH DWORD]
+    DWORD  fileattr;                 // File attributes
+    DWORD  cksum;                    // File checksum(plan to add in 1.8 not used now)
+    DWORD  fpos_firstsubfile;        // Pointer to files[DIRS] first sub file
+    DWORD  fpos_brotherfile;         // Pointer to files[DIRS] brother
+    DWORD  fpos_fatherfile;          // Pointer to files father
+    DWORD  bfilematch;               // Flag used at comparing, 1.8.2 <= is byte
+};
+typedef struct _SAVEFILECONTENT SAVEFILECONTENT, FAR * LPSAVEFILECONTENT;
+
+
+// Adjusted for filecontent saving. 1.8
+struct _SAVEHEADFILE {
+    DWORD  fpos_nextheadfile;       // Pointer to next headfile struc
+    DWORD  fpos_filecontent;        // Pointer to filecontent
+};
+typedef struct  _SAVEHEADFILE SAVEHEADFILE, FAR * LPSAVEHEADFILE;
 
 
 // Pointers to compare result [see above]
@@ -235,7 +292,7 @@ DWORD   nGettingDir;
 DWORD   nSavingFile;
 //DWORD   nMask = 0xf7fd;   // not used now, but should be added
 //DWORD   nRegMessageCount = 0;
-DWORD   NBW;    // that is: NumberOfBytesWritten;
+DWORD   NBW;                // that is: NumberOfBytesWritten;
 
 
 // Pointers to Registry Key
@@ -268,7 +325,7 @@ LPSTR   lpStartDir;
 LPSTR   lpIni;
 LPSTR   lpLangStrings;
 LPSTR   lpCurrentTranslator;
-//LPSTR REGSHOTDATFILE    = "rgst152.dat";
+//LPSTR REGSHOTDATFILE = "rgst152.dat";
 LPSTR   lpProgramDir;   // tfx ¶¨Òå
 LPSTR   lpRegshotIni;
 
@@ -349,7 +406,7 @@ VOID    ErrMsg(LPCTSTR note);
 VOID    WriteHead(u_char * lpstr, DWORD count, BOOL isHTML);
 VOID    WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor);
 VOID    WriteTitle(LPSTR lph, LPSTR lpb, BOOL isHTML);
-VOID    SaveFileContent(LPFILECONTENT lpFileContent, size_t nFPCurrentFatherFile, DWORD nFPCaller);
+VOID    SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DWORD nFPCaller);
 VOID    ClearHeadFileMatchTag(LPHEADFILE lpHF);
 VOID    FindDirChain(LPHEADFILE lpHF, LPSTR lpDir, size_t nMaxLen);
 BOOL    DirChainMatch(LPHEADFILE lphf1, LPHEADFILE lphf2);
@@ -359,5 +416,7 @@ VOID    WriteHtmlbr(void);
 VOID    ReAlignFile(LPHEADFILE lpHF, size_t nBase);
 LPFILECONTENT SearchDirChain(LPSTR lpname, LPHEADFILE lpHF);
 VOID    GetAllSubFile(BOOL needbrother, DWORD typedir, DWORD typefile, LPDWORD lpcountdir, LPDWORD lpcountfile, LPFILECONTENT lpFileContent);
+VOID RebuildFromHive_filehead(LPSAVEHEADFILE lpSHF, LPHEADFILE lpHeadFile, LPBYTE lpHiveFileBase);
 
 #endif // REGSHOT_GLOBAL_H
+

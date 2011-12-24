@@ -351,29 +351,29 @@ VOID FreeAllFileHead(LPHEADFILE lp)
 // 1.8.3 changed some struct
 // modi 20111216
 //--------------------------------------------------
-VOID SaveFileContent(LPFILECONTENT lpFileContent, size_t nFPCurrentFatherFile, DWORD nFPCaller)
+VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DWORD nFPCaller)
 {
 
-    size_t  nFPTemp4Write;
+    DWORD   nFPTemp4Write;
     DWORD   nFPHeader;
     DWORD   nFPCurrent;
     DWORD   nLenPlus1;
     int     nPad;
-    FILECONTENT sfc;
+    SAVEFILECONTENT sfc;
 
     nLenPlus1 = (DWORD)strlen(lpFileContent->lpfilename) + 1;                       // Get len+1
     nFPHeader = SetFilePointer(hFileWholeReg, 0, NULL, FILE_CURRENT);               // Save head fp
     // using struct, idea from maddes
-    sfc.lpfilename = (LPSTR)(nFPHeader + sizeof(FILECONTENT));                      // 1.8.3 11*4 former is 10*4+1
+    sfc.fpos_filename = nFPHeader + sizeof(SAVEFILECONTENT);                      // 1.8.3 11*4 former is 10*4+1
     sfc.writetimelow = lpFileContent->writetimelow;
     sfc.writetimehigh = lpFileContent->writetimehigh;
     sfc.filesizelow = lpFileContent->filesizelow;
     sfc.filesizehigh = lpFileContent->filesizehigh;
     sfc.fileattr = lpFileContent->fileattr;
     sfc.cksum = lpFileContent->cksum;
-    sfc.lpfirstsubfile = lpFileContent->lpfirstsubfile;
-    sfc.lpbrotherfile = lpFileContent->lpbrotherfile;
-    sfc.lpfatherfile = (LPFILECONTENT)nFPCurrentFatherFile;
+    sfc.fpos_firstsubfile = 0; //lpFileContent->lpfirstsubfile;
+    sfc.fpos_brotherfile = 0; //lpFileContent->lpbrotherfile;
+    sfc.fpos_fatherfile = nFPCurrentFatherFile;
     sfc.bfilematch = 0;
     WriteFile(hFileWholeReg, &sfc, sizeof(sfc), &NBW, NULL);
 
@@ -393,7 +393,7 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, size_t nFPCurrentFatherFile, D
 */
     WriteFile(hFileWholeReg, lpFileContent->lpfilename, nLenPlus1, &NBW, NULL); // Save the current filename
 
-    nPad = (nLenPlus1 % sizeof(int) == 0) ? 0 : (sizeof(int) - nLenPlus1 % sizeof(int));
+    nPad = (nLenPlus1 % sizeof(DWORD) == 0) ? 0 : (sizeof(DWORD) - nLenPlus1 % sizeof(DWORD));
 
     nFPTemp4Write = 0;
     if (nPad > 0) {
@@ -402,18 +402,18 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, size_t nFPCurrentFatherFile, D
 
     if (lpFileContent->lpfirstsubfile != NULL) {
         // pass this filecontent's position as subfile's fatherfile's position and pass the "lpfirstsubfile field"
-        SaveFileContent(lpFileContent->lpfirstsubfile, nFPHeader, nFPHeader + sizeof(LPSTR) + 6 * sizeof(DWORD));
+        SaveFileContent(lpFileContent->lpfirstsubfile, nFPHeader, nFPHeader + 7 * sizeof(DWORD));
     }
 
     if (lpFileContent->lpbrotherfile != NULL) {
         // pass this file's fatherfile's position as brother's father and pass "lpbrotherfile field"
-        SaveFileContent(lpFileContent->lpbrotherfile, nFPCurrentFatherFile, nFPHeader + sizeof(LPSTR) + 6 * sizeof(DWORD) + sizeof(LPFILECONTENT));
+        SaveFileContent(lpFileContent->lpbrotherfile, nFPCurrentFatherFile, nFPHeader + 8 * sizeof(DWORD));
     }
 
     if (nFPCaller > 0) {    // save position of current file in current father file
         nFPCurrent = SetFilePointer(hFileWholeReg, 0, NULL, FILE_CURRENT);
         SetFilePointer(hFileWholeReg, nFPCaller, NULL, FILE_BEGIN);
-        WriteFile(hFileWholeReg, &nFPHeader, sizeof(DWORD), &NBW, NULL);
+        WriteFile(hFileWholeReg, &nFPHeader, sizeof(nFPHeader), &NBW, NULL);
         SetFilePointer(hFileWholeReg, nFPCurrent, NULL, FILE_BEGIN);
     }
 
@@ -431,6 +431,79 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, size_t nFPCurrentFatherFile, D
 
 }
 
+
+#ifdef _WIN64
+//
+VOID RebuildFromHive_file(LPSAVEFILECONTENT lpFile, LPFILECONTENT lpFatherFC, LPFILECONTENT lpFC, LPBYTE lpHiveFileBase)
+{
+    LPFILECONTENT lpsubfile;
+
+    if (lpFile->fpos_filename != 0) {
+        lpFC->lpfilename = (LPSTR)(lpHiveFileBase + lpFile->fpos_filename);
+    }
+    lpFC->writetimelow = lpFile->writetimelow;
+    lpFC->writetimehigh = lpFile->writetimehigh;
+    lpFC->filesizelow = lpFile->filesizelow;
+    lpFC->filesizehigh = lpFile->filesizehigh;
+    lpFC->fileattr = lpFile->fileattr;
+    lpFC->cksum = lpFile->cksum;
+    lpFC->lpfatherfile = lpFatherFC;
+    if (ISDIR(lpFC->fileattr)) {
+        nGettingDir++;
+    } else {
+        nGettingFile++;
+    }
+
+    if (lpFile->fpos_firstsubfile != 0) {
+        lpsubfile = MYALLOC0(sizeof(FILECONTENT));
+        lpFC->lpfirstsubfile = lpsubfile;
+        RebuildFromHive_file((LPSAVEFILECONTENT)(lpHiveFileBase + lpFile->fpos_firstsubfile), lpFC, lpsubfile, lpHiveFileBase);
+    }
+
+    if (lpFile->fpos_brotherfile != 0) {
+        lpsubfile = MYALLOC0(sizeof(FILECONTENT));
+        lpFC->lpbrotherfile = lpsubfile;
+        RebuildFromHive_file((LPSAVEFILECONTENT)(lpHiveFileBase + lpFile->fpos_brotherfile), lpFatherFC, lpsubfile, lpHiveFileBase);
+    }
+
+
+    nGettingTime = GetTickCount();
+    if ((nGettingTime - nBASETIME1) > REFRESHINTERVAL) {
+        UpdateCounters(lan_dir, lan_file, nGettingDir, nGettingFile);
+    }
+
+}
+
+VOID RebuildFromHive_filehead(LPSAVEHEADFILE lpSHF, LPHEADFILE lpHeadFile, LPBYTE lpHiveFileBase)
+{
+    LPSAVEHEADFILE  lpshf;
+    LPHEADFILE lpHF;
+    LPHEADFILE lpHFLast;
+
+    for (lpshf = lpSHF, lpHF = lpHeadFile; lpHiveFileBase != (LPBYTE)lpshf; lpshf = (LPSAVEHEADFILE)(lpHiveFileBase + lpshf->fpos_nextheadfile)) {
+
+        if (lpshf->fpos_filecontent != 0) {
+            lpHF->lpfilecontent = MYALLOC0(sizeof(FILECONTENT));
+            RebuildFromHive_file((LPSAVEFILECONTENT)(lpHiveFileBase + lpshf->fpos_filecontent), NULL, lpHF->lpfilecontent, lpHiveFileBase);
+        }
+        if (lpshf->fpos_nextheadfile != 0) {
+            lpHF->lpnextheadfile = MYALLOC0(sizeof(HEADFILE));
+            lpHFLast = lpHF;
+            lpHF = lpHF->lpnextheadfile;
+        }
+        //if(lpHFLast ==NULL) {
+        //	lpHeadFile->lpnextheadfile=lpHF;
+        //}else{
+        //    lpHFLast->lpnextheadfile=lpHF;
+        //}
+        //lpHFLast->lpnextheadfile=lpHF;
+        //lpHFLast=lpHF;
+
+
+    }
+}
+
+#else
 //--------------------------------------------------
 // Realign filecontent, called by ReAlignFile()
 // modi 20111216
@@ -490,6 +563,7 @@ VOID ReAlignFile(LPHEADFILE lpHF, size_t nBase)
     }
 }
 
+#endif
 
 //--------------------------------------------------
 // Walkthrough lpHF and find lpname matches
