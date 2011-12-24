@@ -348,7 +348,7 @@ LPVOID  lplpLangStrings;
 //BOOL  bWinNTDetected;
 //UINT  WM_REGSHOT = 0;
 
-#ifdef  DEBUGLOG
+#ifdef DEBUGLOG
 LPSTR   lstrdb1;
 #endif
 
