@@ -72,22 +72,19 @@ VOID GetAllSubFile(
     LPFILECONTENT lpFileContent
 )
 {
-    LPSTR   lpTemp;
+    //LPSTR   lpTemp;
 
     if (ISDIR(lpFileContent->fileattr)) {
-        lpTemp = lpFileContent->lpfilename;
-        //if (strcmp(lpFileContent->lpfilename,".") != 0  && strcmp(lpFileContent->lpfilename,"..") != 0) // we should add here 1.8.0
-        if (*(unsigned short *)lpTemp != 0x002E && !(*(unsigned short *)lpTemp == 0x2E2E && *(lpTemp + 2) == 0x00)) {     // 1.8.2
+        //lpTemp = lpFileContent->lpfilename;
+        if (strcmp(lpFileContent->lpfilename, ".") != 0  && strcmp(lpFileContent->lpfilename, "..") != 0)  { // tfx   added in 1.7.3 fixed at 1.8.0 we should add here 1.8.0
+            //if (*(unsigned short *)lpTemp != 0x002E && !(*(unsigned short *)lpTemp == 0x2E2E && *(lpTemp + 2) == 0x00)) {     // 1.8.2
             LogToMem(typedir, lpcountdir, lpFileContent);
         }
     } else {
         LogToMem(typefile, lpcountfile, lpFileContent);
     }
 
-    if (lpFileContent->lpfirstsubfile != NULL)     // tfx 避免目录扫描时产生"."和".." added in 1.7.3 fixed at 1.8.0
-        //&& strcmp(lpFileContent->lpfirstsubfile->lpfilename,".") != 0    // But, this break the chain! :(. because we store . and .. in scan filecontent!
-        //&& strcmp(lpFileContent->lpfirstsubfile->lpfilename,"..") != 0)  // So we should move these two lines above
-    {
+    if (lpFileContent->lpfirstsubfile != NULL)    {
         GetAllSubFile(TRUE, typedir, typefile, lpcountdir, lpcountfile, lpFileContent->lpfirstsubfile);
     }
     if (needbrother == TRUE) {
@@ -135,7 +132,7 @@ VOID GetFilesSnap(LPFILECONTENT lpFatherFile)
         return;
     }
 
-    lpTemp = finddata.cFileName; // 1.8
+    //lpTemp = finddata.cFileName; // 1.8
 
     lpFileContent = MYALLOC0(sizeof(FILECONTENT));
     lpFileContent->lpfilename = MYALLOC0(strlen(finddata.cFileName) + 1);   // must add one!
@@ -150,24 +147,7 @@ VOID GetFilesSnap(LPFILECONTENT lpFatherFile)
     lpFileContentTemp = lpFileContent;
 
     if (ISDIR(lpFileContent->fileattr)) {
-        /*
-        if (*(unsigned short *)lpTemp != 0x002E && !( *(unsigned short *)lpTemp == 0x2E2E && *(lpTemp + 2) == 0x00 )   // 1.8.2
-        00401292   66:8B85 E4FEFFFF MOV AX,WORD PTR SS:[EBP-11C]
-        00401299   66:3D 2E00       CMP AX,2E
-        0040129D   74 43            JE SHORT regshot.004012E2
-        0040129F   66:3D 2E2E       CMP AX,2E2E
-        004012A3   75 0A            JNZ SHORT regshot.004012AF
-        004012A5   8A85 E6FEFFFF    MOV AL,BYTE PTR SS:[EBP-11A]
-        004012AB   84C0             TEST AL,AL
-        004012AD   74 33            JE SHORT regshot.004012E2
-        // 存在风险,因为如果filename的长度不一定,内存分配不够长度的话代码是会出问题的! 而且从LoadHive过来的也不一定长度.从汇编代码来看还是比较安全的. 我要好好考虑考虑再用.
-
-        */
-        //if (lstrcmp(lpFileContent->lpfilename,".") != 0 && lstrcmp(lpFileContent->lpfilename,"..") != 0 // or we can use that
-        //use lpTemp may "optimize" some, note, finddata.cfilename should exist!
-        //if (!(*lpTemp == '.' && *(lpTemp + 1) == 0x00 ) && !(*lpTemp == '.' && *(lpTemp + 1) == '.' && *(lpTemp + 2) == 0x00 ) // 1.8.0
-        //risk! see above.
-        if (*(unsigned short *)lpTemp != 0x002E && !(*(unsigned short *)lpTemp == 0x2E2E && *(lpTemp + 2) == 0x00)     // 1.8.2
+        if (strcmp(lpFileContent->lpfilename, ".") != 0 && strcmp(lpFileContent->lpfilename, "..") != 0
                 && !IsInSkipList(lpFileContent->lpfilename, lplpFileSkipStrings)) { // tfx
 
             nGettingDir++;
@@ -192,8 +172,7 @@ VOID GetFilesSnap(LPFILECONTENT lpFatherFile)
         lpFileContentTemp = lpFileContent;
 
         if (ISDIR(lpFileContent->fileattr)) {
-            //if ( !(*lpTemp == '.' && *(lpTemp + 1) == 0x00 ) && !(*lpTemp == '.' && *(lpTemp + 1) == '.' && *(lpTemp + 2) == 0x00 ) // if (lstrcmp(lpFileContent->lpfilename,".") != 0 && lstrcmp(lpFileContent->lpfilename,"..") != 0
-            if (*(unsigned short *)lpTemp != 0x002E && !(*(unsigned short *)lpTemp == 0x2E2E && *(lpTemp + 2) == 0x00)    // 1.8.2
+            if (strcmp(lpFileContent->lpfilename, ".") != 0 && strcmp(lpFileContent->lpfilename, "..") != 0
                     && !IsInSkipList(lpFileContent->lpfilename, lplpFileSkipStrings)) { // tfx
                 nGettingDir++;
                 GetFilesSnap(lpFileContent);
@@ -339,17 +318,8 @@ VOID FreeAllFileHead(LPHEADFILE lp)
 }
 
 
-/*VOID FreeAllFiles(void)
-{
-    FreeAllFileHead(lpHeadFile);
-    lpHeadFile = NULL;
-}*/
-
-
 //--------------------------------------------------
 // File save engine (It is stupid again!) added in 1.8
-// 1.8.3 changed some struct
-// modi 20111216
 //--------------------------------------------------
 VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DWORD nFPCaller)
 {
@@ -364,7 +334,7 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DW
     nLenPlus1 = (DWORD)strlen(lpFileContent->lpfilename) + 1;                       // Get len+1
     nFPHeader = SetFilePointer(hFileWholeReg, 0, NULL, FILE_CURRENT);               // Save head fp
     // using struct, idea from maddes
-    sfc.fpos_filename = nFPHeader + sizeof(SAVEFILECONTENT);                      // 1.8.3 11*4 former is 10*4+1
+    sfc.fpos_filename = nFPHeader + sizeof(SAVEFILECONTENT);
     sfc.writetimelow = lpFileContent->writetimelow;
     sfc.writetimehigh = lpFileContent->writetimehigh;
     sfc.filesizelow = lpFileContent->filesizelow;
@@ -378,7 +348,7 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DW
     WriteFile(hFileWholeReg, &sfc, sizeof(sfc), &NBW, NULL);
 
 /*
-    nFPTemp4Write = nFPHeader + sizeof(FILECONTENT);                                            // 1.8.3 11*4 former is 10*4+1
+    nFPTemp4Write = nFPHeader + sizeof(FILECONTENT);                                            //
     WriteFile(hFileWholeReg, &nFPTemp4Write, sizeof(nFPTemp4Write), &NBW, NULL);                // Save the location of lpfilename
 
     WriteFile(hFileWholeReg, (LPBYTE)lpFileContent + sizeof(LPSTR), 6*sizeof(DWORD), &NBW, NULL);   // Write time, size etc. 6*4
@@ -491,14 +461,6 @@ VOID RebuildFromHive_filehead(LPSAVEHEADFILE lpSHF, LPHEADFILE lpHeadFile, LPBYT
             lpHFLast = lpHF;
             lpHF = lpHF->lpnextheadfile;
         }
-        //if(lpHFLast ==NULL) {
-        //	lpHeadFile->lpnextheadfile=lpHF;
-        //}else{
-        //    lpHFLast->lpnextheadfile=lpHF;
-        //}
-        //lpHFLast->lpnextheadfile=lpHF;
-        //lpHFLast=lpHF;
-
 
     }
 }
@@ -554,10 +516,6 @@ VOID ReAlignFile(LPHEADFILE lpHF, size_t nBase)
         }
         if (lphf->lpfilecontent != NULL) {
             lphf->lpfilecontent = (LPFILECONTENT)((LPBYTE)lphf->lpfilecontent + nBase);
-        }
-
-
-        if (lphf->lpfilecontent != NULL) {    // I wouldn't find crash bug(loadhive->readfile) in 1.8.0 if I had added it in that version
             ReAlignFileContent(lphf->lpfilecontent, nBase);
         }
     }

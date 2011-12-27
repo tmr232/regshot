@@ -1,5 +1,6 @@
 
-Readme file of Regshot 1.8.3    (2011-mm-dd)
+Readme file of Regshot 1.8.3beta1    (2011-12-25)
+(Note: it is the beta version for testing purpose only)
 
 -----------------
 Introduction:
@@ -62,7 +63,9 @@ File shots are now saved in hive file.
 Do not compare shots saved with different "UseLongRegHead" option!
 
 (12) New to 1.8.3 (beta):
-Regshot hive's structure is changed in this version, so old hive cannot load into this version
+Regshot hive's structure is slightly changed in this version, so old hive cannot load into this version.
+182to183.exe can make transfers from old hive to new one.
+x64 build is added, try it on 64bit Windows.
 
 -----------------
 Thanks:
@@ -115,7 +118,7 @@ Dchenka, itschy, HANDLE and all those we forgot to mention!!
 LICENSE:
 -----------------
 
-Copyright 2011 The Regshot Team :TiANWEi, Maddes, XhmikosR
+Copyright 2011 The Regshot Team : TiANWEi, Maddes, XhmikosR
 Copyright 1999-2003,2007,2011 TiANWEi
 Copyright 2004 tulipfan
 Copyright 2007 Belogorokhov Youri
@@ -124,7 +127,7 @@ Copyright 2007 Belogorokhov Youri
 * TiANWEi - Original Author of Regshot, 1999-now
 * Maddes  http://www.maddes.net/ - Coder and Maintainer, 2011-now
 * XhmikosR - Coder and project maintainer, 2011-now
-* tulipfan (tfx) was the designer & coder of "Skiplist functions, regshot.ini setup, REGSHOT_TITLE define", he made the release 1.7.
+* Tulipfan (tfx) was the Designer & Coder of "Skiplist functions, regshot.ini setup, REGSHOT_TITLE define", he made the release 1.7.
 * Belogorokhov Youri (HANDLE) was the contributor of "a better html color idea, a new style browse dialog function" in 1.8.
 
 Multi-language translations are the property of their respective owner.

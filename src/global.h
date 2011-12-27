@@ -29,7 +29,7 @@
 #endif
 
 // This make Debug build not crash on "Stack Overflow" in recursive calling,
-// this is 32M, you can change it to a proper number.
+// this is 32M, you can change it to a proper number. It fix the crash in x64 release version too.(?)
 #pragma comment(linker, "/STACK:33554432")
 #endif // MSC_VER
 
@@ -111,7 +111,6 @@ typedef long LONG_PTR;
 
 
 // Struct used for Windows Registry Key
-// 1.8.3  following 3 structs are "slightly" changed
 struct _KEYCONTENT {
     LPSTR  lpkeyname;                          // Pointer to key's name
     struct _VALUECONTENT FAR * lpfirstvalue;   // Pointer to key's first value
@@ -169,7 +168,6 @@ struct _COMRESULT {
 };
 typedef struct _COMRESULT COMRESULT, FAR * LPCOMRESULT;
 
-// At last, I define it in 1.8.3-beta2, should have done it long ago
 struct _HIVEHEADER {
     unsigned char signature[16];    // 16bytes offset 0
     DWORD  offsetkeyhklm;           // 4 offset 16 ( 512)
@@ -184,7 +182,7 @@ struct _HIVEHEADER {
 typedef struct _HIVEHEADER HIVEHEADER , FAR * LPHIVEHEADER;
 
 
-//-------------------------------------------------------------------
+//----------------- struct for saving designed by maddes ------------------------
 
 struct _SAVEKEYCONTENT {
     DWORD  fpos_keyname;            // Pointer to key's name
@@ -326,7 +324,7 @@ LPSTR   lpIni;
 LPSTR   lpLangStrings;
 LPSTR   lpCurrentTranslator;
 //LPSTR REGSHOTDATFILE = "rgst152.dat";
-LPSTR   lpProgramDir;   // tfx ∂®“Â
+LPSTR   lpProgramDir;   // tfx define
 LPSTR   lpRegshotIni;
 
 LPBYTE  lpRegSkipStrings;
