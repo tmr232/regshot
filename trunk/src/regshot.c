@@ -25,8 +25,7 @@
 
 char str_DefResPre[] = REGSHOT_RESULT_FILE;
 char str_filter[]    = {"Regshot hive files [*.hiv]\0*.hiv\0All files\0*.*\0\0"};
-char str_RegshotHiveSignature[] = REGSHOT_HIVE_SIGNATURE;  // Need [] to use with sizeof() must <12, changed 1.8.3 for new hive file
-
+char str_RegshotHiveSignature[] = REGSHOT_HIVE_SIGNATURE;  // Need [] to use with sizeof() must <12
 
 extern LPBYTE lan_errorcreatefile;
 extern LPBYTE lan_comments;
@@ -1027,9 +1026,12 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
     LPSTR   lpValueName;
     LPBYTE  lpValueData;
     LPKEYCONTENT    lpKeyContent;
-    LPKEYCONTENT    lpKeyContentLast;
     LPVALUECONTENT  lpValueContent;
+    LPKEYCONTENT    lpKeyContentLast;
     LPVALUECONTENT  lpValueContentLast;
+
+    lpKeyContentLast = NULL;
+    lpValueContentLast = NULL;
 
     // To detemine MAX length
     if (RegQueryInfoKey(
@@ -1078,7 +1080,8 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
 
         lpValueContent = MYALLOC0(sizeof(VALUECONTENT));
         // I had done if (i == 0) in 1.50b- ! thanks fisttk@21cn.com and non-standard
-        if (lpFatherKeyContent->lpfirstvalue == NULL) {
+        //if (lpFatherKeyContent->lpfirstvalue == NULL) {
+        if (lpValueContentLast == NULL) {
             lpFatherKeyContent->lpfirstvalue = lpValueContent;
         } else {
             lpValueContentLast->lpnextvalue = lpValueContent;
@@ -1125,7 +1128,8 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
             }
         }
         lpKeyContent = MYALLOC0(sizeof(KEYCONTENT));
-        if (lpFatherKeyContent->lpfirstsubkey == NULL) {
+        //if (lpFatherKeyContent->lpfirstsubkey == NULL) {
+        if (lpKeyContentLast == NULL) {
             lpFatherKeyContent->lpfirstsubkey = lpKeyContent;
         } else {
             lpKeyContentLast->lpbrotherkey = lpKeyContent;
@@ -1171,8 +1175,7 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
 
 
 //--------------------------------------------------
-// Registry save engine (It is rather stupid!) (1.8.3 changed struct)
-// 20111217:made some defination and code for x64 bug reporting by XhmikosR, not really fixed in his situation.
+// Registry save engine
 //--------------------------------------------------
 VOID SaveRegKey(LPKEYCONTENT lpKeyContent, DWORD nFPCurrentFatherKey, DWORD nFPCaller)
 {
@@ -1201,7 +1204,7 @@ VOID SaveRegKey(LPKEYCONTENT lpKeyContent, DWORD nFPCurrentFatherKey, DWORD nFPC
     WriteFile(hFileWholeReg, &skc, sizeof(skc), &NBW, NULL);
 
 /*
-    nFPTemp4Write = nFPHeader + sizeof(KEYCONTENT);                                             // sizeof(KEYCONTENT) 6*4 1.8.3, in former it is 5*4+1
+    nFPTemp4Write = nFPHeader + sizeof(KEYCONTENT);                                             
     WriteFile(hFileWholeReg, &nFPTemp4Write, sizeof(nFPTemp4Write), &NBW, NULL);                // Save the location of lpkeyname
 
     nPad = (nLenPlus1 % sizeof(int) == 0) ? 0 : ( sizeof(int) - nLenPlus1 % sizeof(int) );
@@ -1243,7 +1246,7 @@ VOID SaveRegKey(LPKEYCONTENT lpKeyContent, DWORD nFPCurrentFatherKey, DWORD nFPC
 /*
         WriteFile(hFileWholeReg, (LPBYTE)lpv, sizeof(DWORD)*2, &NBW, NULL);
 
-        nFPTemp4Write = nFPCurrent + sizeof(VALUECONTENT);                                      // 1.8.3 7*4, former is 6*4+1
+        nFPTemp4Write = nFPCurrent + sizeof(VALUECONTENT);                                     
         WriteFile(hFileWholeReg, &nFPTemp4Write, sizeof(nFPTemp4Write), &NBW, NULL);            // Save location of lpvaluename
 
         nPad = (nLenPlus1 % sizeof(int) == 0) ? 0 : (sizeof(int) - nLenPlus1 % sizeof(int));                // determine if pad to 4bytes is needed
@@ -1582,7 +1585,7 @@ BOOL LoadHive(LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER,
 
     if (strcmp(str_RegshotHiveSignature, (const char *)(hiveheader.signature)) != 0) {
         CloseHandle(hFileWholeReg);
-        ErrMsg((LPCTSTR)"It is not a compatible hive to current version or it is not a valid Regshot hive file!"); //changed in 1.8.3
+        ErrMsg((LPCTSTR)"It is not a compatible hive to current version or it is not a valid Regshot hive file!");
         return FALSE;
     }
     //May add some check here
