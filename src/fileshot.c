@@ -24,6 +24,10 @@
 // ISDIR, ISFILE added in 1.8.0
 #define ISDIR(x)  ( (x&FILE_ATTRIBUTE_DIRECTORY) != 0 )
 #define ISFILE(x) ( (x&FILE_ATTRIBUTE_DIRECTORY) == 0 )
+
+SAVEFILECONTENT sFC;
+
+
 extern LPBYTE lan_dir;
 extern LPBYTE lan_file;
 
@@ -329,23 +333,22 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DW
     DWORD   nFPCurrent;
     DWORD   nLenPlus1;
     int     nPad;
-    SAVEFILECONTENT sfc;
 
     nLenPlus1 = (DWORD)strlen(lpFileContent->lpfilename) + 1;                       // Get len+1
     nFPHeader = SetFilePointer(hFileWholeReg, 0, NULL, FILE_CURRENT);               // Save head fp
     // using struct, idea from maddes
-    sfc.fpos_filename = nFPHeader + sizeof(SAVEFILECONTENT);
-    sfc.writetimelow = lpFileContent->writetimelow;
-    sfc.writetimehigh = lpFileContent->writetimehigh;
-    sfc.filesizelow = lpFileContent->filesizelow;
-    sfc.filesizehigh = lpFileContent->filesizehigh;
-    sfc.fileattr = lpFileContent->fileattr;
-    sfc.cksum = lpFileContent->cksum;
-    sfc.fpos_firstsubfile = 0; //lpFileContent->lpfirstsubfile;
-    sfc.fpos_brotherfile = 0; //lpFileContent->lpbrotherfile;
-    sfc.fpos_fatherfile = nFPCurrentFatherFile;
-    sfc.bfilematch = 0;
-    WriteFile(hFileWholeReg, &sfc, sizeof(sfc), &NBW, NULL);
+    sFC.fpos_filename = nFPHeader + sizeof(SAVEFILECONTENT);
+    sFC.writetimelow = lpFileContent->writetimelow;
+    sFC.writetimehigh = lpFileContent->writetimehigh;
+    sFC.filesizelow = lpFileContent->filesizelow;
+    sFC.filesizehigh = lpFileContent->filesizehigh;
+    sFC.fileattr = lpFileContent->fileattr;
+    sFC.cksum = lpFileContent->cksum;
+    sFC.fpos_firstsubfile = 0; //lpFileContent->lpfirstsubfile;
+    sFC.fpos_brotherfile = 0; //lpFileContent->lpbrotherfile;
+    sFC.fpos_fatherfile = nFPCurrentFatherFile;
+    sFC.bfilematch = 0;
+    WriteFile(hFileWholeReg, &sFC, sizeof(sFC), &NBW, NULL);
 
 /*
     nFPTemp4Write = nFPHeader + sizeof(FILECONTENT);                                            //
