@@ -22,16 +22,6 @@
 #ifndef REGSHOT_GLOBAL_H
 #define REGSHOT_GLOBAL_H
 
-#if defined(_MSC_VER)
-// Disable compiler warning for secure version of strlen, sprintf...
-#ifndef _CRT_SECURE_NO_WARNINGS
-#define _CRT_SECURE_NO_WARNINGS
-#endif
-
-// This make Debug build not crash on "Stack Overflow" in recursive calling,
-// this is 32M, you can change it to a proper number. It fix the crash in x64 release version too.(?)
-#pragma comment(linker, "/STACK:33554432")
-#endif // MSC_VER
 
 #ifdef __GNUC__
 #include <unistd.h>
@@ -51,7 +41,6 @@ typedef long LONG_PTR;
 #endif
 #endif  // _MSC_VER
 
-// !!!WARNING!!! HEAP_NO_SERIALIZE means we can not use this in multithread.
 // added in 1.8.2 to gain a slightly faster speed but it is danger!
 #define USEHEAPALLOC_DANGER
 //#define DEBUGLOG
@@ -60,7 +49,7 @@ typedef long LONG_PTR;
 
 // MSDN doc say use HEAP_NO_SERIALIZE is not good for process heap :( so change fromm 1 to 0 20111216 ,slower than using 1
 #define MYALLOC(x)  HeapAlloc(hHeap,0,x)
-#define MYALLOC0(x) HeapAlloc(hHeap,8,x) // HEAP_NO_SERIALIZE|HEAP_ZERO_MEMORY ,1|8
+#define MYALLOC0(x) HeapAlloc(hHeap,8,x) // (HEAP_NO_SERIALIZE|) HEAP_ZERO_MEMORY ,1|8
 #define MYFREE(x)   HeapFree(hHeap,0,x)
 
 #else

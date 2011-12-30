@@ -104,6 +104,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <StackReserveSize>33554432</StackReserveSize>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -123,6 +124,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <StackReserveSize>67108864</StackReserveSize>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -146,6 +148,7 @@
       <LargeAddressAware>true</LargeAddressAware>
       <MergeSections>.rdata=.text</MergeSections>
       <SetChecksum>true</SetChecksum>
+      <StackReserveSize>33554432</StackReserveSize>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -168,6 +171,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <MergeSections>.rdata=.text</MergeSections>
       <SetChecksum>true</SetChecksum>
+      <StackReserveSize>67108864</StackReserveSize>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>

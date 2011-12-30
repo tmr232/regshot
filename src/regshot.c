@@ -1060,8 +1060,8 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
             ) != ERROR_SUCCESS) {
         return ;
     }
-    LengthOfLongestSubkeyName = LengthOfLongestSubkeyName * 2 + 3;   // yeah, maybe x+1 is enough! x = chars
-    LengthOfLongestValueName  = LengthOfLongestValueName * 2 + 3;    // yeah, maybe x+1 is enough! x = chars
+    LengthOfLongestSubkeyName = LengthOfLongestSubkeyName * 4 + 4;   //msdn says it is in unicode characters
+    LengthOfLongestValueName  = LengthOfLongestValueName * 4 + 4;    //
     LengthOfLongestValueData  = LengthOfLongestValueData + 1;
     lpValueName = MYALLOC(LengthOfLongestValueName);
     lpValueData = MYALLOC(LengthOfLongestValueData);
