@@ -14,7 +14,7 @@ IF NOT EXIST %ASTYLE% (
 
 %ASTYLE% -s4 --indent-switches --indent-namespaces --add-brackets --indent-col1-comments^
  --pad-header --align-pointer=middle --align-reference=middle --preserve-date --pad-oper^
- --unpad-paren ..\src\*.h ..\src\*.c
+ --unpad-paren ..\src\*.h ..\src\*.c ..\src\182to183\*.c ..\src\182to183\*.h
 
 IF %ERRORLEVEL% NEQ 0 (
   ECHO.
