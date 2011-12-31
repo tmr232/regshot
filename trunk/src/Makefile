@@ -49,7 +49,6 @@ else
     CFLAGS+=-DNDEBUG -UDEBUG
 endif
 
-
 SRCS_C=\
     fileshot.c \
     language.c \
@@ -83,7 +82,7 @@ OUTFLAGS=-MMD -o\
 TARGET_EXE=$(TARGET_DIR)$(MY_DIR_PREFIX)_$(MY_ARCH)/Regshot.exe
 
 
-### TARGETS ###
+# Targets
 
 .all: outdirs $(TARGET_EXE)
 
@@ -99,7 +98,7 @@ clean:
 	rm -r -f $(OBJ_DIR)
 
 
-### COMMANDS ###
+# Commands
 
 OBJS+=$(SRCS_C:%.c=$(OBJ_DIR)%.o) $(RESSRC:%.rc=$(OBJ_DIR)%.res.o)
 
@@ -113,7 +112,7 @@ $(OBJ_DIR)%.res.o: %.rc
 
 $(TARGET_EXE): $(OBJS)
 	@echo $@
-	@$(MY_PREFIX)$(CC) -mwindows -o $@ $(OBJS) -lstdc++ -Wl,--stack=$(STACK_SIZE)
+	@$(MY_PREFIX)$(CC) -mwindows -Wl,--stack=$(STACK_SIZE) -o $@ $(OBJS)
 ifneq ($(DEBUG),yes)
 	@$(MY_PREFIX)strip $@
 endif
