@@ -1060,8 +1060,8 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
             ) != ERROR_SUCCESS) {
         return ;
     }
-    LengthOfLongestSubkeyName = LengthOfLongestSubkeyName * 4 + 4;   //msdn says it is in unicode characters
-    LengthOfLongestValueName  = LengthOfLongestValueName * 4 + 4;    //
+    LengthOfLongestSubkeyName = LengthOfLongestSubkeyName * 4 + 4;   // msdn says it is in unicode characters
+    LengthOfLongestValueName  = LengthOfLongestValueName * 4 + 4;
     LengthOfLongestValueData  = LengthOfLongestValueData + 1;
     lpValueName = MYALLOC(LengthOfLongestValueName);
     lpValueData = MYALLOC(LengthOfLongestValueData);
@@ -1212,7 +1212,7 @@ VOID SaveRegKey(LPKEYCONTENT lpKeyContent, DWORD nFPCurrentFatherKey, DWORD nFPC
     WriteFile(hFileWholeReg, &sKC, sizeof(sKC), &NBW, NULL);
 
 /*
-    nFPTemp4Write = nFPHeader + sizeof(KEYCONTENT);                                             
+    nFPTemp4Write = nFPHeader + sizeof(KEYCONTENT);
     WriteFile(hFileWholeReg, &nFPTemp4Write, sizeof(nFPTemp4Write), &NBW, NULL);                // Save the location of lpkeyname
 
     nPad = (nLenPlus1 % sizeof(int) == 0) ? 0 : ( sizeof(int) - nLenPlus1 % sizeof(int) );
@@ -1254,7 +1254,7 @@ VOID SaveRegKey(LPKEYCONTENT lpKeyContent, DWORD nFPCurrentFatherKey, DWORD nFPC
 /*
         WriteFile(hFileWholeReg, (LPBYTE)lpv, sizeof(DWORD)*2, &NBW, NULL);
 
-        nFPTemp4Write = nFPCurrent + sizeof(VALUECONTENT);                                     
+        nFPTemp4Write = nFPCurrent + sizeof(VALUECONTENT);
         WriteFile(hFileWholeReg, &nFPTemp4Write, sizeof(nFPTemp4Write), &NBW, NULL);            // Save location of lpvaluename
 
         nPad = (nLenPlus1 % sizeof(int) == 0) ? 0 : (sizeof(int) - nLenPlus1 % sizeof(int));                // determine if pad to 4bytes is needed

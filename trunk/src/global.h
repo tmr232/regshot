@@ -277,7 +277,7 @@ DWORD   nBASETIME1;
 DWORD   nGettingFile;
 DWORD   nGettingDir;
 DWORD   nSavingFile;
-//DWORD   nMask = 0xf7fd;   // not used now, but should be added
+//DWORD   nMask = 0xf7fd;     // not used now, but should be added
 //DWORD   nRegMessageCount = 0;
 DWORD   NBW;                // that is: NumberOfBytesWritten;
 
@@ -406,4 +406,3 @@ VOID    GetAllSubFile(BOOL needbrother, DWORD typedir, DWORD typefile, LPDWORD l
 VOID RebuildFromHive_filehead(LPSAVEHEADFILE lpSHF, LPHEADFILE lpHeadFile, LPBYTE lpHiveFileBase);
 
 #endif // REGSHOT_GLOBAL_H
-
