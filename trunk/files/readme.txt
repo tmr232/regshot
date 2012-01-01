@@ -1,5 +1,5 @@
 
-Readme file of Regshot 1.8.3 beta1    (2011-12-25)
+Readme file of Regshot 1.8.3 beta1    (2011-12-25) (beta1V1-beta1V5)
 (Note: it is the beta version for testing purpose only)
 
 -----------------
@@ -126,7 +126,7 @@ Copyright 2007 Belogorokhov Youri
 * License remark:
 * TiANWEi - Original Author of Regshot, 1999-now
 * Maddes  http://www.maddes.net/ - Coder and Maintainer, 2011-now
-* XhmikosR - Coder and project maintainer, 2011-now
+* XhmikosR - Coder and Maintainer, 2011-now
 * Tulipfan (tfx) was the Designer & Coder of "Skiplist functions, regshot.ini setup, REGSHOT_TITLE define", he made the release 1.7.
 * Belogorokhov Youri (HANDLE) was the contributor of "a better html color idea, a new style browse dialog function" in 1.8.
 

@@ -31,10 +31,10 @@ Usage: 182to183 infile.hiv outfile.hiv\n\n");
         printf("[X] Need input and output filenames!\n");
         return 1;
     }
-    if (LoadHive((LPCTSTR)argv[1], &lpHeadLocalMachine, &lpHeadUsers, &lpHeadFile) != TRUE) {
+    if (LoadHive(argv[1], &lpHeadLocalMachine, &lpHeadUsers, &lpHeadFile) != TRUE) {
         return 1;
     }
-    SaveHive((LPCTSTR)argv[2], lpHeadLocalMachine, lpHeadUsers, lpHeadFile);
+    SaveHive(argv[2], lpHeadLocalMachine, lpHeadUsers, lpHeadFile);
 
     return 0;
 #endif

@@ -334,7 +334,7 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DW
     DWORD   nLenPlus1;
     int     nPad;
 
-    nLenPlus1 = (DWORD)strlen(lpFileContent->lpfilename) + 1;                       // Get len+1
+    nLenPlus1 = (DWORD)strlen(lpFileContent->lpfilename) + 1;                       // Get len+1,this (dword) is for the writefile below.
     nFPHeader = SetFilePointer(hFileWholeReg, 0, NULL, FILE_CURRENT);               // Save head fp
     // using struct, idea from maddes
     sFC.fpos_filename = nFPHeader + sizeof(SAVEFILECONTENT);
@@ -406,7 +406,9 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DW
 
 
 #ifdef _WIN64
-//
+//-------------------------------------------------------------
+//Rebuild file snap from file buffer
+//-------------------------------------------------------------
 VOID RebuildFromHive_file(LPSAVEFILECONTENT lpFile, LPFILECONTENT lpFatherFC, LPFILECONTENT lpFC, LPBYTE lpHiveFileBase)
 {
     LPFILECONTENT lpsubfile;
@@ -446,7 +448,9 @@ VOID RebuildFromHive_file(LPSAVEFILECONTENT lpFile, LPFILECONTENT lpFatherFC, LP
     }
 
 }
-
+//-------------------------------------------------------------
+//Rebuild filehead from file buffer
+//-------------------------------------------------------------
 VOID RebuildFromHive_filehead(LPSAVEHEADFILE lpSHF, LPHEADFILE lpHeadFile, LPBYTE lpHiveFileBase)
 {
     LPSAVEHEADFILE  lpshf;
@@ -471,7 +475,6 @@ VOID RebuildFromHive_filehead(LPSAVEHEADFILE lpSHF, LPHEADFILE lpHeadFile, LPBYT
 #else
 //--------------------------------------------------
 // Realign filecontent, called by ReAlignFile()
-// modi 20111216
 //--------------------------------------------------
 VOID ReAlignFileContent(LPFILECONTENT lpFC, size_t nBase)
 {
@@ -505,7 +508,6 @@ VOID ReAlignFileContent(LPFILECONTENT lpFC, size_t nBase)
 
 //--------------------------------------------------
 // Realign file, walk through chain
-// modi 20111216
 //--------------------------------------------------
 VOID ReAlignFile(LPHEADFILE lpHF, size_t nBase)
 {

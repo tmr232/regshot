@@ -9,12 +9,11 @@ IF %ERRORLEVEL% NEQ 0 (
   ECHO.
   ECHO ERROR: Astyle wasn't found!
   ECHO Visit http://astyle.sourceforge.net/ for download and details.
-  PAUSE
   GOTO END
 )
 
 AStyle.exe --style=kr^
- -s4 --indent-switches --indent-namespaces --indent-col1-comments^
+ --indent=spaces=4 --indent-switches --indent-namespaces --indent-col1-comments^
  --add-brackets^
  --pad-header --pad-oper --unpad-paren^
  --align-pointer=name^
@@ -24,7 +23,7 @@ AStyle.exe --style=kr^
 IF %ERRORLEVEL% NEQ 0 (
   ECHO.
   ECHO ERROR: Something went wrong!
-  PAUSE
+  GOTO END
 )
 
 :END

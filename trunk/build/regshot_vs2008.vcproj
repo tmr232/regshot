@@ -199,7 +199,6 @@
 				RuntimeLibrary="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4819"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -279,7 +278,6 @@
 				RuntimeLibrary="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4267;4819"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

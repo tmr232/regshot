@@ -8,8 +8,9 @@ History of Regshot
 -: Function deleted
 -------------------------------------------------
 
-V1.8.3 beta1 2011-12-25
+V1.8.3 beta1V1-beta1V5 2011-12-25,2012-01-01
 ! Testing purpose only
+! beta1V1-beta1V5 tried several compiler and fix
 + Add 64-Bit build
 * New program icon (thanks to the PortableApps guys)
 ! Add support for various compilers
