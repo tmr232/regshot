@@ -68,6 +68,7 @@
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				StackCommitSize="33554432"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -142,6 +143,7 @@
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				StackCommitSize="67108864"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -216,6 +218,7 @@
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				StackCommitSize="33554432"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				LargeAddressAware="2"
@@ -295,6 +298,7 @@
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				StackCommitSize="67108864"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				SetChecksum="true"

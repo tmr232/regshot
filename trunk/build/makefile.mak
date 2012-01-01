@@ -36,7 +36,7 @@ RC = rc.exe
 !IFDEF x64
 BINDIR  = ..\bin\WDK\Release_x64
 !ELSE
-BINDIR  = ..\bin\WDK\Release_x86
+BINDIR  = ..\bin\WDK\Release_Win32
 !ENDIF
 OBJDIR  = $(BINDIR)\obj
 EXE     = $(BINDIR)\Regshot.exe
