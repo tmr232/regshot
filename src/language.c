@@ -202,7 +202,7 @@ VOID GetDefaultStrings(VOID)
 VOID PointToNewStrings(VOID)
 {
     //LPDWORD lp = ldwTempStrings;
-    LPBYTE * lp = (LPBYTE *)lplpLangStrings;
+    LPBYTE *lp = (LPBYTE *)lplpLangStrings;
 
     lan_key             = *lp;
     lp++;
@@ -282,7 +282,7 @@ BOOL GetLanguageStrings(HWND hDlg)
     BOOL    bRet;
     LPBYTE  lpReturn;
     //LPDWORD lp;
-    LPBYTE * lp;
+    LPBYTE *lp;
     char    lpIniKey[16];    // 1.8.2 LPSTR   lpIniKey = MYALLOC0(8);
 
     nIndex = SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_GETCURSEL, (WPARAM)0, (LPARAM)0);

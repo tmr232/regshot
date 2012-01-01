@@ -55,7 +55,7 @@ extern LPBYTE lan_file;
 extern LPBYTE lan_errorexecviewer;
 extern LPBYTE lan_erroropenfile;
 
-extern char * str_prgname;  // be careful of extern ref! Must be the same when declaring them, otherwise pointer would mis-point!
+extern char *str_prgname;   // be careful of extern ref! Must be the same when declaring them, otherwise pointer would mis-point!
 extern char str_CR[];
 
 
@@ -594,7 +594,7 @@ VOID FreeAllCompareResults(void)
 //-------------------------------------------------------------
 // Registry comparison engine
 //-------------------------------------------------------------
-VOID * CompareFirstSubKey(LPKEYCONTENT lpHead1, LPKEYCONTENT lpHead2)
+VOID *CompareFirstSubKey(LPKEYCONTENT lpHead1, LPKEYCONTENT lpHead2)
 {
     LPKEYCONTENT    lp1;
     LPKEYCONTENT    lp2;
@@ -1452,8 +1452,7 @@ VOID RebuildFromHive_reg(LPSAVEKEYCONTENT lpFile, LPKEYCONTENT lpFatherkey, LPKE
         lpValue = MYALLOC0(sizeof(VALUECONTENT));
         if (lpValueLast != NULL) {
             lpValueLast->lpnextvalue = lpValue;
-        }
-        else {
+        } else {
             lpKey->lpfirstvalue = lpValue;
         }
 
@@ -1551,8 +1550,8 @@ VOID ReAlignReg(LPKEYCONTENT lpKey, size_t nBase)
 //---------------------------------------------------------------------------------
 // Load registry from HIVE file (After this, we should realign the data in memory)
 //---------------------------------------------------------------------------------
-BOOL LoadHive(LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER,
-              LPHEADFILE FAR * lplpHeadFile, LPBYTE FAR * lpHive)
+BOOL LoadHive(LPKEYCONTENT FAR *lplpKeyHLM, LPKEYCONTENT FAR *lplpKeyUSER,
+              LPHEADFILE FAR *lplpHeadFile, LPBYTE FAR *lpHive)
 {
     DWORD   nFileSize;
     size_t  nBase;
