@@ -1,20 +1,25 @@
 @ECHO OFF
 SETLOCAL
 
-PUSHD %~dp0%
+PUSHD %~dp0
 
-SET "ASTYLE=AStyle.exe"
+AStyle.exe --version 1>&2 2>NUL
 
-IF NOT EXIST %ASTYLE% (
+IF %ERRORLEVEL% NEQ 0 (
   ECHO.
   ECHO ERROR: Astyle wasn't found!
+  ECHO Visit http://astyle.sourceforge.net/ for download and details.
   PAUSE
-  EXIT /B
+  GOTO END
 )
 
-%ASTYLE% -s4 --style=kr --indent-switches --indent-namespaces --add-brackets^
- --indent-col1-comments --pad-header --align-pointer=name --align-reference=name^
- --preserve-date --pad-oper --unpad-paren --recursive ..\src\*.c ..\src\*.h
+AStyle.exe --style=kr^
+ -s4 --indent-switches --indent-namespaces --indent-col1-comments^
+ --add-brackets^
+ --pad-header --pad-oper --unpad-paren^
+ --align-pointer=name^
+ --preserve-date^
+ --recursive ..\src\*.c ..\src\*.h
 
 IF %ERRORLEVEL% NEQ 0 (
   ECHO.
@@ -22,6 +27,7 @@ IF %ERRORLEVEL% NEQ 0 (
   PAUSE
 )
 
+:END
 POPD
 PAUSE
 ENDLOCAL
