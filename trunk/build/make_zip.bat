@@ -138,6 +138,30 @@ IF "%~1" == "" (
     SET SUFFIX=_ICL12
     GOTO START
   )
+  IF /I "%~1" == "GCC" (
+    SET INPUTDIRx86=bin\GCC\Release_Win32
+    SET INPUTDIRx64=bin\GCC\Release_x64
+    SET SUFFIX=_GCC
+    GOTO START
+  )
+  IF /I "%~1" == "/GCC" (
+    SET INPUTDIRx86=bin\GCC\Release_Win32
+    SET INPUTDIRx64=bin\GCC\Release_x64
+    SET SUFFIX=_GCC
+    GOTO START
+  )
+  IF /I "%~1" == "-GCC" (
+    SET INPUTDIRx86=bin\GCC\Release_Win32
+    SET INPUTDIRx64=bin\GCC\Release_x64
+    SET SUFFIX=_GCC
+    GOTO START
+  )
+  IF /I "%~1" == "--GCC" (
+    SET INPUTDIRx86=bin\GCC\Release_Win32
+    SET INPUTDIRx64=bin\GCC\Release_x64
+    SET SUFFIX=_GCC
+    GOTO START
+  )
 
   ECHO.
   ECHO Unsupported commandline switch!

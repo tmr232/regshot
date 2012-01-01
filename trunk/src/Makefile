@@ -72,7 +72,7 @@ endif
 ifeq ($(64BIT),yes)
     MY_ARCH=x64
 else
-    MY_ARCH=x86
+    MY_ARCH=Win32
 endif
 
 OBJ_DIR=$(TARGET_DIR)$(MY_DIR_PREFIX)_$(MY_ARCH)/obj/
