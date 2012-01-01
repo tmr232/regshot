@@ -149,6 +149,9 @@ IF "%~1" == "" (
 :START
 SET "TEMP_NAME=temp_zip%SUFFIX%"
 
+IF NOT EXIST "..\%INPUTDIRx86%\Regshot.exe" CALL :SUBMSG "ERROR" "Compile Regshot Win32 first!"
+IF NOT EXIST "..\%INPUTDIRx64%\Regshot.exe" CALL :SUBMSG "ERROR" "Compile Regshot x64 first!"
+
 CALL :SubGetVersion
 CALL :SubZipFiles %INPUTDIRx86% Win32
 CALL :SubZipFiles %INPUTDIRx64% x64
