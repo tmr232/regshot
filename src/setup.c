@@ -19,7 +19,7 @@
 */
 
 /* This file orignal coded by tulipfan
- * Change some name and fix for x64 by tianwei
+ * Change function/variable name to more proper ones and fix for x64 by tianwei
 */
 
 #include "global.h"
@@ -37,7 +37,7 @@ LPSTR INI_SKIPDIR         = "SkipDir";
 LPSTR INI_USELONGREGHEAD  = "UseLongRegHead";  // 1.8.1 tianwei for compatible to undoreg 1.46 again
 
 
-BOOL LoadSettingsFromIni(HWND hDlg) // tfx 取配置文件信息
+BOOL LoadSettingsFromIni(HWND hDlg) // tfx get ini info (translate from chinese comment)
 {
     int     i;
     LPBYTE  lpReturn;
@@ -47,7 +47,7 @@ BOOL LoadSettingsFromIni(HWND hDlg) // tfx 取配置文件信息
 
     lplpRegSkipStrings = MYALLOC0(sizeof(LPSTR) * MAX_INI_SKIPITEMS);
     lpRegSkipStrings = MYALLOC0(SIZEOF_INI_SKIPBLOCK);
-    if (GetPrivateProfileSection(INI_SKIPREGKEY, (LPTSTR)lpRegSkipStrings, SIZEOF_INI_SKIPBLOCK, lpRegshotIni) > 0) {
+    if (GetPrivateProfileSection(INI_SKIPREGKEY, (LPSTR)lpRegSkipStrings, SIZEOF_INI_SKIPBLOCK, lpRegshotIni) > 0) {
         for (i = 0; i < MAX_INI_SKIPITEMS - 1; i++) {
             sprintf(lpIniKey, "%d%s", i, "=");
             if ((lpReturn = AtPos(lpRegSkipStrings, (LPBYTE)lpIniKey, SIZEOF_INI_SKIPBLOCK, strlen(lpIniKey))) != NULL) {
@@ -61,7 +61,7 @@ BOOL LoadSettingsFromIni(HWND hDlg) // tfx 取配置文件信息
 
     lplpFileSkipStrings = MYALLOC0(sizeof(LPSTR) * MAX_INI_SKIPITEMS);
     lpFileSkipStrings = MYALLOC0(SIZEOF_INI_SKIPBLOCK);
-    if (GetPrivateProfileSection(INI_SKIPDIR, (LPTSTR)lpFileSkipStrings, SIZEOF_INI_SKIPBLOCK, lpRegshotIni)) {
+    if (GetPrivateProfileSection(INI_SKIPDIR, (LPSTR)lpFileSkipStrings, SIZEOF_INI_SKIPBLOCK, lpRegshotIni)) {
         for (i = 0; i < MAX_INI_SKIPITEMS - 1; i++) {
             sprintf(lpIniKey, "%d%s", i, "=");
             if ((lpReturn = AtPos(lpFileSkipStrings, (LPBYTE)lpIniKey, SIZEOF_INI_SKIPBLOCK, strlen(lpIniKey))) != NULL) {
@@ -109,7 +109,7 @@ BOOL LoadSettingsFromIni(HWND hDlg) // tfx 取配置文件信息
 }
 
 
-BOOL SaveSettingsToIni(HWND hDlg) // tfx 保存信息到配置文件
+BOOL SaveSettingsToIni(HWND hDlg) // tfx save settings to ini (translate from chinese)
 {
     BYTE    nFlag;
     LPSTR   lpString;
@@ -159,7 +159,7 @@ BOOL SaveSettingsToIni(HWND hDlg) // tfx 保存信息到配置文件
 }
 
 
-BOOL IsInSkipList(LPSTR lpStr, LPBYTE *lpSkipList)  // tfx 跳过黑名单
+BOOL IsInSkipList(LPSTR lpStr, LPBYTE *lpSkipList)  // tfx  skip the list (translate from chinese)
 {
     int i;
     // todo: it seems bypass null item. But the getsetting is get all. Is it safe without the null thing? tianwei

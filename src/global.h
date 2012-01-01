@@ -157,6 +157,7 @@ struct _COMRESULT {
 };
 typedef struct _COMRESULT COMRESULT, FAR *LPCOMRESULT;
 
+// Struct for hive file header
 struct _HIVEHEADER {
     unsigned char signature[16];    // 16bytes offset 0
     DWORD  offsetkeyhklm;           // 4 offset 16 ( 512)
@@ -389,7 +390,7 @@ LPSTR   GetWholeFileName(LPFILECONTENT lpFileContent);
 VOID    InitProgressBar(VOID);
 VOID    CompareFirstSubFile(LPFILECONTENT lpHead1, LPFILECONTENT lpHead2);
 BOOL    ReplaceInValidFileName(LPSTR lpf);
-VOID    ErrMsg(LPCTSTR note);
+VOID    ErrMsg(LPCSTR note);
 VOID    WriteHead(u_char *lpstr, DWORD count, BOOL isHTML);
 VOID    WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor);
 VOID    WriteTitle(LPSTR lph, LPSTR lpb, BOOL isHTML);
@@ -401,8 +402,8 @@ VOID    WriteHtmlbegin(void);
 VOID    WriteHtmlover(void);
 VOID    WriteHtmlbr(void);
 VOID    ReAlignFile(LPHEADFILE lpHF, size_t nBase);
-LPFILECONTENT SearchDirChain(LPSTR lpname, LPHEADFILE lpHF);
 VOID    GetAllSubFile(BOOL needbrother, DWORD typedir, DWORD typefile, LPDWORD lpcountdir, LPDWORD lpcountfile, LPFILECONTENT lpFileContent);
-VOID RebuildFromHive_filehead(LPSAVEHEADFILE lpSHF, LPHEADFILE lpHeadFile, LPBYTE lpHiveFileBase);
+VOID    RebuildFromHive_filehead(LPSAVEHEADFILE lpSHF, LPHEADFILE lpHeadFile, LPBYTE lpHiveFileBase);
+LPFILECONTENT SearchDirChain(LPSTR lpname, LPHEADFILE lpHF);
 
 #endif // REGSHOT_GLOBAL_H

@@ -427,7 +427,9 @@ VOID FreeAllKey(LPKEYCONTENT lpKey)
 }
 
 #ifdef _WIN64
+//-------------------------------------------------------------
 //only for rebuild from hive,the name things remain in lptemphive
+//-------------------------------------------------------------
 VOID FreeAllKeyExceptNameValue(LPKEYCONTENT lpKey)
 {
     LPVALUECONTENT lpv;
@@ -437,15 +439,10 @@ VOID FreeAllKeyExceptNameValue(LPKEYCONTENT lpKey)
         FreeAllKeyExceptNameValue(lpKey->lpfirstsubkey);
         FreeAllKeyExceptNameValue(lpKey->lpbrotherkey);
         for (lpv = lpKey->lpfirstvalue; lpv != NULL;) {
-            //MYFREE(lpv->lpvaluename);
-            //if (lpv->lpvaluedata != NULL) {
-            //    MYFREE(lpv->lpvaluedata);
-            //}
             lpvold = lpv;
             lpv = lpv->lpnextvalue;
             MYFREE(lpvold);
         }
-        //MYFREE(lpKey->lpkeyname);
         MYFREE(lpKey);
     }
 
@@ -877,7 +874,7 @@ BOOL CompareShots(void)
                 if (GetLastError() == ERROR_FILE_EXISTS) {    // My God! I use stupid ERROR_ALREADY_EXISTS first!!
                     continue;
                 } else {
-                    ErrMsg((LPCTSTR)lan_errorcreatefile);
+                    ErrMsg((LPCSTR)lan_errorcreatefile);
                     return FALSE;
                 }
             } else {
@@ -885,7 +882,7 @@ BOOL CompareShots(void)
             }
         }
         if (filetail >= MAXAMOUNTOFFILE) {
-            ErrMsg((LPCTSTR)lan_errorcreatefile);
+            ErrMsg((LPCSTR)lan_errorcreatefile);
             return FALSE;
         }
 
@@ -1008,7 +1005,7 @@ BOOL CompareShots(void)
     CloseHandle(hFile);
 
     if ((size_t)ShellExecute(hWnd, "open", lpDestFileName, NULL, NULL, SW_SHOW) <= 32) {
-        ErrMsg((LPCTSTR)lan_errorexecviewer);
+        ErrMsg((LPCSTR)lan_errorexecviewer);
     }
     MYFREE(lpDestFileName);
 
@@ -1060,7 +1057,7 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
             ) != ERROR_SUCCESS) {
         return ;
     }
-    LengthOfLongestSubkeyName = LengthOfLongestSubkeyName * 4 + 4;   // msdn says it is in unicode characters
+    LengthOfLongestSubkeyName = LengthOfLongestSubkeyName * 4 + 4;   // msdn says it is in unicode characters,old version use *2+somebytes, but this is for sure
     LengthOfLongestValueName  = LengthOfLongestValueName * 4 + 4;
     LengthOfLongestValueData  = LengthOfLongestValueData + 1;
     lpValueName = MYALLOC(LengthOfLongestValueName);
@@ -1421,7 +1418,7 @@ VOID SaveHive(LPKEYCONTENT lpKeyHLM, LPKEYCONTENT lpKeyUSER,
                 MessageBeep(0xffffffff);
                 CloseHandle(hFileWholeReg);
             } else {
-                ErrMsg((LPCTSTR)lan_errorcreatefile);
+                ErrMsg((LPCSTR)lan_errorcreatefile);
             }
 
         }
@@ -1431,7 +1428,9 @@ VOID SaveHive(LPKEYCONTENT lpKeyHLM, LPKEYCONTENT lpKeyUSER,
     }
 }
 #ifdef _WIN64
-//
+//-------------------------------------------------------------
+//Rebuild registry snap from file buffer
+//-------------------------------------------------------------
 VOID RebuildFromHive_reg(LPSAVEKEYCONTENT lpFile, LPKEYCONTENT lpFatherkey, LPKEYCONTENT lpKey, LPBYTE lpHiveFileBase)
 {
     LPVALUECONTENT lpValue;
@@ -1495,7 +1494,6 @@ VOID RebuildFromHive_reg(LPSAVEKEYCONTENT lpFile, LPKEYCONTENT lpFatherkey, LPKE
 
 //--------------------------------------------------
 // Realign key & value content after loading from hive file
-// modi 20111216
 //--------------------------------------------------
 VOID ReAlignReg(LPKEYCONTENT lpKey, size_t nBase)
 {
@@ -1576,13 +1574,13 @@ BOOL LoadHive(LPKEYCONTENT FAR *lplpKeyHLM, LPKEYCONTENT FAR *lplpKeyUSER,
     }
     hFileWholeReg = CreateFile(opfn.lpstrFile, GENERIC_READ , FILE_SHARE_READ , NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFileWholeReg == INVALID_HANDLE_VALUE) {
-        ErrMsg((LPCTSTR)lan_erroropenfile);
+        ErrMsg((LPCSTR)lan_erroropenfile);
         return FALSE;
     }
     nFileSize = GetFileSize(hFileWholeReg, NULL);
     if (nFileSize < sizeof(HIVEHEADER)) {
         CloseHandle(hFileWholeReg);
-        ErrMsg((LPCTSTR)"wrong filesize");
+        ErrMsg((LPCSTR)"wrong filesize");
         return FALSE;
     }
 
@@ -1592,7 +1590,7 @@ BOOL LoadHive(LPKEYCONTENT FAR *lplpKeyHLM, LPKEYCONTENT FAR *lplpKeyUSER,
 
     if (strcmp(str_RegshotHiveSignature, (const char *)(hiveheader.signature)) != 0) {
         CloseHandle(hFileWholeReg);
-        ErrMsg((LPCTSTR)"It is not a compatible hive to current version or it is not a valid Regshot hive file!");
+        ErrMsg((LPCSTR)"It is not a compatible hive to current version or it is not a valid Regshot hive file!");
         return FALSE;
     }
     //May add some check here
@@ -1624,7 +1622,7 @@ BOOL LoadHive(LPKEYCONTENT FAR *lplpKeyHLM, LPKEYCONTENT FAR *lplpKeyUSER,
         ReadFile(hFileWholeReg, (*lpHive) + i, nReadSize, &NBW, NULL); // read the whole file now
         if (NBW != nReadSize) {
             CloseHandle(hFileWholeReg);
-            ErrMsg((LPCTSTR)"Reading ERROR!");
+            ErrMsg((LPCSTR)"Reading ERROR!");
             return FALSE;
         }
         nRemain -= nReadSize;

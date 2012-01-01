@@ -26,9 +26,9 @@ extern LPBYTE lan_error;
 //-------------------------------------------------------------
 // Show error message
 //-------------------------------------------------------------
-VOID ErrMsg(LPCTSTR note)
+VOID ErrMsg(LPCSTR note)
 {
-    MessageBox(hWnd, note, (LPCTSTR)lan_error, MB_ICONHAND);
+    MessageBox(hWnd, note, (LPCSTR)lan_error, MB_ICONHAND);
 }
 
 
@@ -47,11 +47,11 @@ VOID DebugLog(LPSTR filename, LPSTR lpstr, HWND hDlg, BOOL bisCR)
 
     hFile = CreateFile(filename, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
-        ErrMsg((LPCTSTR)lan_errorcreatefile);
+        ErrMsg((LPCSTR)lan_errorcreatefile);
     } else {
         nPos = SetFilePointer(hFile, 0, NULL, FILE_END);
         if (nPos == 0xFFFFFFFF) {
-            ErrMsg((LPCTSTR)lan_errormovefp);
+            ErrMsg((LPCSTR)lan_errormovefp);
         } else {
 
             length = strlen(lpstr);
