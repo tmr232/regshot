@@ -177,8 +177,8 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DW
 //---------------------------------------------------------------------------------
 // Load registry from HIVE file (After this, we should realign the data in memory)
 //---------------------------------------------------------------------------------
-BOOL LoadHive(LPCTSTR lpFileName, LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER,
-              LPHEADFILE FAR * lplpHeadFile)
+BOOL LoadHive(LPCTSTR lpFileName, LPKEYCONTENT FAR *lplpKeyHLM, LPKEYCONTENT FAR *lplpKeyUSER,
+              LPHEADFILE FAR *lplpHeadFile)
 {
     DWORD   nFileSize;
     DWORD   nOffSet = 0;

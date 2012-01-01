@@ -159,7 +159,7 @@ BOOL SaveSettingsToIni(HWND hDlg) // tfx 保存信息到配置文件
 }
 
 
-BOOL IsInSkipList(LPSTR lpStr, LPBYTE * lpSkipList) // tfx 跳过黑名单
+BOOL IsInSkipList(LPSTR lpStr, LPBYTE *lpSkipList)  // tfx 跳过黑名单
 {
     int i;
     // todo: it seems bypass null item. But the getsetting is get all. Is it safe without the null thing? tianwei

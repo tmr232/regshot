@@ -12,9 +12,9 @@ IF NOT EXIST %ASTYLE% (
   EXIT /B
 )
 
-%ASTYLE% -s4 --indent-switches --indent-namespaces --add-brackets --indent-col1-comments^
- --pad-header --align-pointer=middle --align-reference=middle --preserve-date --pad-oper^
- --unpad-paren ..\src\*.h ..\src\*.c ..\src\182to183\*.c ..\src\182to183\*.h
+%ASTYLE% -s4 --style=kr --indent-switches --indent-namespaces --add-brackets^
+ --indent-col1-comments --pad-header --align-pointer=name --align-reference=name^
+ --preserve-date --pad-oper --unpad-paren --recursive ..\src\*.c ..\src\*.h
 
 IF %ERRORLEVEL% NEQ 0 (
   ECHO.

@@ -51,7 +51,7 @@ char htm_s3[]         = "</span>\r\n";
 //------------------------------------------------------------
 // Several routines to write to output file
 //------------------------------------------------------------
-VOID WriteHead(u_char * lpstr, DWORD count, BOOL isHTML)
+VOID WriteHead(u_char *lpstr, DWORD count, BOOL isHTML)
 {
     char lpcount[8];
     sprintf(lpcount, "%d", count);

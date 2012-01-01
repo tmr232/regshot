@@ -25,8 +25,8 @@
 #include "global.h"
 #include "version.h"
 
-char * str_prgname = REGSHOT_TITLE " " REGSHOT_VERSION_STRING; // tfx program titile
-char * str_aboutme = "Regshot is a free and open source registry compare utility.\nversion: " REGSHOT_VERSION_DESCRIPTION "\n\nhttp://sourceforge.net/projects/regshot/\n\n" REGSHOT_VERSION_COPYRIGHT "\n\n";
+char *str_prgname = REGSHOT_TITLE " " REGSHOT_VERSION_STRING;  // tfx program titile
+char *str_aboutme = "Regshot is a free and open source registry compare utility.\nversion: " REGSHOT_VERSION_DESCRIPTION "\n\nhttp://sourceforge.net/projects/regshot/\n\n" REGSHOT_VERSION_COPYRIGHT "\n\n";
 
 LPSTR   REGSHOTINI          = "regshot.ini"; // tfx
 LPSTR   REGSHOTLANGUAGEFILE = "language.ini";

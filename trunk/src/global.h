@@ -102,14 +102,14 @@ typedef long LONG_PTR;
 // Struct used for Windows Registry Key
 struct _KEYCONTENT {
     LPSTR  lpkeyname;                          // Pointer to key's name
-    struct _VALUECONTENT FAR * lpfirstvalue;   // Pointer to key's first value
-    struct _KEYCONTENT FAR * lpfirstsubkey;    // Pointer to key's first subkey
-    struct _KEYCONTENT FAR * lpbrotherkey;     // Pointer to key's brother
-    struct _KEYCONTENT FAR * lpfatherkey;      // Pointer to key's father
+    struct _VALUECONTENT FAR *lpfirstvalue;    // Pointer to key's first value
+    struct _KEYCONTENT FAR *lpfirstsubkey;     // Pointer to key's first subkey
+    struct _KEYCONTENT FAR *lpbrotherkey;      // Pointer to key's brother
+    struct _KEYCONTENT FAR *lpfatherkey;       // Pointer to key's father
     size_t bkeymatch;                          // Flag used at comparing, 1.8.2<= is byte
 
 };
-typedef struct _KEYCONTENT KEYCONTENT, FAR * LPKEYCONTENT;
+typedef struct _KEYCONTENT KEYCONTENT, FAR *LPKEYCONTENT;
 
 
 // Struct used for Windows Registry Value
@@ -118,11 +118,11 @@ struct _VALUECONTENT {
     DWORD  datasize;                           // Value data size in bytes
     LPSTR  lpvaluename;                        // Pointer to value name
     LPBYTE lpvaluedata;                        // Pointer to value data
-    struct _VALUECONTENT FAR * lpnextvalue;    // Pointer to value's brother
-    struct _KEYCONTENT FAR * lpfatherkey;      // Pointer to value's father[Key]
+    struct _VALUECONTENT FAR *lpnextvalue;     // Pointer to value's brother
+    struct _KEYCONTENT FAR *lpfatherkey;       // Pointer to value's father[Key]
     size_t bvaluematch;                        // Flag used at comparing, 1.8.2<= is byte
 };
-typedef struct _VALUECONTENT VALUECONTENT, FAR * LPVALUECONTENT;
+typedef struct _VALUECONTENT VALUECONTENT, FAR *LPVALUECONTENT;
 
 
 // Struct used for Windows File System
@@ -134,28 +134,28 @@ struct _FILECONTENT {
     DWORD  filesizehigh;                       // File size [HIGH DWORD]
     DWORD  fileattr;                           // File attributes
     DWORD  cksum;                              // File checksum(plan to add in 1.8 not used now)
-    struct _FILECONTENT FAR * lpfirstsubfile;  // Pointer to files[DIRS] first sub file
-    struct _FILECONTENT FAR * lpbrotherfile;   // Pointer to files[DIRS] brother
-    struct _FILECONTENT FAR * lpfatherfile;    // Pointer to files father
+    struct _FILECONTENT FAR *lpfirstsubfile;   // Pointer to files[DIRS] first sub file
+    struct _FILECONTENT FAR *lpbrotherfile;    // Pointer to files[DIRS] brother
+    struct _FILECONTENT FAR *lpfatherfile;     // Pointer to files father
     size_t bfilematch;                         // Flag used at comparing, 1.8.2<= is byte
 };
-typedef struct _FILECONTENT FILECONTENT, FAR * LPFILECONTENT;
+typedef struct _FILECONTENT FILECONTENT, FAR *LPFILECONTENT;
 
 
 // Adjusted for filecontent saving. 1.8
 struct _HEADFILE {
-    struct _HEADFILE FAR * lpnextheadfile;     // Pointer to next headfile struc
+    struct _HEADFILE FAR *lpnextheadfile;      // Pointer to next headfile struc
     LPFILECONTENT   lpfilecontent;             // Pointer to filecontent
 };
-typedef struct  _HEADFILE HEADFILE, FAR * LPHEADFILE;
+typedef struct  _HEADFILE HEADFILE, FAR *LPHEADFILE;
 
 
 // Struct used for comparing result output
 struct _COMRESULT {
     LPSTR  lpresult;                           // Pointer to result string
-    struct _COMRESULT FAR * lpnextresult;      // Pointer to next _COMRESULT
+    struct _COMRESULT FAR *lpnextresult;       // Pointer to next _COMRESULT
 };
-typedef struct _COMRESULT COMRESULT, FAR * LPCOMRESULT;
+typedef struct _COMRESULT COMRESULT, FAR *LPCOMRESULT;
 
 struct _HIVEHEADER {
     unsigned char signature[16];    // 16bytes offset 0
@@ -168,7 +168,7 @@ struct _HIVEHEADER {
     SYSTEMTIME systemtime;          // 8 * 2 = 16 bytes offset 160
     unsigned char reserved2[336];   // HIVEBEGINOFFSET(512) - sum(176) = 336
 };
-typedef struct _HIVEHEADER HIVEHEADER , FAR * LPHIVEHEADER;
+typedef struct _HIVEHEADER HIVEHEADER , FAR *LPHIVEHEADER;
 
 
 //----------------- struct for saving designed by maddes ------------------------
@@ -182,7 +182,7 @@ struct _SAVEKEYCONTENT {
     DWORD  bkeymatch;               // Flag used at comparing, 1.8.2 <= is byte
 
 };
-typedef struct _SAVEKEYCONTENT SAVEKEYCONTENT, FAR * LPSAVEKEYCONTENT;
+typedef struct _SAVEKEYCONTENT SAVEKEYCONTENT, FAR *LPSAVEKEYCONTENT;
 
 
 // Struct used for Windows Registry Value
@@ -195,7 +195,7 @@ struct _SAVEVALUECONTENT {
     DWORD  fpos_fatherkey;          // Pointer to value's father[Key]
     DWORD  bvaluematch;             // Flag used at comparing, 1.8.2 <= is byte
 };
-typedef struct _SAVEVALUECONTENT SAVEVALUECONTENT, FAR * LPSAVEVALUECONTENT;
+typedef struct _SAVEVALUECONTENT SAVEVALUECONTENT, FAR *LPSAVEVALUECONTENT;
 
 
 // Struct used for Windows File System
@@ -212,7 +212,7 @@ struct _SAVEFILECONTENT {
     DWORD  fpos_fatherfile;          // Pointer to files father
     DWORD  bfilematch;               // Flag used at comparing, 1.8.2 <= is byte
 };
-typedef struct _SAVEFILECONTENT SAVEFILECONTENT, FAR * LPSAVEFILECONTENT;
+typedef struct _SAVEFILECONTENT SAVEFILECONTENT, FAR *LPSAVEFILECONTENT;
 
 
 // Adjusted for filecontent saving. 1.8
@@ -220,7 +220,7 @@ struct _SAVEHEADFILE {
     DWORD  fpos_nextheadfile;       // Pointer to next headfile struc
     DWORD  fpos_filecontent;        // Pointer to filecontent
 };
-typedef struct  _SAVEHEADFILE SAVEHEADFILE, FAR * LPSAVEHEADFILE;
+typedef struct  _SAVEHEADFILE SAVEHEADFILE, FAR *LPSAVEHEADFILE;
 
 
 // Pointers to compare result [see above]
@@ -295,7 +295,7 @@ LPSTR           lpComputerName1;
 LPSTR           lpComputerName2;
 LPSTR           lpUserName1;
 LPSTR           lpUserName2;
-SYSTEMTIME FAR * lpSystemtime1, * lpSystemtime2;
+SYSTEMTIME FAR *lpSystemtime1, * lpSystemtime2;
 
 
 // Some pointers need to allocate enough space to working
@@ -318,8 +318,8 @@ LPSTR   lpRegshotIni;
 
 LPBYTE  lpRegSkipStrings;
 LPBYTE  lpFileSkipStrings;
-LPBYTE * lplpRegSkipStrings;
-LPBYTE * lplpFileSkipStrings;
+LPBYTE *lplpRegSkipStrings;
+LPBYTE *lplpFileSkipStrings;
 //LPSTR   lpSnapKey;
 //LPSTR   lpSnapReturn;
 
@@ -360,7 +360,7 @@ HANDLE          hHeap;              // 1.8.2
 VOID    LogToMem(DWORD actiontype, LPDWORD lpcount, LPVOID lp);
 BOOL    LoadSettingsFromIni(HWND hDlg);
 BOOL    SaveSettingsToIni(HWND hDlg);
-BOOL    IsInSkipList(LPSTR lpStr, LPBYTE * lpSkipList);
+BOOL    IsInSkipList(LPSTR lpStr, LPBYTE *lpSkipList);
 VOID    UpdateCounters(LPBYTE title1, LPBYTE title2, DWORD count1, DWORD count2);
 LPBYTE  AtPos(LPBYTE lpMaster, LPBYTE lp, size_t size, size_t sizep);
 BOOL    GetLanguageType(HWND hDlg);
@@ -377,7 +377,7 @@ VOID    Shot1(void);
 VOID    Shot2(void);
 BOOL    CompareShots(void);
 VOID    SaveHive(LPKEYCONTENT lpKeyHLM, LPKEYCONTENT lpKeyUSER, LPHEADFILE lpHF, LPSTR computer, LPSTR user, LPVOID time);
-BOOL    LoadHive(LPKEYCONTENT FAR * lplpKeyHLM, LPKEYCONTENT FAR * lplpKeyUSER, LPHEADFILE FAR * lpHF, LPBYTE FAR * lpHive);
+BOOL    LoadHive(LPKEYCONTENT FAR *lplpKeyHLM, LPKEYCONTENT FAR *lplpKeyUSER, LPHEADFILE FAR *lpHF, LPBYTE FAR *lpHive);
 VOID    FreeAllCompareResults(void);
 VOID    FreeAllKeyContent1(void);
 VOID    FreeAllKeyContent2(void);
@@ -390,7 +390,7 @@ VOID    InitProgressBar(VOID);
 VOID    CompareFirstSubFile(LPFILECONTENT lpHead1, LPFILECONTENT lpHead2);
 BOOL    ReplaceInValidFileName(LPSTR lpf);
 VOID    ErrMsg(LPCTSTR note);
-VOID    WriteHead(u_char * lpstr, DWORD count, BOOL isHTML);
+VOID    WriteHead(u_char *lpstr, DWORD count, BOOL isHTML);
 VOID    WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor);
 VOID    WriteTitle(LPSTR lph, LPSTR lpb, BOOL isHTML);
 VOID    SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DWORD nFPCaller);
