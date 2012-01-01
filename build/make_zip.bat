@@ -254,6 +254,20 @@ SET VerRev=%*
 EXIT /B
 
 
+:SHOWHELP
+TITLE "%~nx0 %1"
+ECHO. & ECHO.
+ECHO Usage:   %~nx0 [GCC^|ICL12^|VS2008^|VS2010^|WDK]
+ECHO.
+ECHO Notes:   You can also prefix the commands with "-", "--" or "/".
+ECHO          The arguments are not case sensitive.
+ECHO. & ECHO.
+ECHO Executing "%~nx0" will use the defaults: "%~nx0 WDK"
+ECHO.
+ENDLOCAL
+EXIT /B
+
+
 :SUBMSG
 ECHO. & ECHO ______________________________
 ECHO [%~1] %~2
