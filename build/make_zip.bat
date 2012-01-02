@@ -230,7 +230,7 @@ FOR /F "tokens=3,4 delims= " %%N IN (
   'FINDSTR /I /L /C:"define REGSHOT_VERSION_REV" "..\src\VersionRev.h"') DO (
   SET "VerRev=%%N"&Call :SubVerRev %%VerRev:*Z=%%)
 
-SET REGSHOTVER=%VerMajor%.%VerMinor%.%VerBuild%.%VerRev%
+SET REGSHOTVER=%VerMajor%.%VerMinor%.%VerBuild%_r%VerRev%
 EXIT /B
 
 
