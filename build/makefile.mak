@@ -68,10 +68,12 @@ RFLAGS  = $(RFLAGS) /d "WIN32"
 ###############
 ##  Targets  ##
 ###############
-BUILD:	CHECKDIRS $(EXE)
+BUILD:	PREBUILD $(EXE)
 
-CHECKDIRS:
+PREBUILD:
 	IF NOT EXIST "$(OBJDIR)" MD "$(OBJDIR)"
+	"$(SRC)\update_rev.bat"
+	ECHO.
 
 CLEAN:
 	ECHO Cleaning... & ECHO.
@@ -137,14 +139,16 @@ $(OBJDIR)\output.obj: \
 $(OBJDIR)\regshot.obj: \
     $(SRC)\regshot.c \
     $(SRC)\global.h \
-    $(SRC)\version.h
+    $(SRC)\version.h \
+    $(SRC)\VersionRev.h
 
 $(OBJDIR)\regshot.res: \
     $(SRC)\regshot.rc \
     $(SRC)\resource.h \
     $(RES)\Regshot.exe.manifest \
     $(RES)\regshot.ico \
-    $(SRC)\version.h
+    $(SRC)\version.h \
+    $(SRC)\VersionRev.h
 
 $(OBJDIR)\setup.obj: \
     $(SRC)\setup.c \
@@ -157,4 +161,5 @@ $(OBJDIR)\ui.obj: \
 $(OBJDIR)\winmain.obj: \
     $(SRC)\winmain.c \
     $(SRC)\global.h \
-    $(SRC)\version.h
+    $(SRC)\version.h \
+    $(SRC)\VersionRev.h

@@ -571,8 +571,8 @@ VOID FindDirChain(LPHEADFILE lpHF, LPSTR lpDir, size_t nMaxLen)
 //--------------------------------------------------
 BOOL DirChainMatch(LPHEADFILE lphf1, LPHEADFILE lphf2)
 {
-    char lpDir1[EXTDIRLEN + 2];
-    char lpDir2[EXTDIRLEN + 2];
+    char lpDir1[EXTDIRLEN + 4];
+    char lpDir2[EXTDIRLEN + 4];
     ZeroMemory(lpDir1, sizeof(lpDir1));
     ZeroMemory(lpDir2, sizeof(lpDir2));
     FindDirChain(lphf1, lpDir1, EXTDIRLEN);

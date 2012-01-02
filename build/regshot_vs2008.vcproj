@@ -28,6 +28,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Generating revision number..."
+				CommandLine="..\src\update_rev.bat"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -102,6 +104,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Generating revision number..."
+				CommandLine="..\src\update_rev.bat"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -178,6 +182,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Generating revision number..."
+				CommandLine="..\src\update_rev.bat"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -256,6 +262,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="Generating revision number..."
+				CommandLine="..\src\update_rev.bat"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"

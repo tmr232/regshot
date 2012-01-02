@@ -1,5 +1,5 @@
 #******************************************************************************
-#*  Copyright 2011 XhmikosR
+#*  Copyright 2011-2012 XhmikosR
 #*
 #*  This file is part of Regshot.
 #*
@@ -84,10 +84,9 @@ TARGET_EXE=$(TARGET_DIR)$(MY_DIR_PREFIX)_$(MY_ARCH)/Regshot.exe
 
 # Targets
 
-.all: outdirs $(TARGET_EXE)
+.all: $(OBJ_DIR) $(TARGET_EXE)
 
-.PHONY: outdirs $(OBJ_DIR)
-outdirs: $(OBJ_DIR)
+.PHONY: $(OBJ_DIR)
 $(OBJ_DIR):
 	$(shell test -d $(@) || mkdir -p $(@))
 

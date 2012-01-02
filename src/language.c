@@ -123,7 +123,7 @@ BOOL GetLanguageType(HWND hDlg)
     //LPSTR   lpCurrentLanguage = MYALLOC0(SIZEOF_SINGLE_LANGUAGENAME);
 
 
-    nReturn = GetPrivateProfileSectionNames(lpSectionNames, SIZEOF_LANGUAGE_SECTIONNAMES_BUFFER, lpIni);
+    nReturn = GetPrivateProfileSectionNames(lpSectionNames, SIZEOF_LANGUAGE_SECTIONNAMES_BUFFER, lpLanguageIni);
     if (nReturn > 1) {
         bRet = TRUE;
         for (lp = lpSectionNames; *lp != 0; lp = lp + strlen(lp) + 1) {
@@ -132,7 +132,7 @@ BOOL GetLanguageType(HWND hDlg)
             }
         }
         GetPrivateProfileString(str_SectionCurrent, str_SectionCurrent,
-                                str_DefaultLanguage, lpCurrentLanguage, 16, lpIni);
+                                str_DefaultLanguage, lpCurrentLanguage, 16, lpLanguageIni);
 
         nReturn = SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_FINDSTRINGEXACT, (WPARAM)0, (LPARAM)lpCurrentLanguage);
         if (nReturn != CB_ERR) {
@@ -289,9 +289,9 @@ BOOL GetLanguageStrings(HWND hDlg)
     if (nIndex != CB_ERR) {
 
         SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_GETLBTEXT, (WPARAM)nIndex, (LPARAM)lpCurrentLanguage);
-        WritePrivateProfileString(str_SectionCurrent, str_SectionCurrent, lpCurrentLanguage, lpIni);
+        WritePrivateProfileString(str_SectionCurrent, str_SectionCurrent, lpCurrentLanguage, lpLanguageIni);
         ZeroMemory(lpLangStrings, SIZEOF_LANGSTRINGS);
-        GetPrivateProfileSection(lpCurrentLanguage, lpLangStrings, SIZEOF_LANGSTRINGS, lpIni);
+        GetPrivateProfileSection(lpCurrentLanguage, lpLangStrings, SIZEOF_LANGSTRINGS, lpLanguageIni);
         for (i = 1, lp = (LPBYTE *)lplpLangStrings; i < 47; i++) {
 
             sprintf(lpIniKey, "%d%s", i, "=");
