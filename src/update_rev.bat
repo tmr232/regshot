@@ -5,7 +5,7 @@ PUSHD %~dp0%
 
 SET "SUBWCREV=SubWCRev.exe"
 
-"%SUBWCREV%" . "version_in.h" "VersionRev.h" -f
+"%SUBWCREV%" .. "version_in.h" "VersionRev.h" -f
 IF %ERRORLEVEL% NEQ 0 GOTO NoSubWCRev
 
 POPD
