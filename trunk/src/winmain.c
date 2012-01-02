@@ -65,21 +65,30 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
             SendDlgItemMessage(hDlg, IDC_EDITCOMMENT, EM_SETLIMITTEXT, (WPARAM)COMMENTLENGTH, (LPARAM)0);
             SendDlgItemMessage(hDlg, IDC_EDITPATH, EM_SETLIMITTEXT, (WPARAM)MAX_PATH, (LPARAM)0);
-            SendDlgItemMessage(hDlg, IDC_EDITDIR, EM_SETLIMITTEXT, (WPARAM)EXTDIRLEN, (LPARAM)0);
-            lpExtDir = MYALLOC0(EXTDIRLEN + 2);
-            lpOutputpath = MYALLOC0(MAX_PATH + 5);
+            SendDlgItemMessage(hDlg, IDC_EDITDIR, EM_SETLIMITTEXT, (WPARAM)(EXTDIRLEN / 2), (LPARAM)0);
+
+            //enlarge some buffer in 201201
             lpCurrentLanguage = MYALLOC0(SIZEOF_SINGLE_LANGUAGENAME);
-            lpKeyName = MYALLOC0(MAX_PATH + 1);
-            lpMESSAGE = MYALLOC0(128);
-            lpStartDir = MYALLOC0(MAX_PATH + 1);
-            lpWindowsDirName = MYALLOC0(MAX_PATH + 5);
-            lpTempPath = MYALLOC0(MAX_PATH + 2);
-            lpComputerName1 = MYALLOC0(COMPUTERNAMELEN);
-            lpComputerName2 = MYALLOC0(COMPUTERNAMELEN);
-            lpUserName1 = MYALLOC0(COMPUTERNAMELEN);
-            lpUserName2 = MYALLOC0(COMPUTERNAMELEN);
-            lpSystemtime1 = MYALLOC0(sizeof(SYSTEMTIME));
-            lpSystemtime2 = MYALLOC0(sizeof(SYSTEMTIME));
+            lpExtDir          = MYALLOC0(EXTDIRLEN + 4);      // EXTDIRLEN is actually 4*max_path
+            lpLanguageIni     = MYALLOC0(MAX_PATH * 4 + 4);   // for language.ini
+            lpRegshotIni      = MYALLOC0(MAX_PATH * 4 + 4);   // for regshot.ini
+            lpKeyName         = MYALLOC0(MAX_PATH * 2 + 2);   // For scan engine store keyname
+            lpValueName       = MYALLOC0(1024 * 16 * 2);      // For scan engine store valuename
+            lpValueData       = MYALLOC0(ESTIMATE_VALUEDATA_LENGTH);    // For scan engine store valuedata estimate
+            lpMESSAGE         = MYALLOC0(256);                // For status bar text message store
+            lpWindowsDirName  = MYALLOC0(MAX_PATH * 2 + 2);
+            lpTempPath        = MYALLOC0(MAX_PATH * 2 + 2);
+            lpStartDir        = MYALLOC0(MAX_PATH * 2 + 2);
+            lpOutputpath      = MYALLOC0(MAX_PATH * 2 + 2);   // store last save/open hive file dir
+            lpComputerName1   = MYALLOC0(COMPUTERNAMELEN);
+            lpComputerName2   = MYALLOC0(COMPUTERNAMELEN);
+            lpUserName1       = MYALLOC0(COMPUTERNAMELEN);
+            lpUserName2       = MYALLOC0(COMPUTERNAMELEN);
+            lpSystemtime1     = MYALLOC0(sizeof(SYSTEMTIME));
+            lpSystemtime2     = MYALLOC0(sizeof(SYSTEMTIME));
+            lpLangStrings     = MYALLOC0(SIZEOF_LANGSTRINGS);
+            lplpLangStrings   = MYALLOC0(sizeof(LPSTR) * 60); // max is 60 strings
+
             lpCurrentTranslator = str_Original;
 
             GetWindowsDirectory(lpWindowsDirName, MAX_PATH);
@@ -91,15 +100,12 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
             //_asm int 3;
             GetCurrentDirectory(MAX_PATH + 1, lpStartDir);      // fixed at 1.8.2 former version use getcommandline()
-            lpIni = MYALLOC0(MAX_PATH * 2);
-            strcpy(lpIni, lpStartDir);
-            if (*(lpIni + strlen(lpIni) - 1) != '\\') {         // 1.8.2
-                strcat(lpIni, "\\");
+            strcpy(lpLanguageIni, lpStartDir);
+            if (*(lpLanguageIni + strlen(lpLanguageIni) - 1) != '\\') {    // 1.8.2
+                strcat(lpLanguageIni, "\\");
             }
-            strcat(lpIni, REGSHOTLANGUAGEFILE);
+            strcat(lpLanguageIni, REGSHOTLANGUAGEFILE);
 
-            lpLangStrings = MYALLOC(SIZEOF_LANGSTRINGS);
-            lplpLangStrings = MYALLOC0(sizeof(LPSTR) * 60);     // max is 60 strings
 
             if (GetLanguageType(hDlg)) {
                 GetLanguageStrings(hDlg);
@@ -107,72 +113,11 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 GetDefaultStrings();
             }
 
-            /*// To get rgst152.dat which is the ini file of regshot,but it should  be a standard ini file in future!
-              hFile = CreateFile(REGSHOTDATFILE,GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
-              if (hFile != INVALID_HANDLE_VALUE)
-              {
-                  if ((ReadFile(hFile,&nFlag,1,&NBW,NULL) == TRUE) && NBW == 1)
-                  {
-                      SendMessage(GetDlgItem(hDlg,IDC_RADIO1),BM_SETCHECK,(WPARAM)(nFlag&0x01),(LPARAM)0);
-                      SendMessage(GetDlgItem(hDlg,IDC_RADIO2),BM_SETCHECK,(WPARAM)((nFlag&0x01)^0x01),(LPARAM)0);
-                      SendMessage(GetDlgItem(hDlg,IDC_CHECKDIR),BM_SETCHECK,(WPARAM)((nFlag&0x02)>>1),(LPARAM)0);
-                      //SendMessage(GetDlgItem(hDlg,IDC_CHECKTURBO),BM_SETCHECK,(WPARAM)((nFlag&0x02)>1),(LPARAM)0);
-                      //SendMessage(hDlg,WM_COMMAND,(WPARAM)(((DWORD)(BN_CLICKED)<<16)|(DWORD)((nFlag&0x01 == 1)?IDC_RADIO1:IDC_RADIO2)),(LPARAM)0);
-                      //SendMessage(GetDlgItem(hDlg,IDC_CHECKAUTOCOMPARE),BM_SETCHECK,(WPARAM)((nFlag&0x02)>1),(LPARAM)0);
-                      //SendMessage(GetDlgItem(hDlg,IDC_CHECKWRITECONTENT),BM_SETCHECK,(WPARAM)((nFlag&0x04)>>2),(LPARAM)0);
-                      //SendMessage(GetDlgItem(hDlg,IDC_CHECKINI),BM_SETCHECK,(WPARAM)((nFlag&0x08)>>3),(LPARAM)0);
-                  }
-                  ReadFile(hFile,&nMask,4,&NBW,NULL);
-
-                  if ((ReadFile(hFile,&nLengthofStr,sizeof(nLengthofStr),&NBW,NULL) == TRUE)
-                       && NBW == sizeof(nLengthofStr) && nLengthofStr != 0)
-                  {
-
-                      if ((ReadFile(hFile,lpExtDir,nLengthofStr,&NBW,NULL) == TRUE) && NBW == nLengthofStr)
-                      {
-                          SetDlgItemText(hDlg,IDC_EDITDIR,lpExtDir);
-                      }
-                      else
-                          SetDlgItemText(hDlg,IDC_EDITDIR,lpWindowsDirName);
-
-                  }
-                  else
-                      SetDlgItemText(hDlg,IDC_EDITDIR,lpWindowsDirName);
-
-                  // the output temppath
-                  if ((ReadFile(hFile,&nLengthofStr,sizeof(nLengthofStr),&NBW,NULL) == TRUE)
-                       && NBW == sizeof(nLengthofStr) && nLengthofStr != 0)
-                  {
-
-                      if ((ReadFile(hFile,lpOutputpath,nLengthofStr,&NBW,NULL) == TRUE) && NBW == nLengthofStr)
-                      {
-                          SetDlgItemText(hDlg,IDC_EDITPATH,lpOutputpath);
-                      }
-                      else
-                          SetDlgItemText(hDlg,IDC_EDITPATH,lpTempPath);
-
-                  }
-                  else
-                      SetDlgItemText(hDlg,IDC_EDITPATH,lpTempPath);
-                      CloseHandle(hFile);
-              }
-              else
-              {
-                  SendMessage(GetDlgItem(hDlg,IDC_RADIO1),BM_SETCHECK,(WPARAM)0x01,(LPARAM)0);
-                  SendMessage(GetDlgItem(hDlg,IDC_RADIO2),BM_SETCHECK,(WPARAM)0x00,(LPARAM)0);
-                  SendMessage(GetDlgItem(hDlg,IDC_CHECKDIR),BM_SETCHECK,(WPARAM)0x00,(LPARAM)0);
-                  SetDlgItemText(hDlg,IDC_EDITDIR,lpWindowsDirName);
-                  SetDlgItemText(hDlg,IDC_EDITPATH,lpTempPath);
-                  //SendMessage(GetDlgItem(hDlg,IDC_CHECKTURBO),BM_SETCHECK,(WPARAM)0,(LPARAM)0);
-              }
-              EnableWindow(GetDlgItem(hDlg,IDC_CHECKWRITECONTENT),FALSE);*/
-
             SendMessage(hDlg, WM_COMMAND, (WPARAM)IDC_CHECKDIR, (LPARAM)0);
 
             lpLastSaveDir = lpOutputpath;
             lpLastOpenDir = lpOutputpath;
 
-            lpRegshotIni = MYALLOC0(3 * MAX_PATH);
             strcpy(lpRegshotIni, lpStartDir);
             if (*(lpRegshotIni + strlen(lpRegshotIni) - 1) != '\\') {
                 strcat(lpRegshotIni, "\\");
@@ -350,24 +295,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                 case IDC_CANCEL1:
                 case IDCANCEL:
-                    /*SetCurrentDirectory(lpStartDir);
-                      hFile = CreateFile(REGSHOTDATFILE,GENERIC_READ | GENERIC_WRITE,FILE_SHARE_READ | FILE_SHARE_WRITE,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
-                      if (hFile != INVALID_HANDLE_VALUE)
-                      {
 
-                          nFlag = (BYTE)(SendMessage(GetDlgItem(hDlg,IDC_RADIO1),BM_GETCHECK,(WPARAM)0,(LPARAM)0)|
-                              SendMessage(GetDlgItem(hDlg,IDC_CHECKDIR),BM_GETCHECK,(WPARAM)0,(LPARAM)0)<<1);
-                          WriteFile(hFile,&nFlag,1,&NBW,NULL);
-                          WriteFile(hFile,&nMask,4,&NBW,NULL);
-                          nLengthofStr = GetDlgItemText(hDlg,IDC_EDITDIR,lpExtDir,EXTDIRLEN + 2);
-                          WriteFile(hFile,&nLengthofStr,sizeof(nLengthofStr),&NBW,NULL);
-                          WriteFile(hFile,lpExtDir,nLengthofStr,&NBW,NULL);
-                          nLengthofStr = GetDlgItemText(hDlg,IDC_EDITPATH,lpOutputpath,MAX_PATH);
-                          WriteFile(hFile,&nLengthofStr,sizeof(nLengthofStr),&NBW,NULL);
-                          WriteFile(hFile,lpOutputpath,nLengthofStr,&NBW,NULL);
-
-                          CloseHandle(hFile);
-                      }*/
                     SaveSettingsToIni(hDlg);  // tfx
                     PostQuitMessage(0);
                     return(TRUE);
@@ -376,7 +304,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                     LPITEMIDLIST lpidlist;
                     BrowseInfo1.hwndOwner = hDlg;
-                    BrowseInfo1.pszDisplayName = MYALLOC0(MAX_PATH + 1);
+                    BrowseInfo1.pszDisplayName = MYALLOC0(MAX_PATH * 2 + 2);
                     //BrowseInfo1.lpszTitle = "Select:";
                     BrowseInfo1.ulFlags = 0;     // 3 lines added in 1.8.2
                     BrowseInfo1.lpfn = NULL;
@@ -388,7 +316,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                         size_t  nWholeLen;
 
                         SHGetPathFromIDList(lpidlist, BrowseInfo1.pszDisplayName);
-                        nLengthofStr = GetDlgItemText(hDlg, IDC_EDITDIR, lpExtDir, EXTDIRLEN + 2);
+                        nLengthofStr = GetDlgItemText(hDlg, IDC_EDITDIR, lpExtDir, EXTDIRLEN / 2);
                         nWholeLen = nLengthofStr + strlen(BrowseInfo1.pszDisplayName);
 
                         if (nWholeLen < EXTDIRLEN + 1) {
@@ -411,7 +339,7 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
                     LPITEMIDLIST lpidlist;
                     BrowseInfo1.hwndOwner = hDlg;
-                    BrowseInfo1.pszDisplayName = MYALLOC0(MAX_PATH + 1);
+                    BrowseInfo1.pszDisplayName = MYALLOC0(MAX_PATH * 2 + 2);
                     //BrowseInfo1.lpszTitle = "Select:";
 
                     //-----------------

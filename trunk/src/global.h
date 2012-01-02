@@ -62,7 +62,7 @@ typedef long LONG_PTR;
 
 
 // Some definations
-#define SIZEOFREG_DWORD 4            // In current windows, reg_dword's size=4
+#define SIZEOF_REG_DWORD 4            // In current windows, reg_dword's size=4
 #define NOTMATCH        0            // Define modification type in comparison results
 #define ISMATCH         1
 #define ISDEL           2
@@ -81,12 +81,13 @@ typedef long LONG_PTR;
 #define DIRDEL          10
 #define DIRMODI         11
 
+#define ESTIMATE_VALUEDATA_LENGTH 1024*1024 //Define estimated value data in scan
 #define REFRESHINTERVAL 110          // Define progress refresh rate
 #define MAXPBPOSITION   100          // Define progress bar length
 #define COMMENTLENGTH   50           // Define commentfield length on the MainForm
 #define HTMLWRAPLENGTH  1000         // Define html out put wrap length
 #define MAXAMOUNTOFFILE 10000        // Define out put file counts
-#define EXTDIRLEN       MAX_PATH * 3 // Define searching directory field length
+#define EXTDIRLEN       MAX_PATH * 4 // Define searching directory field length
 #define COMPUTERNAMELEN 64           // Define COMPUTER name length,do not change
 #define HIVEBEGINOFFSET 512          // Hive file out put header computerlen*2+sizeof(systemtime)+32 must <hivebeginoffset!!!!!!!!!!!!!!
 #define REGSHOT_HIVE_SIGNATURE "RSHIVE183"
@@ -96,7 +97,7 @@ typedef long LONG_PTR;
 #define SIZEOF_LANGUAGE_SECTIONNAMES_BUFFER 2048
 #define SIZEOF_SINGLE_LANGUAGENAME          64
 #define SIZEOF_LANGSTRINGS                  16384
-#define SIZEOF_ABOUTBOX                     2048
+#define SIZEOF_ABOUTBOX                     4096
 
 
 // Struct used for Windows Registry Key
@@ -300,7 +301,12 @@ SYSTEMTIME FAR *lpSystemtime1, * lpSystemtime2;
 
 
 // Some pointers need to allocate enough space to working
-LPSTR   lpKeyName;
+LPSTR   lpKeyName;   //following used in scan engine
+LPSTR   lpValueName;
+LPBYTE  lpValueData;
+LPBYTE  lpValueDataS;
+
+
 LPSTR   lpMESSAGE;
 LPSTR   lpExtDir;
 LPSTR   lpOutputpath;
@@ -310,21 +316,21 @@ LPSTR   lpCurrentLanguage;
 LPSTR   lpWindowsDirName;
 LPSTR   lpTempPath;
 LPSTR   lpStartDir;
-LPSTR   lpIni;
+LPSTR   lpLanguageIni;  //For language.ini
 LPSTR   lpLangStrings;
 LPSTR   lpCurrentTranslator;
-//LPSTR REGSHOTDATFILE = "rgst152.dat";
-LPSTR   lpProgramDir;   // tfx define
 LPSTR   lpRegshotIni;
 
 LPBYTE  lpRegSkipStrings;
 LPBYTE  lpFileSkipStrings;
 LPBYTE *lplpRegSkipStrings;
 LPBYTE *lplpFileSkipStrings;
+LPVOID  lplpLangStrings;
+//LPSTR REGSHOTDATFILE = "rgst152.dat";
+//LPSTR   lpProgramDir;   // tfx define
 //LPSTR   lpSnapKey;
 //LPSTR   lpSnapReturn;
 
-LPVOID  lplpLangStrings;
 
 
 // Former definations used at Dynamic Monitor Engine. Not Used NOW

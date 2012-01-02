@@ -205,7 +205,7 @@ VOID Shot1(VOID)
         LPHEADFILE lphf;
         LPHEADFILE lphftemp;
 
-        GetDlgItemText(hWnd, IDC_EDITDIR, lpExtDir, EXTDIRLEN + 2);
+        GetDlgItemText(hWnd, IDC_EDITDIR, lpExtDir, EXTDIRLEN / 2);
         nLengthofStr = strlen(lpExtDir);
 
         lphf = lphftemp = lpHeadFile1;  // changed in 1.8
@@ -304,7 +304,7 @@ VOID Shot2(VOID)
         LPHEADFILE lphf;
         LPHEADFILE lphftemp;
 
-        GetDlgItemText(hWnd, IDC_EDITDIR, lpExtDir, EXTDIRLEN + 2);
+        GetDlgItemText(hWnd, IDC_EDITDIR, lpExtDir, EXTDIRLEN / 2);
         nLengthofStr = strlen(lpExtDir);
 
         lphf = lphftemp = lpHeadFile1;  // changed in 1.8

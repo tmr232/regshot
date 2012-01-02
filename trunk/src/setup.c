@@ -129,7 +129,7 @@ BOOL SaveSettingsToIni(HWND hDlg) // tfx save settings to ini (translate from ch
     nFlag = (BYTE)(SendMessage(GetDlgItem(hDlg, IDC_RADIO1), BM_GETCHECK, (WPARAM)0, (LPARAM)0) |
                    SendMessage(GetDlgItem(hDlg, IDC_CHECKDIR), BM_GETCHECK, (WPARAM)0, (LPARAM)0) << 1);
 
-    lpString = MYALLOC0(EXTDIRLEN + 2);
+    lpString = MYALLOC0(EXTDIRLEN + 4);
     //sprintf(lpString,"%s = %d",INI_FLAG,nFlag);                   // 1.7 solokey
     //WritePrivateProfileSection(INI_SETUP,lpString,lpRegshotIni);  // 1.7 solokey, can only have one key.
 
@@ -140,7 +140,7 @@ BOOL SaveSettingsToIni(HWND hDlg) // tfx save settings to ini (translate from ch
     WritePrivateProfileString(INI_SETUP, INI_USELONGREGHEAD, lpString, lpRegshotIni);
 
 
-    if (GetDlgItemText(hDlg, IDC_EDITDIR, lpString, EXTDIRLEN + 2) != 0) {
+    if (GetDlgItemText(hDlg, IDC_EDITDIR, lpString, (EXTDIRLEN / 2)) != 0) {
         WritePrivateProfileString(INI_SETUP, INI_EXTDIR, lpString, lpRegshotIni);
     }
 

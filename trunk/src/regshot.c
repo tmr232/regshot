@@ -170,7 +170,7 @@ LPSTR TransData(LPVALUECONTENT lpValueContent, DWORD type)
             break;
         case REG_DWORD:
             // case REG_DWORD_BIG_ENDIAN: Not used any more, they all included in [default]
-            lpvaluedata = MYALLOC0(SIZEOFREG_DWORD * 2 + 5); // 13 is enough
+            lpvaluedata = MYALLOC0(SIZEOF_REG_DWORD * 2 + 5); // 13 is enough
             sprintf(lpvaluedata, "%s%08X", ": 0x", *(LPDWORD)(lpValueContent->lpvaluedata));
             break;
         default :
@@ -227,7 +227,7 @@ LPSTR GetWholeValueData(LPVALUECONTENT lpValueContent)
                 break;
             case REG_DWORD:
             case REG_DWORD_BIG_ENDIAN:
-                if (size == SIZEOFREG_DWORD) {
+                if (size == SIZEOF_REG_DWORD) {
                     lpvaluedata = TransData(lpValueContent, REG_DWORD);
                 } else {
                     lpvaluedata = TransData(lpValueContent, REG_BINARY);
@@ -837,7 +837,7 @@ BOOL CompareShots(void)
         lpExt = ".htm";
     }
 
-    lpDestFileName = MYALLOC0(MAX_PATH * 2);
+    lpDestFileName = MYALLOC0(MAX_PATH * 4 + 4);
     lpstrcomp = MYALLOC0(buffersize); // buffersize must> commentlength+10 .txt 0000
     GetDlgItemText(hWnd, IDC_EDITCOMMENT, lpstrcomp, COMMENTLENGTH);
     GetDlgItemText(hWnd, IDC_EDITPATH, lpOutputpath, MAX_PATH);
@@ -1030,8 +1030,8 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
     DWORD   LengthOfLongestValueName;
     DWORD   LengthOfLongestValueData;
     DWORD   LengthOfLongestSubkeyName;
-    LPSTR   lpValueName;
-    LPBYTE  lpValueData;
+    //LPSTR   lpValueName;
+    //LPBYTE  lpValueData;
     LPKEYCONTENT    lpKeyContent;
     LPVALUECONTENT  lpValueContent;
     LPKEYCONTENT    lpKeyContentLast;
@@ -1057,11 +1057,19 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
             ) != ERROR_SUCCESS) {
         return ;
     }
-    LengthOfLongestSubkeyName = LengthOfLongestSubkeyName * 4 + 4;   // msdn says it is in unicode characters,old version use *2+somebytes, but this is for sure
-    LengthOfLongestValueName  = LengthOfLongestValueName * 4 + 4;
-    LengthOfLongestValueData  = LengthOfLongestValueData + 1;
-    lpValueName = MYALLOC(LengthOfLongestValueName);
-    lpValueData = MYALLOC(LengthOfLongestValueData);
+    //Comment out in beta1V5 20120102, v4 modified these to *4 +4 ,which is not right
+    //But not so sure to use global and pass chars, because once several years ago,in win2000,I encounter some problem.
+    //LengthOfLongestSubkeyName = LengthOfLongestSubkeyName * 2 + 3;   // msdn says it is in unicode characters,right now maybe not large than that.old version use *2+3
+    //LengthOfLongestValueName  = LengthOfLongestValueName * 2 + 3;
+    LengthOfLongestSubkeyName = LengthOfLongestSubkeyName + 1;
+    LengthOfLongestValueName  = LengthOfLongestValueName + 1;
+    LengthOfLongestValueData  = LengthOfLongestValueData + 1;  //use +1 maybe too careful. but since the real memory allocate is based on return of another call,it is just be here.
+    if (LengthOfLongestValueData >= ESTIMATE_VALUEDATA_LENGTH) {
+        lpValueDataS = lpValueData;
+        lpValueData = MYALLOC(LengthOfLongestValueData);
+    }
+    //lpValueName = MYALLOC(LengthOfLongestValueName);
+
 
     // Get Values
     for (i = 0;; i++) {
@@ -1120,8 +1128,12 @@ VOID GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent)
 #endif
     }
 
-    MYFREE(lpValueName);
-    MYFREE(lpValueData);
+    //MYFREE(lpValueName);
+    if (LengthOfLongestValueData >= ESTIMATE_VALUEDATA_LENGTH) {
+        MYFREE(lpValueData);
+        lpValueData = lpValueDataS;
+    }
+
 
     for (i = 0;; i++) {
         LengthOfKeyName = LengthOfLongestSubkeyName;
@@ -1332,8 +1344,8 @@ VOID SaveHive(LPKEYCONTENT lpKeyHLM, LPKEYCONTENT lpKeyUSER,
         opfn.lStructSize = sizeof(opfn);
         opfn.hwndOwner = hWnd;
         opfn.lpstrFilter = str_filter;
-        opfn.lpstrFile = MYALLOC0(MAX_PATH + 1);
-        opfn.nMaxFile = MAX_PATH * 2;
+        opfn.lpstrFile = MYALLOC0(MAX_PATH * 2 + 2);
+        opfn.nMaxFile = MAX_PATH;
         opfn.lpstrInitialDir = lpLastSaveDir;
         opfn.lpstrDefExt = "hiv";
         opfn.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY;
@@ -1557,7 +1569,7 @@ BOOL LoadHive(LPKEYCONTENT FAR *lplpKeyHLM, LPKEYCONTENT FAR *lplpKeyUSER,
     DWORD   nRemain;
     DWORD   nReadSize;
     HIVEHEADER hiveheader;
-    char    sname[MAX_PATH + 1];
+    char    sname[MAX_PATH * 2 + 2];
 
     ZeroMemory(sname, sizeof(sname));
 
@@ -1565,7 +1577,7 @@ BOOL LoadHive(LPKEYCONTENT FAR *lplpKeyHLM, LPKEYCONTENT FAR *lplpKeyUSER,
     opfn.hwndOwner = hWnd;
     opfn.lpstrFilter = str_filter;
     opfn.lpstrFile = sname;
-    opfn.nMaxFile = MAX_PATH * 2;
+    opfn.nMaxFile = MAX_PATH;
     opfn.lpstrInitialDir = lpLastOpenDir;
     opfn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
     opfn.lpstrDefExt = "hiv";
