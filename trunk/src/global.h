@@ -39,7 +39,7 @@
 #if !defined(LONG_PTR)
 typedef long LONG_PTR;
 #endif
-#endif  // _MSC_VER
+#endif  // _MSC_VER && (_MSC_VER < 1300)
 
 // added in 1.8.2 to gain a slightly faster speed but it is danger!
 #define USEHEAPALLOC_DANGER
@@ -47,7 +47,7 @@ typedef long LONG_PTR;
 
 #ifdef USEHEAPALLOC_DANGER
 
-// MSDN doc say use HEAP_NO_SERIALIZE is not good for process heap :( so change fromm 1 to 0 20111216 ,slower than using 1
+// MSDN doc say use HEAP_NO_SERIALIZE is not good for process heap :( so change fromm 1 to 0 20111216, slower than using 1
 #define MYALLOC(x)  HeapAlloc(hHeap,0,x)
 #define MYALLOC0(x) HeapAlloc(hHeap,8,x) // (HEAP_NO_SERIALIZE|) HEAP_ZERO_MEMORY ,1|8
 #define MYFREE(x)   HeapFree(hHeap,0,x)
@@ -63,7 +63,7 @@ typedef long LONG_PTR;
 
 // Some definations
 #define SIZEOF_REG_DWORD 4            // In current windows, reg_dword's size=4
-#define NOTMATCH        0            // Define modification type in comparison results
+#define NOTMATCH        0             // Define modification type in comparison results
 #define ISMATCH         1
 #define ISDEL           2
 #define ISADD           3
@@ -90,7 +90,7 @@ typedef long LONG_PTR;
 #define EXTDIRLEN       MAX_PATH * 4 // Define searching directory field length
 #define COMPUTERNAMELEN 64           // Define COMPUTER name length,do not change
 #define HIVEBEGINOFFSET 512          // Hive file out put header computerlen*2+sizeof(systemtime)+32 must <hivebeginoffset!!!!!!!!!!!!!!
-#define REGSHOT_HIVE_SIGNATURE "RSHIVE183"
+#define REGSHOT_HIVE_SIGNATURE  "RSHIVE183"
 
 
 // Some definitions of MutiLanguage strings [Free space length]
@@ -158,22 +158,34 @@ struct _COMRESULT {
 };
 typedef struct _COMRESULT COMRESULT, FAR *LPCOMRESULT;
 
-// Struct for hive file header
+// Struct for hive file header ,used in saving and loading
 struct _HIVEHEADER {
     unsigned char signature[16];    // 16bytes offset 0
     DWORD  offsetkeyhklm;           // 4 offset 16 ( 512)
     DWORD  offsetkeyuser;           // 4 offset 20
     DWORD  offsetheadfile;          // 4 offset 24
     DWORD  reserved1;               // 4 offset 28 future use!
-    unsigned char computername[64]; // 64 offset 32
-    unsigned char username[64];     // 64 offset 96 username
+    unsigned char computername[COMPUTERNAMELEN]; // 64 offset 32 ,computername ,
+    unsigned char username[COMPUTERNAMELEN];     // 64 offset 96 ,username ,note I limit this . UNLEN in msdn is longer
     SYSTEMTIME systemtime;          // 8 * 2 = 16 bytes offset 160
     unsigned char reserved2[336];   // HIVEBEGINOFFSET(512) - sum(176) = 336
 };
 typedef struct _HIVEHEADER HIVEHEADER , FAR *LPHIVEHEADER;
 
+// Struct for shot,2012.
+struct _REGSHOT {
+    LPKEYCONTENT  lpheadlocalmachine;
+    LPKEYCONTENT  lpheadusers;
+    LPHEADFILE    lpheadfile;
+    LPBYTE        lptemphive;
+    unsigned char computername[COMPUTERNAMELEN]; //64
+    unsigned char username[COMPUTERNAMELEN];
+    SYSTEMTIME    systemtime;
+    BOOL          isloadfromhive;
+};
+typedef struct _REGSHOT REGSHOT, FAR *LPREGSHOT;
 
-//----------------- struct for saving designed by maddes ------------------------
+// Struct for saving designed by maddes
 
 struct _SAVEKEYCONTENT {
     DWORD  fpos_keyname;            // Pointer to key's name
@@ -284,7 +296,10 @@ DWORD   nSavingFile;
 DWORD   NBW;                // that is: NumberOfBytesWritten;
 
 
+LPREGSHOT lpShot1;
+LPREGSHOT lpShot2;
 // Pointers to Registry Key
+/*
 LPKEYCONTENT    lpHeadLocalMachine1;    // Pointer to HKEY_LOCAL_MACHINE 1
 LPKEYCONTENT    lpHeadLocalMachine2;    // Pointer to HKEY_LOCAL_MACHINE 2
 LPKEYCONTENT    lpHeadUsers1;           // Pointer to HKEY_USERS 1
@@ -298,10 +313,10 @@ LPSTR           lpComputerName2;
 LPSTR           lpUserName1;
 LPSTR           lpUserName2;
 SYSTEMTIME FAR *lpSystemtime1, * lpSystemtime2;
-
+*/
 
 // Some pointers need to allocate enough space to working
-LPSTR   lpKeyName;   //following used in scan engine
+LPSTR   lpKeyName;   // following used in scan engine
 LPSTR   lpValueName;
 LPBYTE  lpValueData;
 LPBYTE  lpValueDataS;
@@ -316,7 +331,7 @@ LPSTR   lpCurrentLanguage;
 LPSTR   lpWindowsDirName;
 LPSTR   lpTempPath;
 LPSTR   lpStartDir;
-LPSTR   lpLanguageIni;  //For language.ini
+LPSTR   lpLanguageIni;  // For language.ini
 LPSTR   lpLangStrings;
 LPSTR   lpCurrentTranslator;
 LPSTR   lpRegshotIni;
@@ -355,8 +370,8 @@ HANDLE          hFileWholeReg;      // Handle of file regshot use
 HCURSOR         hHourGlass;         // Handle of cursor
 HCURSOR         hSaveCursor;        // Handle of cursor
 BOOL            is1;                // Flag to determine is the 1st shot
-BOOL            is1LoadFromHive;    // Flag to determine are shots load from hive files
-BOOL            is2LoadFromHive;    // Flag to determine are shots load from hive files
+//BOOL            is1LoadFromHive;    // Flag to determine are shots load from hive files
+//BOOL            is2LoadFromHive;    // Flag to determine are shots load from hive files
 RECT            rect;               // Window RECT
 FILETIME        ftLastWrite;        // Filetime struct
 BROWSEINFO      BrowseInfo1;        // BrowseINFO struct
@@ -380,14 +395,12 @@ VOID    UI_AfterShot(VOID);
 VOID    UI_BeforeClear(VOID);
 VOID    UI_AfterClear(VOID);
 
-VOID    Shot1(void);
-VOID    Shot2(void);
-BOOL    CompareShots(void);
-VOID    SaveHive(LPKEYCONTENT lpKeyHLM, LPKEYCONTENT lpKeyUSER, LPHEADFILE lpHF, LPSTR computer, LPSTR user, LPVOID time);
-BOOL    LoadHive(LPKEYCONTENT FAR *lplpKeyHLM, LPKEYCONTENT FAR *lplpKeyUSER, LPHEADFILE FAR *lpHF, LPBYTE FAR *lpHive);
+VOID    Shot(LPREGSHOT lpshot);
+BOOL    CompareShots(LPREGSHOT lpshot1, LPREGSHOT lpshot2);
+VOID    SaveHive(LPREGSHOT lpshot);
+BOOL    LoadHive(LPREGSHOT lpshot);
 VOID    FreeAllCompareResults(void);
-VOID    FreeAllKeyContent1(void);
-VOID    FreeAllKeyContent2(void);
+VOID    FreeAllKeyContent(LPREGSHOT lpshot);
 VOID    FreeAllFileHead(LPHEADFILE lp);
 VOID    ClearKeyMatchTag(LPKEYCONTENT lpKey);
 VOID    GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent);    // HWND hDlg, first para deleted in 1.8, return from void * to void

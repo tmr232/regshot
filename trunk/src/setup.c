@@ -19,13 +19,14 @@
 */
 
 /* This file orignal coded by tulipfan
- * Change function/variable name to more proper ones and fix for x64 by tianwei
+   Change function/variable name to more proper ones and fix for x64 by tianwei
 */
 
 #include "global.h"
-// 1.8.2 move defination from global.h to this place
-#define SIZEOF_INI_SKIPBLOCK  65535
-#define MAX_INI_SKIPITEMS      100
+
+// 1.8.2 move definition from global.h to this place
+#define SIZEOF_INI_SKIPBLOCK 65535
+#define MAX_INI_SKIPITEMS    100
 
 // setup based on regshot.ini by tulipfan (tfx)
 LPSTR INI_SETUP           = "Setup";
@@ -37,7 +38,7 @@ LPSTR INI_SKIPDIR         = "SkipDir";
 LPSTR INI_USELONGREGHEAD  = "UseLongRegHead";  // 1.8.1 tianwei for compatible to undoreg 1.46 again
 
 
-BOOL LoadSettingsFromIni(HWND hDlg) // tfx get ini info (translate from chinese comment)
+BOOL LoadSettingsFromIni(HWND hDlg) // tfx get ini info
 {
     int     i;
     LPBYTE  lpReturn;
@@ -88,7 +89,7 @@ BOOL LoadSettingsFromIni(HWND hDlg) // tfx get ini info (translate from chinese 
         SendMessage(GetDlgItem(hDlg,IDC_CHECKDIR),BM_SETCHECK,(WPARAM)0x00,(LPARAM)0);
     }
     */
-    // added in 1.8.1 for compatible with undoreg1.46
+    // added in 1.8.1 for compatibility with undoreg1.46
     bUseLongRegHead = GetPrivateProfileInt(INI_SETUP, INI_USELONGREGHEAD, 0, lpRegshotIni) != 0 ? TRUE : FALSE;
 
     if (GetPrivateProfileString(INI_SETUP, INI_EXTDIR, NULL, lpExtDir, MAX_PATH, lpRegshotIni) != 0) {
@@ -109,7 +110,7 @@ BOOL LoadSettingsFromIni(HWND hDlg) // tfx get ini info (translate from chinese 
 }
 
 
-BOOL SaveSettingsToIni(HWND hDlg) // tfx save settings to ini (translate from chinese)
+BOOL SaveSettingsToIni(HWND hDlg) // tfx save settings to ini
 {
     BYTE    nFlag;
     LPSTR   lpString;
@@ -159,7 +160,7 @@ BOOL SaveSettingsToIni(HWND hDlg) // tfx save settings to ini (translate from ch
 }
 
 
-BOOL IsInSkipList(LPSTR lpStr, LPBYTE *lpSkipList)  // tfx  skip the list (translate from chinese)
+BOOL IsInSkipList(LPSTR lpStr, LPBYTE *lpSkipList)  // tfx skip the list
 {
     int i;
     // todo: it seems bypass null item. But the getsetting is get all. Is it safe without the null thing? tianwei
