@@ -53,8 +53,8 @@ char htm_s3[]         = "</span>\r\n";
 //------------------------------------------------------------
 VOID WriteHead(u_char *lpstr, DWORD count, BOOL isHTML)
 {
-    char lpcount[8];
-    sprintf(lpcount, "%d", count);
+    char lpcount[16];
+    sprintf(lpcount, "%u", count);
 
     if (isHTML == TRUE) {
         WriteFile(hFile, htm_BR, sizeof(htm_BR) - 1, &NBW, NULL);

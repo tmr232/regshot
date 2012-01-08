@@ -45,7 +45,7 @@ RES     = $(SRC)\res
 
 
 DEFINES = /D "_WINDOWS" /D "NDEBUG" /D "_CRT_SECURE_NO_WARNINGS" /D "WDK_BUILD"
-CFLAGS  = /nologo /c /Fo"$(OBJDIR)/" /W3 /EHsc /MD /O2 /GL /MP $(DEFINES)
+CFLAGS  = /nologo /c /Fo"$(OBJDIR)/" /W4 /EHsc /MD /O2 /GL /MP $(DEFINES)
 LDFLAGS = /NOLOGO /WX /INCREMENTAL:NO /RELEASE /OPT:REF /OPT:ICF /MERGE:.rdata=.text \
           /DYNAMICBASE /NXCOMPAT /LTCG /DEBUG
 LIBS    = advapi32.lib comdlg32.lib kernel32.lib shell32.lib user32.lib

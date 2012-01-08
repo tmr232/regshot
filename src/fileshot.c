@@ -21,12 +21,12 @@
 */
 
 #include "global.h"
+
 // ISDIR, ISFILE added in 1.8.0
 #define ISDIR(x)  ( (x&FILE_ATTRIBUTE_DIRECTORY) != 0 )
 #define ISFILE(x) ( (x&FILE_ATTRIBUTE_DIRECTORY) == 0 )
 
 SAVEFILECONTENT sFC;
-
 
 extern LPBYTE lan_dir;
 extern LPBYTE lan_file;
@@ -407,7 +407,7 @@ VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DW
 
 #ifdef _WIN64
 //-------------------------------------------------------------
-//Rebuild file snap from file buffer
+// Rebuild file snap from file buffer
 //-------------------------------------------------------------
 VOID RebuildFromHive_file(LPSAVEFILECONTENT lpFile, LPFILECONTENT lpFatherFC, LPFILECONTENT lpFC, LPBYTE lpHiveFileBase)
 {
@@ -449,7 +449,7 @@ VOID RebuildFromHive_file(LPSAVEFILECONTENT lpFile, LPFILECONTENT lpFatherFC, LP
 
 }
 //-------------------------------------------------------------
-//Rebuild filehead from file buffer
+// Rebuild filehead from file buffer
 //-------------------------------------------------------------
 VOID RebuildFromHive_filehead(LPSAVEHEADFILE lpSHF, LPHEADFILE lpHeadFile, LPBYTE lpHiveFileBase)
 {

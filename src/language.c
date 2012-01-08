@@ -294,7 +294,7 @@ BOOL GetLanguageStrings(HWND hDlg)
         GetPrivateProfileSection(lpCurrentLanguage, lpLangStrings, SIZEOF_LANGSTRINGS, lpLanguageIni);
         for (i = 1, lp = (LPBYTE *)lplpLangStrings; i < 47; i++) {
 
-            sprintf(lpIniKey, "%d%s", i, "=");
+            sprintf(lpIniKey, "%u%s", i, "=");
             // pointer returned was pointed to char just after "="
             if ((lpReturn = AtPos((LPBYTE)lpLangStrings, (LPBYTE)lpIniKey, SIZEOF_LANGSTRINGS, strlen(lpIniKey))) != NULL) {
                 //_asm int 3;

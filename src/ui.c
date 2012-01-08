@@ -65,11 +65,11 @@ void UpdateCounters(LPBYTE title1, LPBYTE title2, DWORD count1, DWORD count2)
 {
     //nGettingTime = GetTickCount();
     nBASETIME1 = nGettingTime;
-    sprintf(lpMESSAGE, "%s%d%s%d%s", lan_time, (nGettingTime - nBASETIME) / 1000, "s", (nGettingTime - nBASETIME) % 1000, "ms");
+    sprintf(lpMESSAGE, "%s%u%s%u%s", lan_time, (nGettingTime - nBASETIME) / 1000, "s", (nGettingTime - nBASETIME) % 1000, "ms");
     SendDlgItemMessage(hWnd, IDC_TEXTCOUNT3, WM_SETTEXT, (WPARAM)0, (LPARAM)lpMESSAGE);
-    sprintf(lpMESSAGE, "%s%d", title1, count1);
+    sprintf(lpMESSAGE, "%s%u", title1, count1);
     SendDlgItemMessage(hWnd, IDC_TEXTCOUNT1, WM_SETTEXT, (WPARAM)0, (LPARAM)lpMESSAGE);
-    sprintf(lpMESSAGE, "%s%d", title2, count2);
+    sprintf(lpMESSAGE, "%s%u", title2, count2);
     SendDlgItemMessage(hWnd, IDC_TEXTCOUNT2, WM_SETTEXT, (WPARAM)0, (LPARAM)lpMESSAGE);
 
     UpdateWindow(hWnd);
@@ -102,9 +102,9 @@ VOID UI_AfterShot(VOID)
 {
     DWORD iddef;
 
-    if (lpHeadLocalMachine1 == NULL) {
+    if (lpShot1->lpheadlocalmachine == NULL) {
         iddef = IDC_1STSHOT;
-    } else if (lpHeadLocalMachine2 == NULL) {
+    } else if (lpShot2->lpheadlocalmachine == NULL) {
         iddef = IDC_2NDSHOT;
     } else {
         iddef = IDC_COMPARE;
@@ -119,7 +119,7 @@ VOID UI_AfterShot(VOID)
 
 
 //--------------------------------------------------
-// Prepare the GUI for Clearing
+// Prepare the GUI for clearing
 //--------------------------------------------------
 VOID UI_BeforeClear(VOID)
 {
@@ -139,23 +139,23 @@ VOID UI_AfterClear(VOID)
     DWORD   iddef = 0;
     //BOOL    bChk;   // used for file scan disable
 
-    if (lpHeadLocalMachine1 == NULL) {
+    if (lpShot1->lpheadlocalmachine == NULL) {
         iddef = IDC_1STSHOT;
-    } else if (lpHeadLocalMachine2 == NULL) {
+    } else if (lpShot2->lpheadlocalmachine == NULL) {
         iddef = IDC_2NDSHOT;
     }
     EnableWindow(GetDlgItem(hWnd, iddef), TRUE);
     EnableWindow(GetDlgItem(hWnd, IDC_COMPARE), FALSE);
 
-    if (lpHeadLocalMachine1 == NULL && lpHeadLocalMachine2 == NULL) {
+    if (lpShot1->lpheadlocalmachine == NULL && lpShot2->lpheadlocalmachine == NULL) {
         EnableWindow(GetDlgItem(hWnd, IDC_2NDSHOT), FALSE);
         EnableWindow(GetDlgItem(hWnd, IDC_CLEAR1), FALSE);
         //bChk = TRUE;
     }
-    //else  // I forgot to comment out this, fixed at 1.8.2
+    //else  // I forgot to comment this out, fixed in 1.8.2
     //bChk = FALSE;
 
-    //EnableWindow(GetDlgItem(hWnd,IDC_CHECKDIR),bChk); // Not used 1.8; we only enable chk when clear all
+    //EnableWindow(GetDlgItem(hWnd,IDC_CHECKDIR),bChk); // Not used in 1.8; we only enable chk when clear all
     //SendMessage(hWnd,WM_COMMAND,(WPARAM)IDC_CHECKDIR,(LPARAM)0);
 
     SetFocus(GetDlgItem(hWnd, iddef));
@@ -166,21 +166,21 @@ VOID UI_AfterClear(VOID)
 
 
 // -----------------------------
-VOID Shot1(VOID)
+VOID Shot(LPREGSHOT lpshot)
 {
-    lpHeadLocalMachine1 = (LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
-    lpHeadUsers1 = (LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
+    lpshot->lpheadlocalmachine = (LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
+    lpshot->lpheadusers = (LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
 
     if (bUseLongRegHead) {  // 1.8.1
-        lpHeadLocalMachine1->lpkeyname = MYALLOC(sizeof(LOCALMACHINESTRING_LONG));
-        lpHeadUsers1->lpkeyname = MYALLOC(sizeof(USERSSTRING_LONG));
-        strcpy(lpHeadLocalMachine1->lpkeyname, LOCALMACHINESTRING_LONG);
-        strcpy(lpHeadUsers1->lpkeyname, USERSSTRING_LONG);
+        lpshot->lpheadlocalmachine->lpkeyname = MYALLOC(sizeof(LOCALMACHINESTRING_LONG));
+        lpshot->lpheadusers->lpkeyname = MYALLOC(sizeof(USERSSTRING_LONG));
+        strcpy(lpshot->lpheadlocalmachine->lpkeyname, LOCALMACHINESTRING_LONG);
+        strcpy(lpshot->lpheadusers->lpkeyname, USERSSTRING_LONG);
     } else {
-        lpHeadLocalMachine1->lpkeyname = MYALLOC(sizeof(LOCALMACHINESTRING));
-        lpHeadUsers1->lpkeyname = MYALLOC(sizeof(USERSSTRING));
-        strcpy(lpHeadLocalMachine1->lpkeyname, LOCALMACHINESTRING);
-        strcpy(lpHeadUsers1->lpkeyname, USERSSTRING);
+        lpshot->lpheadlocalmachine->lpkeyname = MYALLOC(sizeof(LOCALMACHINESTRING));
+        lpshot->lpheadusers->lpkeyname = MYALLOC(sizeof(USERSSTRING));
+        strcpy(lpshot->lpheadlocalmachine->lpkeyname, LOCALMACHINESTRING);
+        strcpy(lpshot->lpheadusers->lpkeyname, USERSSTRING);
     }
 
 
@@ -191,10 +191,14 @@ VOID Shot1(VOID)
     nGettingDir   = 0;
     nBASETIME  = GetTickCount();
     nBASETIME1 = nBASETIME;
-    UI_BeforeShot(IDC_1STSHOT);
+    if (is1) {
+        UI_BeforeShot(IDC_1STSHOT);
+    } else {
+        UI_BeforeShot(IDC_2NDSHOT);
+    }
 
-    GetRegistrySnap(HKEY_LOCAL_MACHINE, lpHeadLocalMachine1);
-    GetRegistrySnap(HKEY_USERS, lpHeadUsers1);
+    GetRegistrySnap(HKEY_LOCAL_MACHINE, lpshot->lpheadlocalmachine);
+    GetRegistrySnap(HKEY_USERS, lpshot->lpheadusers);
     nGettingTime = GetTickCount();
     UpdateCounters(lan_key, lan_value, nGettingKey, nGettingValue);
 
@@ -208,7 +212,7 @@ VOID Shot1(VOID)
         GetDlgItemText(hWnd, IDC_EDITDIR, lpExtDir, EXTDIRLEN / 2);
         nLengthofStr = strlen(lpExtDir);
 
-        lphf = lphftemp = lpHeadFile1;  // changed in 1.8
+        lphf = lphftemp = lpshot->lpheadfile;  // changed in 1.8
         lpSubExtDir = lpExtDir;
 
         if (nLengthofStr > 0)
@@ -225,8 +229,8 @@ VOID Shot1(VOID)
                         size_t  nSubExtDirLen;
 
                         lphf = (LPHEADFILE)MYALLOC0(sizeof(HEADFILE));
-                        if (lpHeadFile1 == NULL) {
-                            lpHeadFile1 = lphf;
+                        if (lpshot->lpheadfile == NULL) {
+                            lpshot->lpheadfile = lphf;
                         } else {
                             lphftemp->lpnextheadfile = lphf;
                         }
@@ -254,32 +258,32 @@ VOID Shot1(VOID)
             }
     }
 
-    NBW = COMPUTERNAMELEN;
-    GetSystemTime(lpSystemtime1);
-    GetComputerName(lpComputerName1, &NBW);
-    GetUserName(lpUserName1, &NBW);
+    NBW = COMPUTERNAMELEN / 2 - 1;
+    GetSystemTime(&lpshot->systemtime);
+    GetComputerName((LPSTR)lpshot->computername, &NBW); //Note:MAX_COMPUTERNAME_LENGTH seems to be 15 chars ,it is enough.
+    GetUserName((LPSTR)lpshot->username, &NBW);         //Note:UNLEN seems to be 256 chars, This would fail ;)
 
     UI_AfterShot();
 
 }
 
-
+/*
 // -----------------------------
 VOID Shot2(VOID)
 {
-    lpHeadLocalMachine2 = (LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
-    lpHeadUsers2 = (LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
+    lpShot2->lpheadlocalmachine = (LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
+    lpShot2->lpheadusers = (LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
 
     if (bUseLongRegHead) {  // 1.8.1
-        lpHeadLocalMachine2->lpkeyname = MYALLOC(sizeof(LOCALMACHINESTRING_LONG));
-        lpHeadUsers2->lpkeyname = MYALLOC(sizeof(USERSSTRING_LONG));
-        strcpy(lpHeadLocalMachine2->lpkeyname, LOCALMACHINESTRING_LONG);
-        strcpy(lpHeadUsers2->lpkeyname, USERSSTRING_LONG);
+        lpShot2->lpheadlocalmachine->lpkeyname = MYALLOC(sizeof(LOCALMACHINESTRING_LONG));
+        lpShot2->lpheadusers->lpkeyname = MYALLOC(sizeof(USERSSTRING_LONG));
+        strcpy(lpShot2->lpheadlocalmachine->lpkeyname, LOCALMACHINESTRING_LONG);
+        strcpy(lpShot2->lpheadusers->lpkeyname, USERSSTRING_LONG);
     } else {
-        lpHeadLocalMachine2->lpkeyname = MYALLOC(sizeof(LOCALMACHINESTRING));
-        lpHeadUsers2->lpkeyname = MYALLOC(sizeof(USERSSTRING));
-        strcpy(lpHeadLocalMachine2->lpkeyname, LOCALMACHINESTRING);
-        strcpy(lpHeadUsers2->lpkeyname, USERSSTRING);
+        lpShot2->lpheadlocalmachine->lpkeyname = MYALLOC(sizeof(LOCALMACHINESTRING));
+        lpShot2->lpheadusers->lpkeyname = MYALLOC(sizeof(USERSSTRING));
+        strcpy(lpShot2->lpheadlocalmachine->lpkeyname, LOCALMACHINESTRING);
+        strcpy(lpShot2->lpheadusers->lpkeyname, USERSSTRING);
     }
 
 
@@ -292,8 +296,8 @@ VOID Shot2(VOID)
     nBASETIME1 = nBASETIME;
     UI_BeforeShot(IDC_2NDSHOT);
 
-    GetRegistrySnap(HKEY_LOCAL_MACHINE, lpHeadLocalMachine2);
-    GetRegistrySnap(HKEY_USERS, lpHeadUsers2);
+    GetRegistrySnap(HKEY_LOCAL_MACHINE, lpShot2->lpheadlocalmachine);
+    GetRegistrySnap(HKEY_USERS, lpShot2->lpheadusers);
     nGettingTime = GetTickCount();
     UpdateCounters(lan_key, lan_value, nGettingKey, nGettingValue);
 
@@ -307,7 +311,7 @@ VOID Shot2(VOID)
         GetDlgItemText(hWnd, IDC_EDITDIR, lpExtDir, EXTDIRLEN / 2);
         nLengthofStr = strlen(lpExtDir);
 
-        lphf = lphftemp = lpHeadFile1;  // changed in 1.8
+        lphf = lphftemp = lpShot1->lpheadfile;  // changed in 1.8
         lpSubExtDir = lpExtDir;
 
         if (nLengthofStr > 0)
@@ -324,8 +328,8 @@ VOID Shot2(VOID)
                         size_t  nSubExtDirLen;
 
                         lphf = (LPHEADFILE)MYALLOC0(sizeof(HEADFILE));
-                        if (lpHeadFile2 == NULL) {
-                            lpHeadFile2 = lphf;
+                        if (lpShot2->lpheadfile == NULL) {
+                            lpShot2->lpheadfile = lphf;
                         } else {
                             lphftemp->lpnextheadfile = lphf;
                         }
@@ -350,12 +354,12 @@ VOID Shot2(VOID)
     }
 
     NBW = COMPUTERNAMELEN;
-    GetSystemTime(lpSystemtime2);
-    GetComputerName(lpComputerName2, &NBW);
-    GetUserName(lpUserName2, &NBW);
+    GetSystemTime(lpShot2->systemtime);
+    GetComputerName(lpShot2->computername, &NBW);
+    GetUserName(lpShot2->username, &NBW);
     UI_AfterShot();
 }
-
+*/
 
 //--------------------------------------------------
 // Show popup shortcut menu
