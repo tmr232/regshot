@@ -25,9 +25,9 @@
 
 char str_DefResPre[] = REGSHOT_RESULT_FILE;
 char str_filter[]    = {"Regshot hive files [*.hiv]\0*.hiv\0All files\0*.*\0\0"};
-char str_RegshotHiveSignature[] = REGSHOT_HIVE_SIGNATURE;  // Need [] to use with sizeof() must <12
+char str_RegshotFileSignature[] = "REGSHOTHIVE";
 char str_ValueDataIsNULL[] = ": (NULL!)";
-SAVEKEYCONTENT sKC;
+SAVEKEYCONTENT   sKC;
 SAVEVALUECONTENT sVC;
 
 
@@ -170,7 +170,7 @@ LPSTR TransData(LPVALUECONTENT lpValueContent, DWORD type)
             break;
         case REG_DWORD:
             // case REG_DWORD_BIG_ENDIAN: Not used any more, they all included in [default]
-            lpvaluedata = MYALLOC0(SIZEOF_REG_DWORD * 2 + 5); // 13 is enough
+            lpvaluedata = MYALLOC0(sizeof(DWORD) * 2 + 5); // 13 is enough
             sprintf(lpvaluedata, "%s%08X", ": 0x", *(LPDWORD)(lpValueContent->lpvaluedata));
             break;
         default :
@@ -227,7 +227,7 @@ LPSTR GetWholeValueData(LPVALUECONTENT lpValueContent)
                 break;
             case REG_DWORD:
             case REG_DWORD_BIG_ENDIAN:
-                if (size == SIZEOF_REG_DWORD) {
+                if (size == sizeof(DWORD)) {
                     lpvaluedata = TransData(lpValueContent, REG_DWORD);
                 } else {
                     lpvaluedata = TransData(lpValueContent, REG_BINARY);
@@ -1344,7 +1344,7 @@ VOID SaveHive(LPREGSHOT lpshot)
 
                 ZeroMemory(&hiveheader, sizeof(hiveheader));
                 // Save the position of H_L_M
-                hiveheader.offsetkeyhklm = HIVEBEGINOFFSET;
+                hiveheader.fpos_HKLM = HIVEBEGINOFFSET;
 
                 SetFilePointer(hFileWholeReg, HIVEBEGINOFFSET, NULL, FILE_BEGIN);
                 if (lpshot->lpheadlocalmachine != NULL) { //always
@@ -1353,7 +1353,7 @@ VOID SaveHive(LPREGSHOT lpshot)
 
                 // Save the position of hkeyUsr
                 nFPcurrent = SetFilePointer(hFileWholeReg, 0, NULL, FILE_CURRENT);
-                hiveheader.offsetkeyuser = nFPcurrent;
+                hiveheader.fpos_HKCU = nFPcurrent;
 
                 if (lpshot->lpheadusers != NULL) { //always
                     SaveRegKey(lpshot->lpheadusers, 0, 0);
@@ -1362,7 +1362,7 @@ VOID SaveHive(LPREGSHOT lpshot)
                 if (lpshot->lpheadfile != NULL) {
                     // Write start position of file chain
                     nFPcurrent = SetFilePointer(hFileWholeReg, 0, NULL, FILE_CURRENT);
-                    hiveheader.offsetheadfile = nFPcurrent;
+                    hiveheader.fpos_FILES = nFPcurrent;
 
 
                     for (lphf = lpshot->lpheadfile; lphf != NULL;) {
@@ -1387,10 +1387,7 @@ VOID SaveHive(LPREGSHOT lpshot)
                     }
                 }
 
-
-
-
-                CopyMemory(hiveheader.signature, str_RegshotHiveSignature, sizeof(str_RegshotHiveSignature) - 1);
+                CopyMemory(hiveheader.signature, str_RegshotFileSignature, 12);
                 CopyMemory(hiveheader.computername, lpshot->computername, COMPUTERNAMELEN);
                 CopyMemory(hiveheader.username, lpshot->username, COMPUTERNAMELEN);
                 CopyMemory(&hiveheader.systemtime, &lpshot->systemtime, sizeof(SYSTEMTIME));
@@ -1575,14 +1572,19 @@ BOOL LoadHive(LPREGSHOT lpshot)
     ZeroMemory(&hiveheader, sizeof(HIVEHEADER));
     ReadFile(hFileWholeReg, &hiveheader, sizeof(HIVEHEADER), &NBW, NULL);
 
-
-    if (strcmp(str_RegshotHiveSignature, (const char *)(hiveheader.signature)) != 0) {
+    if (strncmp(str_RegshotFileSignature, (const char *)(hiveheader.signature), 12) != 0) {
         CloseHandle(hFileWholeReg);
-        ErrMsg((LPCSTR)"It is not a compatible hive to current version or it is not a valid Regshot hive file!");
+        ErrMsg((LPCSTR)"It is not a valid Regshot hive file!");
         return FALSE;
     }
-    // May add some check here
 
+    // Enhance data of old headers to be used with newer code
+    if (hiveheader.version == 0) {
+        hiveheader.version = 1;
+        hiveheader.tchar_size = 1;
+    }
+
+    // May add some more checks and handling here
 
     nGettingKey = 0;
     nGettingFile = 0;
@@ -1628,9 +1630,9 @@ BOOL LoadHive(LPREGSHOT lpshot)
     ShowWindow(GetDlgItem(hWnd, IDC_PBCOMPARE), SW_HIDE);
 
     nBase = (size_t)lpshot->lptemphive;
-    lpshot->lpheadlocalmachine = (LPKEYCONTENT)(nBase +  hiveheader.offsetkeyhklm);
-    lpshot->lpheadusers = (LPKEYCONTENT)(nBase +  hiveheader.offsetkeyuser);
-    lpshot->lpheadfile = (hiveheader.offsetheadfile == 0) ? NULL : (LPHEADFILE)(nBase + hiveheader.offsetheadfile);
+    lpshot->lpheadlocalmachine = (hiveheader.fpos_HKLM == 0) ? NULL : (LPKEYCONTENT)(nBase + hiveheader.fpos_HKLM);
+    lpshot->lpheadusers = (hiveheader.fpos_HKCU == 0) ? NULL : (LPKEYCONTENT)(nBase + hiveheader.fpos_HKCU);
+    lpshot->lpheadfile = (hiveheader.fpos_FILES == 0) ? NULL : (LPHEADFILE)(nBase + hiveheader.fpos_FILES);
 
 #ifdef _WIN64
     nGettingKey   = 2;
@@ -1648,8 +1650,8 @@ BOOL LoadHive(LPREGSHOT lpshot)
 
     lpshot->lpheadlocalmachine = MYALLOC0(sizeof(KEYCONTENT));
     lpshot->lpheadusers = MYALLOC0(sizeof(KEYCONTENT));
-    RebuildFromHive_reg((LPSAVEKEYCONTENT)(nBase + hiveheader.offsetkeyhklm), NULL, lpshot->lpheadlocalmachine , lpshot->lptemphive);
-    RebuildFromHive_reg((LPSAVEKEYCONTENT)(nBase + hiveheader.offsetkeyuser), NULL, lpshot->lpheadusers , lpshot->lptemphive);
+    RebuildFromHive_reg((LPSAVEKEYCONTENT)(nBase + hiveheader.fpos_HKLM), NULL, lpshot->lpheadlocalmachine , lpshot->lptemphive);
+    RebuildFromHive_reg((LPSAVEKEYCONTENT)(nBase + hiveheader.fpos_HKCU), NULL, lpshot->lpheadusers , lpshot->lptemphive);
     nGettingTime = GetTickCount();
     UpdateCounters(lan_key, lan_value, nGettingKey, nGettingValue);
 
@@ -1664,7 +1666,7 @@ BOOL LoadHive(LPREGSHOT lpshot)
         SendMessage(hWnd, WM_COMMAND, (WPARAM)IDC_CHECKDIR, (LPARAM)0);
 #ifdef _WIN64
         lpshot->lpheadfile = MYALLOC0(sizeof(HEADFILE));
-        RebuildFromHive_filehead((LPSAVEHEADFILE)(nBase + hiveheader.offsetheadfile), lpshot->lpheadfile, lpshot->lptemphive);
+        RebuildFromHive_filehead((LPSAVEHEADFILE)(nBase + hiveheader.fpos_FILES), lpshot->lpheadfile, lpshot->lptemphive);
         nGettingTime = GetTickCount();
         UpdateCounters(lan_dir, lan_file, nGettingDir, nGettingFile);
 #else

@@ -1,17 +1,11 @@
 @ECHO OFF
 SETLOCAL
 
-PUSHD %~dp0%
+PUSHD %~dp0
 
-SET "SUBWCREV=SubWCRev.exe"
-
-"%SUBWCREV%" .. "version_in.h" "VersionRev.h" -f
+SubWCRev.exe .. "version_in.h" "VersionRev.h" -f
 IF %ERRORLEVEL% NEQ 0 GOTO NoSubWCRev
-
-POPD
-ENDLOCAL
-EXIT /B
-
+GOTO END
 
 :NoSubWCRev
 ECHO. & ECHO SubWCRev, which is part of TortoiseSVN, wasn't found!
@@ -25,6 +19,7 @@ ECHO #define REGSHOT_VERSION_REV 0 >> "VersionRev.h"
 ECHO.>> "VersionRev.h"
 ECHO #endif // REGSHOT_VERSION_REV_H>> "VersionRev.h"
 
+:END
 POPD
 ENDLOCAL
 EXIT /B
