@@ -62,7 +62,6 @@ typedef long LONG_PTR;
 
 
 // Some definations
-#define SIZEOF_REG_DWORD 4            // In current windows, reg_dword's size=4
 #define NOTMATCH        0             // Define modification type in comparison results
 #define ISMATCH         1
 #define ISDEL           2
@@ -88,9 +87,8 @@ typedef long LONG_PTR;
 #define HTMLWRAPLENGTH  1000         // Define html out put wrap length
 #define MAXAMOUNTOFFILE 10000        // Define out put file counts
 #define EXTDIRLEN       MAX_PATH * 4 // Define searching directory field length
-#define COMPUTERNAMELEN 64           // Define COMPUTER name length,do not change
+#define COMPUTERNAMELEN 64           // Define COMPUTER name length, do not change
 #define HIVEBEGINOFFSET 512          // Hive file out put header computerlen*2+sizeof(systemtime)+32 must <hivebeginoffset!!!!!!!!!!!!!!
-#define REGSHOT_HIVE_SIGNATURE  "RSHIVE183"
 
 
 // Some definitions of MutiLanguage strings [Free space length]
@@ -134,11 +132,11 @@ struct _FILECONTENT {
     DWORD  filesizelow;                        // File size [LOW  DWORD]
     DWORD  filesizehigh;                       // File size [HIGH DWORD]
     DWORD  fileattr;                           // File attributes
-    DWORD  cksum;                              // File checksum(plan to add in 1.8 not used now)
+    DWORD  chksum;                             // File checksum (planned for the future, currently not used)
     struct _FILECONTENT FAR *lpfirstsubfile;   // Pointer to files[DIRS] first sub file
     struct _FILECONTENT FAR *lpbrotherfile;    // Pointer to files[DIRS] brother
     struct _FILECONTENT FAR *lpfatherfile;     // Pointer to files father
-    size_t bfilematch;                         // Flag used at comparing, 1.8.2<= is byte
+    size_t bfilematch;                         // Flag used when comparing, until 1.8.2 was byte
 };
 typedef struct _FILECONTENT FILECONTENT, FAR *LPFILECONTENT;
 
@@ -159,18 +157,37 @@ struct _COMRESULT {
 typedef struct _COMRESULT COMRESULT, FAR *LPCOMRESULT;
 
 // Struct for hive file header ,used in saving and loading
+// when accessing fields of this structure always put a version check around them, e.g. "if version >= 2 then use fpos_computername"
 struct _HIVEHEADER {
-    unsigned char signature[16];    // 16bytes offset 0
-    DWORD  offsetkeyhklm;           // 4 offset 16 ( 512)
-    DWORD  offsetkeyuser;           // 4 offset 20
-    DWORD  offsetheadfile;          // 4 offset 24
-    DWORD  reserved1;               // 4 offset 28 future use!
-    unsigned char computername[COMPUTERNAMELEN]; // 64 offset 32 ,computername ,
-    unsigned char username[COMPUTERNAMELEN];     // 64 offset 96 ,username ,note I limit this . UNLEN in msdn is longer
-    SYSTEMTIME systemtime;          // 8 * 2 = 16 bytes offset 160
-    unsigned char reserved2[336];   // HIVEBEGINOFFSET(512) - sum(176) = 336
+    unsigned char signature[12];  // ofs 0 len 12: never convert to Unicode, always use char type and ASCII-127 codes
+    DWORD version;                // (v2) ofs 12 len 4: file/hive header version
+
+    DWORD  fpos_HKLM;   // ofs 16 len 4
+    DWORD  fpos_HKCU;   // ofs 20 len 4
+    DWORD  fpos_FILES;  // ofs 24 len 4
+    DWORD  tchar_size;  // (v2) ofs 28 len 4: sizeof(TCHAR), allows to separate between MBCS (1 for char) and Unicode (2 for UTF-16 WCHAR), may become 4 for UTF-32 in the future
+
+    // next two fields are kept and filled for <= 1.8.2 compatibility, see substituting fields in header format version 2
+    unsigned char computername[64]; // (v1) ofs 32 len 64: bytes, incl. \0, name maybe truncated
+    unsigned char username[64];     // (v1) ofs 96 len 64: bytes, incl. \0, name maybe truncated
+
+    SYSTEMTIME systemtime;  // ofs 160 len 16 bytes
+
+    // new since header version 2
+    DWORD fpos_computername;  // (v2) ofs 176 len 4
+    DWORD len_computername;   // (v2) ofs 180 len 4: length in bytes incl. \0
+    DWORD fpos_username;      // (v2) ofs 184 len 4
+    DWORD len_username;       // (v2) ofs 188 len 4: length in bytes incl. \0
+    DWORD fpos_locale;        // (v2) ofs 192 len 4
+    DWORD len_locale;         // (v2) ofs 196 len 4: length in bytes incl. \0
+
+    // ^^^ here the file/hive header can be extended
+    // * increase the version number for the new header format
+    // * place a comment with a reference to the new version before the new fields
+    // * check all usages and version checks
+    // * remember that older versions can not use these additional data
 };
-typedef struct _HIVEHEADER HIVEHEADER , FAR *LPHIVEHEADER;
+typedef struct _HIVEHEADER HIVEHEADER, FAR *LPHIVEHEADER;
 
 // Struct for shot,2012.
 struct _REGSHOT {
@@ -220,11 +237,21 @@ struct _SAVEFILECONTENT {
     DWORD  filesizelow;              // File size [LOW  DWORD]
     DWORD  filesizehigh;             // File size [HIGH DWORD]
     DWORD  fileattr;                 // File attributes
-    DWORD  cksum;                    // File checksum(plan to add in 1.8 not used now)
+    DWORD  chksum;                   // File checksum  (planned for the future, currently not used)
     DWORD  fpos_firstsubfile;        // Pointer to files[DIRS] first sub file
     DWORD  fpos_brotherfile;         // Pointer to files[DIRS] brother
     DWORD  fpos_fatherfile;          // Pointer to files father
-    DWORD  bfilematch;               // Flag used at comparing, 1.8.2 <= is byte
+
+    // new since file/hive header version 2
+    // new since file content version 2
+    DWORD  version;                  // File content structure version
+    DWORD  len_filename;             // Length
+
+    // ^^^ here the file content header can be extended
+    // * increase the version number for the new header format
+    // * place a comment with a reference to the new version before the new fields
+    // * check all usages and version checks
+    // * remember that older versions can not use these additional data
 };
 typedef struct _SAVEFILECONTENT SAVEFILECONTENT, FAR *LPSAVEFILECONTENT;
 
@@ -376,7 +403,7 @@ RECT            rect;               // Window RECT
 FILETIME        ftLastWrite;        // Filetime struct
 BROWSEINFO      BrowseInfo1;        // BrowseINFO struct
 OPENFILENAME    opfn;               // Openfilename struct
-BOOL            bUseLongRegHead;    // 1.8.1 for compatible to 1.61e5 and undoreg1.46
+BOOL            bUseLongRegHead;    // 1.8.1 for compatibility with 1.61e5 and undoreg1.46
 HANDLE          hHeap;              // 1.8.2
 
 VOID    LogToMem(DWORD actiontype, LPDWORD lpcount, LPVOID lp);

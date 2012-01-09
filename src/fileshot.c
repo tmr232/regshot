@@ -21,6 +21,7 @@
 */
 
 #include "global.h"
+#include "stddef.h"  // for "offsetof" macro
 
 // ISDIR, ISFILE added in 1.8.0
 #define ISDIR(x)  ( (x&FILE_ATTRIBUTE_DIRECTORY) != 0 )
@@ -323,85 +324,109 @@ VOID FreeAllFileHead(LPHEADFILE lp)
 
 
 //--------------------------------------------------
-// File save engine (It is stupid again!) added in 1.8
+// Save File Information to a File
+//
+// This routine is called recursively to store the entries of the file/dir tree
+// Therefore temporary vars are put in a local block to reduce stack usage
 //--------------------------------------------------
 VOID SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DWORD nFPCaller)
 {
+    DWORD nFPHeader;
 
-    DWORD   nFPTemp4Write;
-    DWORD   nFPHeader;
-    DWORD   nFPCurrent;
-    DWORD   nLenPlus1;
-    int     nPad;
+    // Get current file position
+    // put in a separate var for later use
+    nFPHeader = SetFilePointer(hFileWholeReg, 0, NULL, FILE_CURRENT);
 
-    nLenPlus1 = (DWORD)strlen(lpFileContent->lpfilename) + 1;                       // Get len+1,this (dword) is for the writefile below.
-    nFPHeader = SetFilePointer(hFileWholeReg, 0, NULL, FILE_CURRENT);               // Save head fp
-    // using struct, idea from maddes
+    // Filename will always be stored behind the structure, so its position is already known
     sFC.fpos_filename = nFPHeader + sizeof(SAVEFILECONTENT);
+
+    // Set file positions of the relatives inside the tree
+    sFC.fpos_firstsubfile = 0;  // not known yet, may be re-written by another recursive call
+    sFC.fpos_brotherfile = 0;   // not known yet, may be re-written by another recursive call
+    sFC.fpos_fatherfile = nFPCurrentFatherFile;
+
+    // Copy the rest
     sFC.writetimelow = lpFileContent->writetimelow;
     sFC.writetimehigh = lpFileContent->writetimehigh;
     sFC.filesizelow = lpFileContent->filesizelow;
     sFC.filesizehigh = lpFileContent->filesizehigh;
     sFC.fileattr = lpFileContent->fileattr;
-    sFC.cksum = lpFileContent->cksum;
-    sFC.fpos_firstsubfile = 0; //lpFileContent->lpfirstsubfile;
-    sFC.fpos_brotherfile = 0; //lpFileContent->lpbrotherfile;
-    sFC.fpos_fatherfile = nFPCurrentFatherFile;
-    sFC.bfilematch = 0;
+    sFC.chksum = lpFileContent->chksum;
+
+    // new since file content version 2
+    sFC.version = 2;
+
+    // Get filename length in bytes
+    {
+        size_t nLen;
+
+        nLen = strlen(lpFileContent->lpfilename);
+        nLen += 1;  // add trailing \0
+        nLen *= sizeof(lpFileContent->lpfilename[0]);  // multiply with byte size of a char
+
+        // TODO: Assert when nLen exceeding size of DWORD
+
+        sFC.len_filename = (DWORD)nLen;
+    }
+
+    // Write file information to file
+    // Make sure that ALL fields have been initialized/set, otherwise you will write data from the previous call
     WriteFile(hFileWholeReg, &sFC, sizeof(sFC), &NBW, NULL);
 
-/*
-    nFPTemp4Write = nFPHeader + sizeof(FILECONTENT);                                            //
-    WriteFile(hFileWholeReg, &nFPTemp4Write, sizeof(nFPTemp4Write), &NBW, NULL);                // Save the location of lpfilename
+    // Write file name to file
+    WriteFile(hFileWholeReg, lpFileContent->lpfilename, sFC.len_filename, &NBW, NULL);
 
-    WriteFile(hFileWholeReg, (LPBYTE)lpFileContent + sizeof(LPSTR), 6*sizeof(DWORD), &NBW, NULL);   // Write time, size etc. 6*4
+    // Pad to DWORD
+    {
+        DWORD nPad;
 
-    //nFPTemp4Write = (lpFileContent->lpfirstsubfile!=NULL) ? (nFPHeader + 41 + nLenPlus1) : 0;     // We write lpfilename plus a "\0"
-    //WriteFile(hFileWholeReg,&nFPTemp4Write,4,&NBW,NULL);                  // Save the location of lpfirstsubfile
-    WriteFile(hFileWholeReg, (LPBYTE)lpFileContent + sizeof(LPSTR)+6*sizeof(DWORD), sizeof(LPFILECONTENT)*2, &NBW, NULL);   // Save lpfirstsubfile and lpbrotherfile
-    WriteFile(hFileWholeReg, &nFPCurrentFatherFile, sizeof(nFPCurrentFatherFile), &NBW, NULL);                              // Save nFPCurrentFatherKey passed by caller
+        nPad = (sFC.len_filename % sizeof(DWORD) == 0) ? 0 : (sizeof(DWORD) - sFC.len_filename % sizeof(DWORD));
 
-    lpFileContent->bfilematch=0;
-    WriteFile(hFileWholeReg, &(lpFileContent->bfilematch), sizeof(lpFileContent->bfilematch), &NBW, NULL);                  // Clear and save bfilematch
-*/
-    WriteFile(hFileWholeReg, lpFileContent->lpfilename, nLenPlus1, &NBW, NULL); // Save the current filename
+        if (nPad > 0) {
+            DWORD nFPTemp4Write;
 
-    nPad = (nLenPlus1 % sizeof(DWORD) == 0) ? 0 : (sizeof(DWORD) - nLenPlus1 % sizeof(DWORD));
-
-    nFPTemp4Write = 0;
-    if (nPad > 0) {
-        WriteFile(hFileWholeReg, &nFPTemp4Write, nPad, &NBW, NULL);         // Save the current filename
+            nFPTemp4Write = 0;
+            WriteFile(hFileWholeReg, &nFPTemp4Write, nPad, &NBW, NULL);
+        }
     }
 
-    if (lpFileContent->lpfirstsubfile != NULL) {
-        // pass this filecontent's position as subfile's fatherfile's position and pass the "lpfirstsubfile field"
-        SaveFileContent(lpFileContent->lpfirstsubfile, nFPHeader, nFPHeader + 7 * sizeof(DWORD));
-    }
+    // ATTENTION!!! sFC is INVALID from this point on, due to recursive calls
 
-    if (lpFileContent->lpbrotherfile != NULL) {
-        // pass this file's fatherfile's position as brother's father and pass "lpbrotherfile field"
-        SaveFileContent(lpFileContent->lpbrotherfile, nFPCurrentFatherFile, nFPHeader + 8 * sizeof(DWORD));
-    }
+    // Store position of current entry in caller's field
+    if (nFPCaller > 0) {
+        DWORD nFPCurrent;
 
-    if (nFPCaller > 0) {    // save position of current file in current father file
         nFPCurrent = SetFilePointer(hFileWholeReg, 0, NULL, FILE_CURRENT);
+
         SetFilePointer(hFileWholeReg, nFPCaller, NULL, FILE_BEGIN);
         WriteFile(hFileWholeReg, &nFPHeader, sizeof(nFPHeader), &NBW, NULL);
+
         SetFilePointer(hFileWholeReg, nFPCurrent, NULL, FILE_BEGIN);
+    }
+
+    // If the entry has childs, then do a recursive call for the first child
+    // Pass this entry as father and "fpos_firstsubfile" position for storing the first child's position
+    if (lpFileContent->lpfirstsubfile != NULL) {
+        SaveFileContent(lpFileContent->lpfirstsubfile, nFPHeader, nFPHeader + offsetof(SAVEFILECONTENT, fpos_firstsubfile));
+    }
+
+    // If the entry has a following brother, then do a recursive call for the following brother
+    // Pass father as father and "fpos_brotherfile" position for storing the next brother's position
+    if (lpFileContent->lpbrotherfile != NULL) {
+        SaveFileContent(lpFileContent->lpbrotherfile, nFPCurrentFatherFile, nFPHeader + offsetof(SAVEFILECONTENT, fpos_brotherfile));
     }
 
     // Need adjust progress bar para!!
     nSavingFile++;
 
-    if (nGettingFile != 0)
+    if (nGettingFile != 0) {
         if (nSavingFile % nGettingFile > nFileStep) {
             nSavingFile = 0;
             SendDlgItemMessage(hWnd, IDC_PBCOMPARE, PBM_STEPIT, (WPARAM)0, (LPARAM)0);
             UpdateWindow(hWnd);
             PeekMessage(&msg, hWnd, WM_ACTIVATE, WM_ACTIVATE, PM_REMOVE);
         }
-
-
+    }
 }
 
 
@@ -421,7 +446,7 @@ VOID RebuildFromHive_file(LPSAVEFILECONTENT lpFile, LPFILECONTENT lpFatherFC, LP
     lpFC->filesizelow = lpFile->filesizelow;
     lpFC->filesizehigh = lpFile->filesizehigh;
     lpFC->fileattr = lpFile->fileattr;
-    lpFC->cksum = lpFile->cksum;
+    lpFC->chksum = lpFile->chksum;
     lpFC->lpfatherfile = lpFatherFC;
     if (ISDIR(lpFC->fileattr)) {
         nGettingDir++;

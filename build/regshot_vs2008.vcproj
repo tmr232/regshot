@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9,00"
 	Name="Regshot"
-	ProjectGUID="{A7D5D156-E803-459D-B768-7EBBC5D09DC6}"
+	ProjectGUID="{4C971282-E758-4BA4-B2EF-905613EAADD8}"
 	RootNamespace="Regshot"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
