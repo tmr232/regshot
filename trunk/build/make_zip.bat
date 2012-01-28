@@ -196,12 +196,12 @@ CALL :SUBMSG "INFO" "Creating the %2 ZIP file..."
 IF EXIST "%TEMP_NAME%"     RD /S /Q "%TEMP_NAME%"
 IF NOT EXIST "%TEMP_NAME%" MD "%TEMP_NAME%"
 
-COPY /Y /V "..\gpl.txt"            "%TEMP_NAME%\GPL.txt"
-COPY /Y /V "..\files\history.txt"  "%TEMP_NAME%\History.txt"
-COPY /Y /V "..\files\language.ini" "%TEMP_NAME%\"
-COPY /Y /V "..\files\readme.txt"   "%TEMP_NAME%\Readme.txt"
-COPY /Y /V "..\files\regshot.ini"  "%TEMP_NAME%\"
-COPY /Y /V "..\%1\Regshot.exe"     "%TEMP_NAME%\"
+COPY /Y /V "..\license_lgpl-2.1.txt" "%TEMP_NAME%\License.txt"
+COPY /Y /V "..\files\history.txt"    "%TEMP_NAME%\History.txt"
+COPY /Y /V "..\files\language.ini"   "%TEMP_NAME%\"
+COPY /Y /V "..\files\readme.txt"     "%TEMP_NAME%\Readme.txt"
+COPY /Y /V "..\files\regshot.ini"    "%TEMP_NAME%\"
+COPY /Y /V "..\%1\Regshot.exe"       "%TEMP_NAME%\"
 
 PUSHD "%TEMP_NAME%"
 START "" /B /WAIT "..\..\files\7za.exe" a -tzip -mx=9 "Regshot_%REGSHOTVER%_%2%SUFFIX%.zip" >NUL

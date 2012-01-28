@@ -1,23 +1,22 @@
 /*
     Copyright 1999-2003,2007,2011 TiANWEi
     Copyright 2004 tulipfan
-    Copyright 2011 maddes
+    Copyright 2011-2012 Regshot Team
 
     This file is part of Regshot.
 
-    Regshot is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
+    Regshot is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 2.1 of the License, or
     (at your option) any later version.
 
     Regshot is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+    GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with Regshot; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+    You should have received a copy of the GNU Lesser General Public License
+    along with Regshot.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "global.h"
