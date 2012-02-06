@@ -29,6 +29,9 @@
 #include <windows.h>
 #include <stdio.h>
 #include <shlobj.h>
+#include <stddef.h>  // for "offsetof" macro
+#include <string.h>
+#include <tchar.h>
 #include "resource.h"
 
 #if defined(_MSC_VER) && (_MSC_VER < 1300)  // before VS 2002 .NET (e.g. VS 6)
@@ -61,7 +64,7 @@ typedef long LONG_PTR;
 #endif
 
 
-// Some definations
+// Some definitions
 #define NOTMATCH        0             // Define modification type in comparison results
 #define ISMATCH         1
 #define ISDEL           2
@@ -87,181 +90,243 @@ typedef long LONG_PTR;
 #define HTMLWRAPLENGTH  1000         // Define html out put wrap length
 #define MAXAMOUNTOFFILE 10000        // Define out put file counts
 #define EXTDIRLEN       MAX_PATH * 4 // Define searching directory field length
-#define COMPUTERNAMELEN 64           // Define COMPUTER name length, do not change
-#define HIVEBEGINOFFSET 512          // Hive file out put header computerlen*2+sizeof(systemtime)+32 must <hivebeginoffset!!!!!!!!!!!!!!
+#define OLD_COMPUTERNAMELEN 64       // Define COMPUTER name length, do not change
 
 
 // Some definitions of MutiLanguage strings [Free space length]
 #define SIZEOF_LANGUAGE_SECTIONNAMES_BUFFER 2048
 #define SIZEOF_SINGLE_LANGUAGENAME          64
-#define SIZEOF_LANGSTRINGS                  16384
+#define MAX_INI_SECTION_CHARS               32767
 #define SIZEOF_ABOUTBOX                     4096
 
 
 // Struct used for Windows Registry Key
 struct _KEYCONTENT {
-    LPSTR  lpkeyname;                          // Pointer to key's name
-    struct _VALUECONTENT FAR *lpfirstvalue;    // Pointer to key's first value
-    struct _KEYCONTENT FAR *lpfirstsubkey;     // Pointer to key's first subkey
-    struct _KEYCONTENT FAR *lpbrotherkey;      // Pointer to key's brother
-    struct _KEYCONTENT FAR *lpfatherkey;       // Pointer to key's father
-    size_t bkeymatch;                          // Flag used at comparing, 1.8.2<= is byte
-
+    LPTSTR lpKeyName;                         // Pointer to key's name
+    struct _VALUECONTENT FAR *lpFirstVC;   // Pointer to key's first value
+    struct _KEYCONTENT FAR *lpFirstSubKC;  // Pointer to key's first sub key
+    struct _KEYCONTENT FAR *lpBrotherKC;   // Pointer to key's brother
+    struct _KEYCONTENT FAR *lpFatherKC;    // Pointer to key's father
+    DWORD  bkeymatch;                         // Flags used when comparing, until 1.8.2 was byte
 };
 typedef struct _KEYCONTENT KEYCONTENT, FAR *LPKEYCONTENT;
 
 
 // Struct used for Windows Registry Value
 struct _VALUECONTENT {
-    DWORD  typecode;                           // Type of value [DWORD,STRING...]
-    DWORD  datasize;                           // Value data size in bytes
-    LPSTR  lpvaluename;                        // Pointer to value name
-    LPBYTE lpvaluedata;                        // Pointer to value data
-    struct _VALUECONTENT FAR *lpnextvalue;     // Pointer to value's brother
-    struct _KEYCONTENT FAR *lpfatherkey;       // Pointer to value's father[Key]
-    size_t bvaluematch;                        // Flag used at comparing, 1.8.2<= is byte
+    DWORD  typecode;                          // Type of value [DWORD,STRING...]
+    DWORD  datasize;                          // Value data size in bytes
+    LPTSTR lpValueName;                       // Pointer to value's name
+    LPBYTE lpValueData;                       // Pointer to value's data
+    struct _VALUECONTENT FAR *lpBrotherVC;    // Pointer to value's brother
+    struct _KEYCONTENT FAR *lpFatherKC;       // Pointer to value's father key
+    DWORD  bvaluematch;                       // Flags used when comparing, until 1.8.2 was byte
 };
 typedef struct _VALUECONTENT VALUECONTENT, FAR *LPVALUECONTENT;
 
 
 // Struct used for Windows File System
 struct _FILECONTENT {
-    LPSTR  lpfilename;                         // Pointer to filename
-    DWORD  writetimelow;                       // File write time [LOW  DWORD]
-    DWORD  writetimehigh;                      // File write time [HIGH DWORD]
-    DWORD  filesizelow;                        // File size [LOW  DWORD]
-    DWORD  filesizehigh;                       // File size [HIGH DWORD]
-    DWORD  fileattr;                           // File attributes
-    DWORD  chksum;                             // File checksum (planned for the future, currently not used)
-    struct _FILECONTENT FAR *lpfirstsubfile;   // Pointer to files[DIRS] first sub file
-    struct _FILECONTENT FAR *lpbrotherfile;    // Pointer to files[DIRS] brother
-    struct _FILECONTENT FAR *lpfatherfile;     // Pointer to files father
-    size_t bfilematch;                         // Flag used when comparing, until 1.8.2 was byte
+    LPTSTR lpFileName;                        // Pointer to file's name
+    DWORD  writetimelow;                      // File write time [LOW  DWORD]
+    DWORD  writetimehigh;                     // File write time [HIGH DWORD]
+    DWORD  filesizelow;                       // File size [LOW  DWORD]
+    DWORD  filesizehigh;                      // File size [HIGH DWORD]
+    DWORD  fileattr;                          // File attributes (e.g. directory)
+    DWORD  chksum;                            // File checksum (planned for the future, currently not used)
+    struct _FILECONTENT FAR *lpFirstSubFC;    // Pointer to file's first sub file
+    struct _FILECONTENT FAR *lpBrotherFC;     // Pointer to file's brother
+    struct _FILECONTENT FAR *lpFatherFC;      // Pointer to file's father
+    DWORD  bfilematch;                        // Flags used when comparing, until 1.8.2 was byte
 };
 typedef struct _FILECONTENT FILECONTENT, FAR *LPFILECONTENT;
 
 
 // Adjusted for filecontent saving. 1.8
 struct _HEADFILE {
-    struct _HEADFILE FAR *lpnextheadfile;      // Pointer to next headfile struc
-    LPFILECONTENT   lpfilecontent;             // Pointer to filecontent
+    struct _HEADFILE FAR *lpBrotherHF;        // Pointer to head file's brother
+    LPFILECONTENT   lpFirstFC;                // Pointer to head file's first file
 };
 typedef struct  _HEADFILE HEADFILE, FAR *LPHEADFILE;
 
 
 // Struct used for comparing result output
 struct _COMRESULT {
-    LPSTR  lpresult;                           // Pointer to result string
-    struct _COMRESULT FAR *lpnextresult;       // Pointer to next _COMRESULT
+    LPSTR  lpresult;                          // Pointer to result string
+    struct _COMRESULT FAR *lpnextresult;      // Pointer to next _COMRESULT
 };
 typedef struct _COMRESULT COMRESULT, FAR *LPCOMRESULT;
 
-// Struct for hive file header ,used in saving and loading
-// when accessing fields of this structure always put a version check around them, e.g. "if version >= 2 then use fpos_computername"
-struct _HIVEHEADER {
-    unsigned char signature[12];  // ofs 0 len 12: never convert to Unicode, always use char type and ASCII-127 codes
-    DWORD version;                // (v2) ofs 12 len 4: file/hive header version
+// Struct for shot,2012.
+struct _REGSHOT {
+    LPKEYCONTENT  lpHKLM;        // Pointer to Shot's HKLM registry keys
+    LPKEYCONTENT  lpHKU;         // Pointer to Shot's HKU registry keys
+    LPHEADFILE    lpHF;          // Pointer to Shot's head files
+    LPTSTR        computername;  // Pointer to Shot's computer name
+    LPTSTR        username;      // Pointer to Shot's user name
+    SYSTEMTIME    systemtime;
+};
+typedef struct _REGSHOT REGSHOT, FAR *LPREGSHOT;
 
-    DWORD  fpos_HKLM;   // ofs 16 len 4
-    DWORD  fpos_HKCU;   // ofs 20 len 4
-    DWORD  fpos_FILES;  // ofs 24 len 4
-    DWORD  tchar_size;  // (v2) ofs 28 len 4: sizeof(TCHAR), allows to separate between MBCS (1 for char) and Unicode (2 for UTF-16 WCHAR), may become 4 for UTF-32 in the future
 
-    // next two fields are kept and filled for <= 1.8.2 compatibility, see substituting fields in header format version 2
-    unsigned char computername[64]; // (v1) ofs 32 len 64: bytes, incl. \0, name maybe truncated
-    unsigned char username[64];     // (v1) ofs 96 len 64: bytes, incl. \0, name maybe truncated
+// Struct for file header, used in saving and loading
+// when accessing fields of this structure always put a version check around them, e.g. "if version >= 2 then use ofsComputerName"
+struct _FILEHEADER {
+    char signature[12]; // ofs 0 len 12: never convert to Unicode, always use char type and SBCS/MBCS
+    DWORD nFHSize;      // (v2) ofs 12 len 4: size of file header incl. signature and header size field
 
-    SYSTEMTIME systemtime;  // ofs 160 len 16 bytes
+    DWORD ofsHKLM;      // ofs 16 len 4
+    DWORD ofsHKU;       // ofs 20 len 4
+    DWORD ofsHF;        // ofs 24 len 4: added in 1.8
+    DWORD reserved;     // ofs 28 len 4
 
-    // new since header version 2
-    DWORD fpos_computername;  // (v2) ofs 176 len 4
-    DWORD len_computername;   // (v2) ofs 180 len 4: length in bytes incl. \0
-    DWORD fpos_username;      // (v2) ofs 184 len 4
-    DWORD len_username;       // (v2) ofs 188 len 4: length in bytes incl. \0
-    DWORD fpos_locale;        // (v2) ofs 192 len 4
-    DWORD len_locale;         // (v2) ofs 196 len 4: length in bytes incl. \0
+    // next two fields are kept and filled for <= 1.8.2 compatibility, see substituting fields in file header format version 2
+    char computername[OLD_COMPUTERNAMELEN];  // ofs 32 len 64: DO NOT CHANGE, keep as SBCS/MBCS, name maybe truncated or missing NULL char
+    char username[OLD_COMPUTERNAMELEN];      // ofs 96 len 64: DO NOT CHANGE, keep as SBCS/MBCS, name maybe truncated or missing NULL char
 
-    // ^^^ here the file/hive header can be extended
-    // * increase the version number for the new header format
+    SYSTEMTIME systemtime;  // ofs 160 len 16
+
+    // extended values exist only since structure version 2
+    // new since file header version 2
+    DWORD nFHVersion;        // (v2) ofs 176 len 4: File header structure version
+    DWORD nCharSize;         // (v2) ofs 180 len 4: sizeof(TCHAR), allows to separate between SBCS/MBCS (1 for char) and Unicode (2 for UTF-16 WCHAR), may become 4 for UTF-32 in the future
+
+    DWORD nKCVersion;        // (v2) ofs 184 len 4: Key content structure version
+    DWORD nKCSize;           // (v2) ofs 188 len 4: Size of key content
+
+    DWORD nVCVersion;        // (v2) ofs 192 len 4: Value content structure version
+    DWORD nVCSize;           // (v2) ofs 196 len 4: Size of value content
+
+    DWORD nHFVersion;        // (v2) ofs 200 len 4: Head File structure version
+    DWORD nHFSize;           // (v2) ofs 204 len 4: Size of file content
+
+    DWORD nFCVersion;        // (v2) ofs 208 len 4: File content structure version
+    DWORD nFCSize;           // (v2) ofs 212 len 4: Size of file content
+
+    DWORD ofsComputerName;   // (v2) ofs 216 len 4
+    DWORD nComputerNameLen;  // (v2) ofs 220 len 4: length in chars incl. NULL char
+
+    DWORD ofsUserName;       // (v2) ofs 224 len 4
+    DWORD nUserNameLen;      // (v2) ofs 228 len 4: length in chars incl. NULL char
+
+    // ^^^ here the file header structure can be extended
+    // * increase the version number for the new file header format
     // * place a comment with a reference to the new version before the new fields
     // * check all usages and version checks
     // * remember that older versions can not use these additional data
 };
-typedef struct _HIVEHEADER HIVEHEADER, FAR *LPHIVEHEADER;
+typedef struct _FILEHEADER FILEHEADER, FAR *LPFILEHEADER;
 
-// Struct for shot,2012.
-struct _REGSHOT {
-    LPKEYCONTENT  lpheadlocalmachine;
-    LPKEYCONTENT  lpheadusers;
-    LPHEADFILE    lpheadfile;
-    LPBYTE        lptemphive;
-    unsigned char computername[COMPUTERNAMELEN]; //64
-    unsigned char username[COMPUTERNAMELEN];
-    SYSTEMTIME    systemtime;
-    BOOL          isloadfromhive;
-};
-typedef struct _REGSHOT REGSHOT, FAR *LPREGSHOT;
+#define FILEHEADER_VERSION_EMPTY 0
+#define FILEHEADER_VERSION_1 1
+#define FILEHEADER_VERSION_2 2
+#define FILEHEADER_VERSION_CURRENT FILEHEADER_VERSION_2
 
-// Struct for saving designed by maddes
-
+// Struct for reg key, used in saving and loading
+// when accessing fields of this structure always put a version check around them, e.g. "if version >= 2 then use nKeyNameLen"
 struct _SAVEKEYCONTENT {
-    DWORD  fpos_keyname;            // Pointer to key's name
-    DWORD  fpos_firstvalue;         // Pointer to key's first value
-    DWORD  fpos_firstsubkey;        // Pointer to key's first subkey
-    DWORD  fpos_brotherkey;         // Pointer to key's brother
-    DWORD  fpos_fatherkey;          // Pointer to key's father
-    DWORD  bkeymatch;               // Flag used at comparing, 1.8.2 <= is byte
+    DWORD ofsKeyName;      // Position of key's name
+    DWORD ofsFirstValue;   // Position of key's first value
+    DWORD ofsFirstSubKey;  // Position of key's first sub key
+    DWORD ofsBrotherKey;   // Position of key's brother key
+    DWORD ofsFatherKey;    // Position of key's father key
 
+    // extended values exist only since structure version 2
+    // new since key content version 2
+    DWORD nKeyNameLen;  // (v2) Length of key's name in chars incl. NULL char (up to 1.8.2 there a was single byte for internal bkeymatch field that was always zero)
+
+    // ^^^ here the key content structure can be extended
+    // * increase the version number for the new key content format
+    // * place a comment with a reference to the new version before the new fields
+    // * check all usages and version checks
+    // * remember that older versions can not use these additional data
 };
 typedef struct _SAVEKEYCONTENT SAVEKEYCONTENT, FAR *LPSAVEKEYCONTENT;
 
+#define KEYCONTENT_VERSION_EMPTY 0
+#define KEYCONTENT_VERSION_1 1
+#define KEYCONTENT_VERSION_2 2
+#define KEYCONTENT_VERSION_CURRENT KEYCONTENT_VERSION_2
 
-// Struct used for Windows Registry Value
+
+// Struct for reg value, used in saving and loading
+// when accessing fields of this structure always put a version check around them, e.g. "if version >= 2 then use nValueNameLen"
 struct _SAVEVALUECONTENT {
-    DWORD  typecode;                // Type of value [DWORD,STRING...]
-    DWORD  datasize;                // Value data size in bytes
-    DWORD  fpos_valuename;          // Pointer to value name
-    DWORD  fpos_valuedata;          // Pointer to value data
-    DWORD  fpos_nextvalue;          // Pointer to value's brother
-    DWORD  fpos_fatherkey;          // Pointer to value's father[Key]
-    DWORD  bvaluematch;             // Flag used at comparing, 1.8.2 <= is byte
+    DWORD typecode;         // Type of value [DWORD,STRING...]
+    DWORD datasize;         // Value data size in bytes
+    DWORD ofsValueName;     // Position of value's name
+    DWORD ofsValueData;     // Position of value's data
+    DWORD ofsBrotherValue;  // Position of value's brother value
+    DWORD ofsFatherKey;     // Position of value's father key
+
+    // extended values exist only since structure version 2
+    // new since value content version 2
+    DWORD nValueNameLen;  // (v2) Length of value's name in chars incl. NULL char (up to 1.8.2 there a was single byte for internal bkeymatch field that was always zero)
+
+    // ^^^ here the value content structure can be extended
+    // * increase the version number for the new value content format
+    // * place a comment with a reference to the new version before the new fields
+    // * check all usages and version checks
+    // * remember that older versions can not use these additional data
 };
 typedef struct _SAVEVALUECONTENT SAVEVALUECONTENT, FAR *LPSAVEVALUECONTENT;
 
+#define VALUECONTENT_VERSION_EMPTY 0
+#define VALUECONTENT_VERSION_1 1
+#define VALUECONTENT_VERSION_2 2
+#define VALUECONTENT_VERSION_CURRENT KEYCONTENT_VERSION_2
 
-// Struct used for Windows File System
+
+// Struct for dirs and files, used in saving and loading
+// when accessing fields of this structure always put a version check around them, e.g. "if version >= 2 then use nFileNameLen"
 struct _SAVEFILECONTENT {
-    DWORD  fpos_filename;            // Pointer to filename
-    DWORD  writetimelow;             // File write time [LOW  DWORD]
-    DWORD  writetimehigh;            // File write time [HIGH DWORD]
-    DWORD  filesizelow;              // File size [LOW  DWORD]
-    DWORD  filesizehigh;             // File size [HIGH DWORD]
-    DWORD  fileattr;                 // File attributes
-    DWORD  chksum;                   // File checksum  (planned for the future, currently not used)
-    DWORD  fpos_firstsubfile;        // Pointer to files[DIRS] first sub file
-    DWORD  fpos_brotherfile;         // Pointer to files[DIRS] brother
-    DWORD  fpos_fatherfile;          // Pointer to files father
+    DWORD ofsFileName;      // Position of file name
+    DWORD writetimelow;     // File write time [LOW  DWORD]
+    DWORD writetimehigh;    // File write time [HIGH DWORD]
+    DWORD filesizelow;      // File size [LOW  DWORD]
+    DWORD filesizehigh;     // File size [HIGH DWORD]
+    DWORD fileattr;         // File attributes
+    DWORD chksum;           // File checksum (planned for the future, currently not used)
+    DWORD ofsFirstSubFile;  // Position of file's first sub file
+    DWORD ofsBrotherFile;   // Position of file's brother file
+    DWORD ofsFatherFile;    // Position of file's father file
 
-    // new since file/hive header version 2
+    // extended values exist only since structure version 2
     // new since file content version 2
-    DWORD  version;                  // File content structure version
-    DWORD  len_filename;             // Length
+    DWORD nFileNameLen;  // (v2) Length of file's name in chars incl. NULL char (up to 1.8.2 there a was single byte for internal bkeymatch field that was always zero)
 
-    // ^^^ here the file content header can be extended
-    // * increase the version number for the new header format
+    // ^^^ here the file content structure can be extended
+    // * increase the version number for the new file content format
     // * place a comment with a reference to the new version before the new fields
     // * check all usages and version checks
     // * remember that older versions can not use these additional data
 };
 typedef struct _SAVEFILECONTENT SAVEFILECONTENT, FAR *LPSAVEFILECONTENT;
 
+#define FILECONTENT_VERSION_EMPTY 0
+#define FILECONTENT_VERSION_1 1
+#define FILECONTENT_VERSION_2 2
+#define FILECONTENT_VERSION_CURRENT KEYCONTENT_VERSION_2
+
 
 // Adjusted for filecontent saving. 1.8
 struct _SAVEHEADFILE {
-    DWORD  fpos_nextheadfile;       // Pointer to next headfile struc
-    DWORD  fpos_filecontent;        // Pointer to filecontent
+    DWORD ofsBrotherHeadFile;   // Position of head file's brother head file
+    DWORD ofsFirstFileContent;  // Position of head file's first file content
+
+    // extended values exist only since structure version 2
+
+    // ^^^ here the head file structure can be extended
+    // * increase the version number for the new head file format
+    // * place a comment with a reference to the new version before the new fields
+    // * check all usages and version checks
+    // * remember that older versions can not use these additional data
 };
 typedef struct  _SAVEHEADFILE SAVEHEADFILE, FAR *LPSAVEHEADFILE;
+
+#define HEADFILE_VERSION_EMPTY 0
+#define HEADFILE_VERSION_1 1
+#define HEADFILE_VERSION_CURRENT HEADFILE_VERSION_1
 
 
 // Pointers to compare result [see above]
@@ -323,8 +388,8 @@ DWORD   nSavingFile;
 DWORD   NBW;                // that is: NumberOfBytesWritten;
 
 
-LPREGSHOT lpShot1;
-LPREGSHOT lpShot2;
+extern REGSHOT Shot1;
+extern REGSHOT Shot2;
 // Pointers to Registry Key
 /*
 LPKEYCONTENT    lpHeadLocalMachine1;    // Pointer to HKEY_LOCAL_MACHINE 1
@@ -349,25 +414,23 @@ LPBYTE  lpValueData;
 LPBYTE  lpValueDataS;
 
 
-LPSTR   lpMESSAGE;
+#define REGSHOT_MESSAGE_LENGTH 256
+extern LPTSTR lpszMessage;
 LPSTR   lpExtDir;
-LPSTR   lpOutputpath;
-LPSTR   lpLastSaveDir;
-LPSTR   lpLastOpenDir;
-LPSTR   lpCurrentLanguage;
+LPTSTR  lpOutputpath;
+LPTSTR  lpLastSaveDir;
+LPTSTR  lpLastOpenDir;
+extern LPTSTR lpszLanguage;
 LPSTR   lpWindowsDirName;
 LPSTR   lpTempPath;
 LPSTR   lpStartDir;
 LPSTR   lpLanguageIni;  // For language.ini
-LPSTR   lpLangStrings;
 LPSTR   lpCurrentTranslator;
 LPSTR   lpRegshotIni;
 
-LPBYTE  lpRegSkipStrings;
-LPBYTE  lpFileSkipStrings;
-LPBYTE *lplpRegSkipStrings;
-LPBYTE *lplpFileSkipStrings;
-LPVOID  lplpLangStrings;
+LPTSTR *lplpRegSkipStrings;
+LPTSTR *lplpFileSkipStrings;
+extern LPTSTR lpgrszLangSection;
 //LPSTR REGSHOTDATFILE = "rgst152.dat";
 //LPSTR   lpProgramDir;   // tfx define
 //LPSTR   lpSnapKey;
@@ -402,54 +465,134 @@ BOOL            is1;                // Flag to determine is the 1st shot
 RECT            rect;               // Window RECT
 FILETIME        ftLastWrite;        // Filetime struct
 BROWSEINFO      BrowseInfo1;        // BrowseINFO struct
-OPENFILENAME    opfn;               // Openfilename struct
 BOOL            bUseLongRegHead;    // 1.8.1 for compatibility with 1.61e5 and undoreg1.46
 HANDLE          hHeap;              // 1.8.2
 
 VOID    LogToMem(DWORD actiontype, LPDWORD lpcount, LPVOID lp);
 BOOL    LoadSettingsFromIni(HWND hDlg);
 BOOL    SaveSettingsToIni(HWND hDlg);
-BOOL    IsInSkipList(LPSTR lpStr, LPBYTE *lpSkipList);
-VOID    UpdateCounters(LPBYTE title1, LPBYTE title2, DWORD count1, DWORD count2);
-LPBYTE  AtPos(LPBYTE lpMaster, LPBYTE lp, size_t size, size_t sizep);
-BOOL    GetLanguageType(HWND hDlg);
-VOID    GetDefaultStrings(VOID);
-VOID    PointToNewStrings(VOID);
-BOOL    GetLanguageStrings(HWND hDlg);
+BOOL    IsInSkipList(LPTSTR lpStr, LPTSTR *lpSkipList);
+VOID    UpdateCounters(LPTSTR lpszTitle1, LPTSTR lpszTitle2, DWORD nCount1, DWORD nCount2);
+LPTSTR  FindKeyInIniSection(LPTSTR lpgrszSection, LPTSTR lpszSearch, size_t cchSectionLen, size_t cchSearchLen);
+VOID    SetTextsToDefaultLanguage(VOID);
+VOID    LoadAvailableLanguagesFromIni(HWND hDlg);
+BOOL    GetSelectedLanguage(HWND hDlg);
+VOID    SetTextsToSelectedLanguage(HWND hDlg);
 VOID    CreateShotPopupMenu(VOID);
-VOID    UI_BeforeShot(DWORD id);
+VOID    UI_BeforeShot(DWORD nID);
 VOID    UI_AfterShot(VOID);
 VOID    UI_BeforeClear(VOID);
 VOID    UI_AfterClear(VOID);
 
-VOID    Shot(LPREGSHOT lpshot);
-BOOL    CompareShots(LPREGSHOT lpshot1, LPREGSHOT lpshot2);
-VOID    SaveHive(LPREGSHOT lpshot);
-BOOL    LoadHive(LPREGSHOT lpshot);
+VOID    Shot(LPREGSHOT lpShot);
+BOOL    CompareShots(LPREGSHOT lpShot1, LPREGSHOT lpShot2);
+VOID    SaveHive(LPREGSHOT lpShot);
+BOOL    LoadHive(LPREGSHOT lpShot);
 VOID    FreeAllCompareResults(void);
-VOID    FreeAllKeyContent(LPREGSHOT lpshot);
-VOID    FreeAllFileHead(LPHEADFILE lp);
-VOID    ClearKeyMatchTag(LPKEYCONTENT lpKey);
-VOID    GetRegistrySnap(HKEY hkey, LPKEYCONTENT lpFatherKeyContent);    // HWND hDlg, first para deleted in 1.8, return from void * to void
-VOID    GetFilesSnap(LPFILECONTENT lpFatherFile);                       // HWND hDlg, first para deleted in 1.8
+VOID    FreeShot(LPREGSHOT lpShot);
+VOID    FreeAllFileHead(LPHEADFILE lpHeadFile);
+VOID    ClearKeyMatchTag(LPKEYCONTENT lpKC);
+VOID    GetRegistrySnap(HKEY hRegKey, LPKEYCONTENT lpFatherKC);  // HWND hDlg, first para deleted in 1.8, return from void * to void
+VOID    GetFilesSnap(LPFILECONTENT lpFatherFC);                  // HWND hDlg, first para deleted in 1.8
 LPSTR   GetWholeFileName(LPFILECONTENT lpFileContent);
 VOID    InitProgressBar(VOID);
 VOID    CompareFirstSubFile(LPFILECONTENT lpHead1, LPFILECONTENT lpHead2);
 BOOL    ReplaceInValidFileName(LPSTR lpf);
 VOID    ErrMsg(LPCSTR note);
-VOID    WriteHead(u_char *lpstr, DWORD count, BOOL isHTML);
+VOID    WriteHead(LPTSTR lpstr, DWORD count, BOOL isHTML);
 VOID    WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor);
 VOID    WriteTitle(LPSTR lph, LPSTR lpb, BOOL isHTML);
-VOID    SaveFileContent(LPFILECONTENT lpFileContent, DWORD nFPCurrentFatherFile, DWORD nFPCaller);
 VOID    ClearHeadFileMatchTag(LPHEADFILE lpHF);
 VOID    FindDirChain(LPHEADFILE lpHF, LPSTR lpDir, size_t nMaxLen);
 BOOL    DirChainMatch(LPHEADFILE lphf1, LPHEADFILE lphf2);
 VOID    WriteHtmlbegin(void);
 VOID    WriteHtmlover(void);
 VOID    WriteHtmlbr(void);
-VOID    ReAlignFile(LPHEADFILE lpHF, size_t nBase);
 VOID    GetAllSubFile(BOOL needbrother, DWORD typedir, DWORD typefile, LPDWORD lpcountdir, LPDWORD lpcountfile, LPFILECONTENT lpFileContent);
-VOID    RebuildFromHive_filehead(LPSAVEHEADFILE lpSHF, LPHEADFILE lpHeadFile, LPBYTE lpHiveFileBase);
 LPFILECONTENT SearchDirChain(LPSTR lpname, LPHEADFILE lpHF);
+
+#define REGSHOT_BUFFER_BLOCK_BYTES 1024
+
+// List of all language strings
+// NEVER CHANGE THE ORDER, LEAVE OLD ENTRIES UNTOUCHED
+enum eLangTexts {
+    iszTextKey = 0,
+    iszTextValue,
+    iszTextDir,
+    iszTextFile,
+    iszTextTime,
+    iszTextKeyAdd,
+    iszTextKeyDel,
+    iszTextValAdd,
+    iszTextValDel,
+    iszTextValModi,
+    iszTextFileAdd,
+    iszTextFileDel,
+    iszTextFileModi,
+    iszTextDirAdd,
+    iszTextDirDel,
+    iszTextDirModi,
+    iszTextTotal,
+    iszTextComments,
+    iszTextDateTime,
+    iszTextComputer,
+    iszTextUsername,
+    iszTextAbout,
+    iszTextError,
+    iszTextErrorExecViewer,
+    iszTextErrorCreateFile,
+    iszTextErrorOpenFile,
+    iszTextErrorMoveFP,
+    //
+    iszTextButtonShot1,
+    iszTextButtonShot2,
+    iszTextButtonCompare,
+    iszTextButtonClear,
+    iszTextButtonQuit,
+    iszTextButtonAbout,
+    iszTextTextMonitor,
+    iszTextTextCompare,
+    iszTextTextOutput,
+    iszTextTextComment,
+    iszTextRadioPlain,
+    iszTextRadioHTML,
+    iszTextTextScan,
+    //
+    iszTextMenuShot,
+    iszTextMenuShotSave,
+    iszTextMenuShotLoad,
+    iszTextMenuClearAllShots,
+    iszTextMenuClearShot1,
+    iszTextMenuClearShot2,
+    // ATTENTION: add new language strings before this line, the last line is used to determine the count
+    cLangStrings
+};
+
+struct _LANGUAGETEXT {
+    LPTSTR lpString;
+    int nIDDlgItem;
+};
+typedef struct _LANGUAGETEXT LANGUAGETEXT, FAR *LPLANGUAGETEXT;
+
+extern LANGUAGETEXT asLangTexts[];
+
+extern FILEHEADER fileheader;
+extern LPBYTE lpFileBuffer;
+extern LPTSTR lpStringBuffer;
+extern size_t nStringBufferSize;
+extern size_t nSourceSize;
+
+extern char LOCALMACHINESTRING[];
+extern char LOCALMACHINESTRING_LONG[];
+extern char USERSSTRING[];
+extern char USERSSTRING_LONG[];
+
+#ifndef _UNICODE
+extern TCHAR szEmpty[];
+#endif
+
+size_t AdjustBuffer(PVOID *lpBuffer, size_t nCurrentSize, size_t nWantedSize, size_t nAlign);
+VOID SaveHeadFile(LPHEADFILE lpHF, DWORD nFPCaller);
+VOID LoadHeadFile(DWORD ofsHeadFile, LPHEADFILE *lplpCaller);
 
 #endif // REGSHOT_GLOBAL_H

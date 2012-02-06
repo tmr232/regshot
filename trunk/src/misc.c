@@ -20,15 +20,13 @@
 
 #include "global.h"
 
-extern LPBYTE lan_error;
-
 
 //-------------------------------------------------------------
 // Show error message
 //-------------------------------------------------------------
 VOID ErrMsg(LPCSTR note)
 {
-    MessageBox(hWnd, note, (LPCSTR)lan_error, MB_ICONHAND);
+    MessageBox(hWnd, note, asLangTexts[iszTextError].lpString, MB_ICONHAND);
 }
 
 
@@ -36,9 +34,7 @@ VOID ErrMsg(LPCSTR note)
 // Routine to debug
 //-------------------------------------------------------------
 #ifdef DEBUGLOG
-extern char *str_CR;
-extern u_char *lan_errorcreatefile;
-extern u_char *lan_errormovefp;
+extern char *szCRLF;
 
 VOID DebugLog(LPSTR filename, LPSTR lpstr, HWND hDlg, BOOL bisCR)
 {
@@ -47,20 +43,20 @@ VOID DebugLog(LPSTR filename, LPSTR lpstr, HWND hDlg, BOOL bisCR)
 
     hFile = CreateFile(filename, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
-        ErrMsg((LPCSTR)lan_errorcreatefile);
+        ErrMsg(asLangTexts[iszTextErrorCreateFile].lpString);
     } else {
         nPos = SetFilePointer(hFile, 0, NULL, FILE_END);
         if (nPos == 0xFFFFFFFF) {
-            ErrMsg((LPCSTR)lan_errormovefp);
+            ErrMsg(asLangTexts[iszTextErrorMoveFP].lpString);
         } else {
 
             length = strlen(lpstr);
             WriteFile(hFile, lpstr, length, &NBW, NULL);
             if (NBW != length) {
-                //ErrMsg(lan_errorwritefile);
+                //ErrMsg(asLangTexts[iszTextErrorWriteFile].lpString);
             }
             if (bisCR == TRUE) {
-                WriteFile(hFile, str_CR, sizeof(str_CR) - 1, &NBW, NULL);
+                WriteFile(hFile, szCRLF, sizeof(szCRLF) - 1, &NBW, NULL);
             }
         }
     }
@@ -94,50 +90,41 @@ BOOL ReplaceInValidFileName(LPSTR lpf)
 }
 
 
-//--------------------------------------------------
-// Find lp's position in lpMaster (like At(), but not limit to str)
-// add sizep :the size of lp, not using strlen
-//--------------------------------------------------
-LPBYTE AtPos(LPBYTE lpMaster, LPBYTE lp, size_t size, size_t sizep)
+// ----------------------------------------------------------------------
+// Find lpszSearch's position in lpgrszSection
+//
+// Functionality is similar to GetPrivateProfileString(), but return value is a
+// pointer inside a memory block with all strings (normally a section buffer),
+// which avoids handling multiple pointers individually.
+// The section buffer must not contain unnecessary whitespaces, comments,
+// empty lines, etc. Windows' GetPrivateProfileSection() already cares about this.
+// ----------------------------------------------------------------------
+LPTSTR FindKeyInIniSection(LPTSTR lpgrszSection, LPTSTR lpszSearch, size_t cchSectionLen, size_t cchSearchLen)
 {
-    DWORD   i, j;
-    //size_t  nsizelp;
-    //nsizelp = strlen(lp);
+    size_t i;
+    size_t nszSectionLen;
 
-    if (size <= sizep || sizep < 1) {
+    if ((NULL == lpgrszSection) || (NULL == lpszSearch) || (1 > cchSearchLen)) {
         return NULL;
     }
 
-    for (i = 0; i < size - sizep; i++) {
-        for (j = 0; j < sizep; j++) {
-            if (*(lp + j) != *(lpMaster + i + j)) {
-                break;
-            }
+    for (i = 0; i < cchSectionLen; i++) {
+        if (0 == lpgrszSection[i]) {  // reached the end of the section buffer
+            break;
         }
-        //_asm int 3;
-        if (j == sizep) {
-            return lpMaster + i + sizep;
+
+        nszSectionLen = _tcslen(&lpgrszSection[i]);
+        if (nszSectionLen <= cchSearchLen) {
+            i += nszSectionLen;  // skip this string as it is too short (or would result in an empty return string)
+            continue;
         }
+
+        if (0 == _tcsnccmp(&lpgrszSection[i], lpszSearch, cchSearchLen)) {
+            return &lpgrszSection[(i + cchSearchLen)];
+        }
+
+        i += nszSectionLen;  // skip this string as it does not match
     }
+
     return NULL;
-
 }
-
-
-//-------------------------------------------------------------
-// Once, I thought about using own memory allocation method
-//-------------------------------------------------------------
-/*LPVOID MyHeapAlloc(DWORD type, DWORD size)
-{
-    if ((bTurboMode == FALSE) && ((lpMyHeap + size) < (lpMyHeap + MYHEAPSIZE)))
-    {
-        lpMyHeap = lpMyHeap + size;
-        if (type == LPTR)
-            ZeroMemory(lpMyHeap,size);
-    }
-    else
-    {
-        lpMyHeap = GlobalAlloc(type,size);
-    }
-    return lpMyHeap;
-}*/
