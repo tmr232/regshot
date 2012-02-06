@@ -20,304 +20,236 @@
 
 #include "global.h"
 
-LPSTR   str_DefaultLanguage = "English";
-LPSTR   str_ItemTranslator  = "Translator";
-LPSTR   str_SectionCurrent  = "CURRENT";
-LPSTR   str_Original        = "[Original]";
+LANGUAGETEXT asLangTexts[cLangStrings];
 
-// This is the Pointer to Language Strings
-LPBYTE  lan_key;
-LPBYTE  lan_value;
-LPBYTE  lan_dir;
-LPBYTE  lan_file;
-LPBYTE  lan_time;
-LPBYTE  lan_keyadd;
-LPBYTE  lan_keydel;
-LPBYTE  lan_valadd;
-LPBYTE  lan_valdel;
-LPBYTE  lan_valmodi;
-LPBYTE  lan_fileadd;
-LPBYTE  lan_filedel;
-LPBYTE  lan_filemodi;
-LPBYTE  lan_diradd;
-LPBYTE  lan_dirdel;
-LPBYTE  lan_dirmodi;
-LPBYTE  lan_total;
-LPBYTE  lan_comments;
-LPBYTE  lan_datetime;
-LPBYTE  lan_computer;
-LPBYTE  lan_username;
-LPBYTE  lan_about;
-LPBYTE  lan_error;
-LPBYTE  lan_errorexecviewer;
-LPBYTE  lan_errorcreatefile;
-LPBYTE  lan_erroropenfile;
-LPBYTE  lan_errormovefp;
-LPBYTE  lan_menushot;
-LPBYTE  lan_menushotsave;
-LPBYTE  lan_menuload;
-LPBYTE  lan_menuclearallshots;
-LPBYTE  lan_menuclearshot1;
-LPBYTE  lan_menuclearshot2;
+LPTSTR szDefaultLanguage = TEXT("English");
+LPTSTR szItemTranslator  = TEXT("Translator=");
+LPTSTR szSectionCurrent  = TEXT("CURRENT");
+LPTSTR szOriginal        = TEXT("[Original]");
 
-// This is the dimension for MultiLanguage Default Strings[English]
-unsigned char lan_default[][22] = {
-    "Keys:",
-    "Values:",
-    "Dirs:",
-    "Files:",
-    "Time:",
-    "Keys added:",
-    "Keys deleted:",
-    "Values added:",
-    "Values deleted:",
-    "Values modified:",
-    "Files added:",
-    "Files deleted:",
-    "Files[attr]modified:",
-    "Folders added:",
-    "Folders deleted:",
-    "Folders[attr]changed:",
-    "Total changes:",
-    "Comments:",
-    "Datetime:",
-    "Computer:",
-    "Username:",
-    "About",
-    "Error",
-    "Error call ex-viewer",
-    "Error create file",
-    "Error open file",
-    "Error move fp",
-    "&1st shot",
-    "&2nd shot",
-    "C&ompare",
-    "&Clear",
-    "&Quit",
-    "&About",
-    "&Monitor",
-    "Compare logs save as:",
-    "Output path:",
-    "Add comment into log:",
-    "Plain &TXT",
-    "&HTML document",
-    "&Scan dir1[;dir2;...]",
-    "&Shot",
-    "Shot and Sa&ve...",
-    "Loa&d...",
-    "&Clear All",
-    "Clear &1st shot",
-    "Clear &2nd shot"
-};
+LPTSTR lpszLanguage;
+size_t cchMaxLanguageNameLen;
+
+LPTSTR lpgrszLangSection;
 
 
-//--------------------------------------------------
-// Get language types
-//--------------------------------------------------
-BOOL GetLanguageType(HWND hDlg)
+// ----------------------------------------------------------------------
+// Initialize text strings with English defaults
+// ----------------------------------------------------------------------
+VOID SetTextsToDefaultLanguage(VOID)
 {
-    LRESULT nReturn;
-    BOOL    bRet;
-    LPSTR   lp;
-    LPSTR   lpSectionNames = MYALLOC0(SIZEOF_LANGUAGE_SECTIONNAMES_BUFFER);
-    //LPSTR   lpCurrentLanguage = MYALLOC0(SIZEOF_SINGLE_LANGUAGENAME);
+    // Clear all structures (pointers, IDs, etc.)
+    ZeroMemory(asLangTexts, sizeof(asLangTexts));
 
+    // Set English default language strings
+    asLangTexts[iszTextKey].lpString               = TEXT("Keys:");
+    asLangTexts[iszTextValue].lpString             = TEXT("Values:");
+    asLangTexts[iszTextDir].lpString               = TEXT("Dirs:");
+    asLangTexts[iszTextFile].lpString              = TEXT("Files:");
+    asLangTexts[iszTextTime].lpString              = TEXT("Time:");
+    asLangTexts[iszTextKeyAdd].lpString            = TEXT("Keys added:");
+    asLangTexts[iszTextKeyDel].lpString            = TEXT("Keys deleted:");
+    asLangTexts[iszTextValAdd].lpString            = TEXT("Values added:");
+    asLangTexts[iszTextValDel].lpString            = TEXT("Values deleted:");
+    asLangTexts[iszTextValModi].lpString           = TEXT("Values modified:");
+    asLangTexts[iszTextFileAdd].lpString           = TEXT("Files added:");
+    asLangTexts[iszTextFileDel].lpString           = TEXT("Files deleted:");
+    asLangTexts[iszTextFileModi].lpString          = TEXT("Files [attributes?] modified:");
+    asLangTexts[iszTextDirAdd].lpString            = TEXT("Folders added:");
+    asLangTexts[iszTextDirDel].lpString            = TEXT("Folders deleted:");
+    asLangTexts[iszTextDirModi].lpString           = TEXT("Folders attributes changed:");
+    asLangTexts[iszTextTotal].lpString             = TEXT("Total changes:");
+    asLangTexts[iszTextComments].lpString          = TEXT("Comments:");
+    asLangTexts[iszTextDateTime].lpString          = TEXT("Datetime:");
+    asLangTexts[iszTextComputer].lpString          = TEXT("Computer:");
+    asLangTexts[iszTextUsername].lpString          = TEXT("Username:");
+    asLangTexts[iszTextAbout].lpString             = TEXT("About");
+    asLangTexts[iszTextError].lpString             = TEXT("Error");
+    asLangTexts[iszTextErrorExecViewer].lpString   = TEXT("Error call External Viewer!");
+    asLangTexts[iszTextErrorCreateFile].lpString   = TEXT("Error creating file!");
+    asLangTexts[iszTextErrorOpenFile].lpString     = TEXT("Error open file!");
+    asLangTexts[iszTextErrorMoveFP].lpString       = TEXT("Error move file pointer!");
 
-    nReturn = GetPrivateProfileSectionNames(lpSectionNames, SIZEOF_LANGUAGE_SECTIONNAMES_BUFFER, lpLanguageIni);
-    if (nReturn > 1) {
-        bRet = TRUE;
-        for (lp = lpSectionNames; *lp != 0; lp = lp + strlen(lp) + 1) {
-            if (_stricmp(lp, str_SectionCurrent) != 0) {
-                SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_ADDSTRING, (WPARAM)0, (LPARAM)lp);
+    asLangTexts[iszTextButtonShot1].lpString       = TEXT("&1st shot");
+    asLangTexts[iszTextButtonShot1].nIDDlgItem     = IDC_1STSHOT;
+
+    asLangTexts[iszTextButtonShot2].lpString       = TEXT("&2nd shot");
+    asLangTexts[iszTextButtonShot2].nIDDlgItem     = IDC_2NDSHOT;
+
+    asLangTexts[iszTextButtonCompare].lpString     = TEXT("C&ompare");
+    asLangTexts[iszTextButtonCompare].nIDDlgItem   = IDC_COMPARE;
+
+    asLangTexts[iszTextButtonClear].lpString       = TEXT("&Clear");
+    asLangTexts[iszTextButtonClear].nIDDlgItem     = IDC_CLEAR1;
+
+    asLangTexts[iszTextButtonQuit].lpString        = TEXT("&Quit");
+    asLangTexts[iszTextButtonQuit].nIDDlgItem      = IDC_CANCEL1;
+
+    asLangTexts[iszTextButtonAbout].lpString       = TEXT("&About");
+    asLangTexts[iszTextButtonAbout].nIDDlgItem     = IDC_ABOUT;
+
+    asLangTexts[iszTextTextMonitor].lpString       = TEXT("&Monitor..");
+    //asLangTexts[iszTextTextMonitor].nIDDlgItem     = IDC_MONITOR;
+
+    asLangTexts[iszTextTextCompare].lpString       = TEXT("Compare logs save as:");
+    asLangTexts[iszTextTextCompare].nIDDlgItem     = IDC_STATICSAVEFORMAT;
+
+    asLangTexts[iszTextTextOutput].lpString        = TEXT("Output path:");
+    asLangTexts[iszTextTextOutput].nIDDlgItem      = IDC_STATICOUTPUTPATH;
+
+    asLangTexts[iszTextTextComment].lpString       = TEXT("Add comment into the log:");
+    asLangTexts[iszTextTextComment].nIDDlgItem     = IDC_STATICADDCOMMENT;
+
+    asLangTexts[iszTextRadioPlain].lpString        = TEXT("Plain &TXT");
+    asLangTexts[iszTextRadioPlain].nIDDlgItem      = IDC_RADIO1;
+
+    asLangTexts[iszTextRadioHTML].lpString         = TEXT("&HTML document");
+    asLangTexts[iszTextRadioHTML].nIDDlgItem       = IDC_RADIO2;
+
+    asLangTexts[iszTextTextScan].lpString          = TEXT("&Scan dir1[;dir2;dir3;...;dir nn]:");
+    asLangTexts[iszTextTextScan].nIDDlgItem        = IDC_CHECKDIR;
+
+    asLangTexts[iszTextMenuShot].lpString          = TEXT("&Shot");
+    asLangTexts[iszTextMenuShotSave].lpString      = TEXT("Shot and Sa&ve...");
+    asLangTexts[iszTextMenuShotLoad].lpString      = TEXT("Loa&d...");
+    asLangTexts[iszTextMenuClearAllShots].lpString = TEXT("&Clear All");
+    asLangTexts[iszTextMenuClearShot1].lpString    = TEXT("Clear &1st shot");
+    asLangTexts[iszTextMenuClearShot2].lpString    = TEXT("Clear &2nd shot");
+
+    // Set translator too
+    lpCurrentTranslator = szOriginal;
+}
+
+// ----------------------------------------------------------------------
+// Get available languages from language ini and add to combo box
+// An English section in language ini will be ignored
+// ----------------------------------------------------------------------
+VOID LoadAvailableLanguagesFromIni(HWND hDlg)
+{
+    LRESULT nResult;
+    LPTSTR lpgrszSectionNames;
+    DWORD cchSectionNames;
+    size_t i;
+    size_t nLanguageNameLen;
+
+    // Always add default language to combo box and select it as default
+    nResult = SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_ADDSTRING, (WPARAM)0, (LPARAM)szDefaultLanguage);  // TODO: handle CB_ERR and CB_ERRSPACE
+    SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_SETCURSEL, (WPARAM)nResult, (LPARAM)0);
+    cchMaxLanguageNameLen = _tcslen(szDefaultLanguage);
+
+    // Get sections (=language names) from language ini
+    lpgrszSectionNames = MYALLOC0(MAX_INI_SECTION_CHARS * sizeof(TCHAR));
+    cchSectionNames = GetPrivateProfileSectionNames(lpgrszSectionNames, MAX_INI_SECTION_CHARS, lpLanguageIni);
+    if (1 < cchSectionNames) {
+        for (i = 0; i < cchSectionNames; i++) {
+            if (0 == lpgrszSectionNames[i]) {  // reached the end of the section names buffer
+                break;
             }
-        }
-        GetPrivateProfileString(str_SectionCurrent, str_SectionCurrent,
-                                str_DefaultLanguage, lpCurrentLanguage, 16, lpLanguageIni);
 
-        nReturn = SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_FINDSTRINGEXACT, (WPARAM)0, (LPARAM)lpCurrentLanguage);
-        if (nReturn != CB_ERR) {
-            bRet = TRUE;
-            SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_SETCURSEL, (WPARAM)nReturn, (LPARAM)0);
-        } else {
-            bRet = FALSE;
-        }
+            nLanguageNameLen = _tcslen(&lpgrszSectionNames[i]);
 
-    } else {
-        bRet = FALSE;
+            if ((0 != _tcsicmp(&lpgrszSectionNames[i], szSectionCurrent)) && (0 != _tcsicmp(&lpgrszSectionNames[i], szDefaultLanguage))) {
+                nResult = SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_ADDSTRING, (WPARAM)0, (LPARAM)&lpgrszSectionNames[i]);  // TODO: handle CB_ERR and CB_ERRSPACE
+                if (nLanguageNameLen > cchMaxLanguageNameLen) {
+                    cchMaxLanguageNameLen = nLanguageNameLen;
+                }
+            }
+
+            i += nLanguageNameLen;  // skip to next string
+        }
+    }
+    MYFREE(lpgrszSectionNames);
+
+    // Allocate memory for longest language name, and copy default language name to it
+    lpszLanguage = MYALLOC0((cchMaxLanguageNameLen + 1) * sizeof(TCHAR));
+    _tcscpy(lpszLanguage, szDefaultLanguage);
+}
+
+// ----------------------------------------------------------------------
+// Get selected language name and check if it is available
+// ----------------------------------------------------------------------
+BOOL GetSelectedLanguage(HWND hDlg)
+{
+    LPTSTR lpszSelectedLanguage;
+    DWORD cchLanguageName;
+    LRESULT nResult;
+
+    lpszSelectedLanguage = MYALLOC0((cchMaxLanguageNameLen + 1) * sizeof(TCHAR));
+    cchLanguageName = GetPrivateProfileString(szSectionCurrent, szSectionCurrent, NULL, lpszLanguage, (DWORD)(cchMaxLanguageNameLen + 1), lpLanguageIni);
+    if (1 < cchLanguageName) {
+        nResult = SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_FINDSTRINGEXACT, (WPARAM)0, (LPARAM)lpszLanguage);
+        if (CB_ERR != nResult) {
+            SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_SETCURSEL, (WPARAM)nResult, (LPARAM)0);
+            MYFREE(lpszSelectedLanguage);
+            return TRUE;
+        }
+    }
+    MYFREE(lpszSelectedLanguage);
+    return FALSE;
+}
+
+// ----------------------------------------------------------------------
+// Set text strings to selected language
+// ----------------------------------------------------------------------
+VOID SetTextsToSelectedLanguage(HWND hDlg)
+{
+    LRESULT nResult, nResult2;
+    DWORD cchSection;
+    int i;
+    LPTSTR lpszMatchValue;
+    TCHAR  szIniKey[17];
+
+    // Get language index from combo box
+    nResult = SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
+    if (CB_ERR == nResult) {
+        return;
     }
 
-    MYFREE(lpSectionNames);
-    //MYFREE(lpCurrentLanguage);
-    return bRet;
+    // Get language name of language index from combo box
+    nResult2 = SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_GETLBTEXTLEN, (WPARAM)nResult, (LPARAM)NULL);
+    if ((CB_ERR == nResult2) || ((size_t)nResult2 > cchMaxLanguageNameLen)) {
+        return;
+    }
+    nResult = SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_GETLBTEXT, (WPARAM)nResult, (LPARAM)lpszLanguage);
+    if (CB_ERR == nResult) {
+        return;
+    }
 
-}
+    // Write new language selection to language ini
+    WritePrivateProfileString(szSectionCurrent, szSectionCurrent, lpszLanguage, lpLanguageIni);
 
+    // Nothing more to do for default language
+    if (0 == _tcsicmp(lpszLanguage, szDefaultLanguage)) {
+        return;
+    }
 
-//--------------------------------------------------
-// Routines that show multi language
-//--------------------------------------------------
-VOID GetDefaultStrings(VOID)
-{
-    //_asm int 3
-    lan_key               = lan_default[0];
-    lan_value             = lan_default[1];
-    lan_dir               = lan_default[2];
-    lan_file              = lan_default[3];
-    lan_time              = lan_default[4];
-    lan_keyadd            = lan_default[5];
-    lan_keydel            = lan_default[6];
-    lan_valadd            = lan_default[7];
-    lan_valdel            = lan_default[8];
-    lan_valmodi           = lan_default[9];
-    lan_fileadd           = lan_default[10];
-    lan_filedel           = lan_default[11];
-    lan_filemodi          = lan_default[12];
-    lan_diradd            = lan_default[13];
-    lan_dirdel            = lan_default[14];
-    lan_dirmodi           = lan_default[15];
-    lan_total             = lan_default[16];
-    lan_comments          = lan_default[17];
-    lan_datetime          = lan_default[18];
-    lan_computer          = lan_default[19];
-    lan_username          = lan_default[20];
-    lan_about             = lan_default[21];
-    lan_error             = lan_default[22];
-    lan_errorexecviewer   = lan_default[23];
-    lan_errorcreatefile   = lan_default[24];
-    lan_erroropenfile     = lan_default[25];
-    lan_errormovefp       = lan_default[26];
-    lan_menushot          = lan_default[40];
-    lan_menushotsave      = lan_default[41];
-    lan_menuload          = lan_default[42];
-    lan_menuclearallshots = lan_default[43];
-    lan_menuclearshot1    = lan_default[44];
-    lan_menuclearshot2    = lan_default[45];
+    // Get ini section of language
+    if (NULL == lpgrszLangSection) {
+        lpgrszLangSection = MYALLOC0(MAX_INI_SECTION_CHARS * sizeof(TCHAR));
+    }
+    cchSection = GetPrivateProfileSection(lpszLanguage, lpgrszLangSection, MAX_INI_SECTION_CHARS, lpLanguageIni);
 
-}
-
-
-//--------------------------------------------------
-// Routines that show multi language
-//--------------------------------------------------
-VOID PointToNewStrings(VOID)
-{
-    //LPDWORD lp = ldwTempStrings;
-    LPBYTE *lp = (LPBYTE *)lplpLangStrings;
-
-    lan_key             = *lp;
-    lp++;
-    lan_value           = *lp;
-    lp++;
-    lan_dir             = *lp;
-    lp++;
-    lan_file            = *lp;
-    lp++;
-    lan_time            = *lp;
-    lp++;
-    lan_keyadd          = *lp;
-    lp++;
-    lan_keydel          = *lp;
-    lp++;
-    lan_valadd          = *lp;
-    lp++;
-    lan_valdel          = *lp;
-    lp++;
-    lan_valmodi         = *lp;
-    lp++;
-    lan_fileadd         = *lp;
-    lp++;
-    lan_filedel         = *lp;
-    lp++;
-    lan_filemodi        = *lp;
-    lp++;
-    lan_diradd          = *lp;
-    lp++;
-    lan_dirdel          = *lp;
-    lp++;
-    lan_dirmodi         = *lp;
-    lp++;
-    lan_total           = *lp;
-    lp++;
-    lan_comments        = *lp;
-    lp++;
-    lan_datetime        = *lp;
-    lp++;
-    lan_computer        = *lp;
-    lp++;
-    lan_username        = *lp;
-    lp++;
-    lan_about           = *lp;
-    lp++;
-    lan_error           = *lp;
-    lp++;
-    lan_errorexecviewer = *lp;
-    lp++;
-    lan_errorcreatefile = *lp;
-    lp++;
-    lan_erroropenfile   = *lp;
-    lp++;
-    lan_errormovefp     = *lp;
-    lp += 14;
-    lan_menushot        = *lp;
-    lp++;
-    lan_menushotsave    = *lp;
-    lp++;
-    lan_menuload        = *lp;
-    lp++;
-    lan_menuclearallshots = *lp;
-    lp++;
-    lan_menuclearshot1  = *lp;
-    lp++;
-    lan_menuclearshot2  = *lp;
-}
-
-
-//--------------------------------------------------
-// Routines that show multi language
-//--------------------------------------------------
-BOOL GetLanguageStrings(HWND hDlg)
-{
-    LRESULT nIndex;
-    DWORD   i;
-    BOOL    bRet;
-    LPBYTE  lpReturn;
-    //LPDWORD lp;
-    LPBYTE *lp;
-    char    lpIniKey[16];    // 1.8.2 LPSTR   lpIniKey = MYALLOC0(8);
-
-    nIndex = SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_GETCURSEL, (WPARAM)0, (LPARAM)0);
-    if (nIndex != CB_ERR) {
-
-        SendDlgItemMessage(hDlg, IDC_COMBOLANGUAGE, CB_GETLBTEXT, (WPARAM)nIndex, (LPARAM)lpCurrentLanguage);
-        WritePrivateProfileString(str_SectionCurrent, str_SectionCurrent, lpCurrentLanguage, lpLanguageIni);
-        ZeroMemory(lpLangStrings, SIZEOF_LANGSTRINGS);
-        GetPrivateProfileSection(lpCurrentLanguage, lpLangStrings, SIZEOF_LANGSTRINGS, lpLanguageIni);
-        for (i = 1, lp = (LPBYTE *)lplpLangStrings; i < 47; i++) {
-
-            sprintf(lpIniKey, "%u%s", i, "=");
-            // pointer returned was pointed to char just after "="
-            if ((lpReturn = AtPos((LPBYTE)lpLangStrings, (LPBYTE)lpIniKey, SIZEOF_LANGSTRINGS, strlen(lpIniKey))) != NULL) {
-                //_asm int 3;
-                //*(lp + i - 1) = (DWORD)lpReturn;
-                *(lp + i - 1) = lpReturn;
-            } else {
-                *(lp + i - 1) = lan_default[i - 1];
-            }
-
-            if (i >= 28 && i < 41 && i != 34) {
-                SetDlgItemText(hDlg, ID_BASE + 3 + i - 28, (LPSTR)(*(lp + i - 1)));
-            }
-
+    // Find language strings and assign if not empty
+    szIniKey[16] = 0;  // saftey NULL char
+    for (i = 0; i < cLangStrings; i++) {
+        _sntprintf(szIniKey, 16, TEXT("%u%s"), (i + 1), TEXT("="));
+        lpszMatchValue = FindKeyInIniSection(lpgrszLangSection, szIniKey, cchSection, _tcslen(szIniKey));
+        if (NULL != lpszMatchValue) {
+            // pointer returned points to char directly after equal char ("="), and is not empty
+            asLangTexts[i].lpString = lpszMatchValue;
         }
 
-        lpReturn = AtPos((LPBYTE)lpLangStrings, (LPBYTE)str_ItemTranslator, SIZEOF_LANGSTRINGS, strlen(str_ItemTranslator));
-        lpCurrentTranslator = (lpReturn != NULL) ? ((LPSTR)lpReturn + 1) : str_Original;
-        PointToNewStrings();
-        bRet = TRUE;
-    } else {
-        bRet = FALSE;
+        // Update gui text with language string if id provided
+        if (0 != asLangTexts[i].nIDDlgItem) {
+            SetDlgItemText(hDlg, asLangTexts[i].nIDDlgItem, asLangTexts[i].lpString);
+        }
     }
-    //MYFREE(lpCurrentLanguage);
-    //MYFREE(lpIniKey);
-    return bRet;
+
+    // Get translator's name
+    lpszMatchValue = FindKeyInIniSection(lpgrszLangSection, szItemTranslator, cchSection, _tcslen(szItemTranslator));
+    if (NULL != lpszMatchValue) {
+        lpCurrentTranslator = lpszMatchValue;
+    } else {
+        lpCurrentTranslator = szOriginal;
+    }
 }
