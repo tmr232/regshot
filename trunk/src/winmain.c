@@ -24,7 +24,7 @@
 #include "global.h"
 #include "version.h"
 
-char *str_prgname = REGSHOT_TITLE " " REGSHOT_VERSION_STRING;  // tfx  add program titile
+TCHAR *lpszProgramName = REGSHOT_TITLE " " REGSHOT_VERSION_STRING;  // tfx  add program titile
 char *str_aboutme = "Regshot is a free and open source registry compare utility.\nversion: " REGSHOT_VERSION_DESCRIPTION "\n\nhttp://sourceforge.net/projects/regshot/\n\n" REGSHOT_VERSION_COPYRIGHT "\n\n";
 
 LPTSTR REGSHOTINI          = TEXT("regshot.ini"); // tfx
@@ -409,7 +409,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     SetClassLongPtr(hWnd, GCLP_HICON, (LONG_PTR)LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MAINICON)));
 
-    SetWindowText(hWnd, str_prgname);  // tfx set program title to str_prgname to avoid edit resource file
+    SetWindowText(hWnd, lpszProgramName);  // tfx set program title to lpszProgramName to avoid edit resource file
     ShowWindow(hWnd, nCmdShow);
     UpdateWindow(hWnd);
     //SetPriorityClass(hInstance,31);

@@ -21,159 +21,179 @@
 
 #include "global.h"
 
-
-// Some strings used to write to HTML or TEXT file, need [] to use with sizeof()
-char szCRLF[]         = "\r\n"; // {0x0d,0x0a,0x00};
-char txt_line[]       = "\r\n----------------------------------\r\n";
-char htm_BR[]         = "<BR>";
-char htm_HTMLbegin[]  = "<HTML>\r\n";
-char htm_HTMLover[]   = "</HTML>";
-char htm_HEADbegin[]  = "<HEAD>\r\n";
-char htm_HEADover[]   = "</HEAD>\r\n";
-char htm_Td1Begin[]   = "<TR><TD BGCOLOR = 669999 ALIGN = LEFT><FONT COLOR = WHITE><B>";
-char htm_Td2Begin[]   = "<TR><TD NOWRAP><FONT COLOR = BLACK>";
-char htm_Td1Over[]    = "</B></FONT></TD></TR>\r\n";
-char htm_Td2Over[]    = "</FONT></TD></TR>\r\n";
+// Some strings used to write to HTML or TEXT file
+TCHAR szCRLF[]             = TEXT("\r\n");  // {0x0d,0x0a,0x00};
+TCHAR szTextLine[]         = TEXT("\r\n----------------------------------\r\n");
+TCHAR szHTML_BR[]          = TEXT("<BR>\r\n");
+TCHAR szHTMLBegin[]        = TEXT("<HTML>\r\n");
+TCHAR szHTMLEnd[]          = TEXT("</HTML>\r\n");
+TCHAR szHTMLHeadBegin[]    = TEXT("<HEAD>\r\n");
+TCHAR szHTML_CType[]       =
+#ifdef _UNICODE
+    TEXT("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-16\">\r\n");
+#else
+    TEXT("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">\r\n");
+#endif
+TCHAR szHTMLHeadEnd[]      = TEXT("</HEAD>\r\n");
+TCHAR szHTMLTd1Begin[]     = TEXT("<TR><TD BGCOLOR=\"#669999\" ALIGN=\"LEFT\"><FONT COLOR=\"WHITE\"><B>");
+TCHAR szHTMLTd1End[]       = TEXT("</B></FONT></TD></TR>\r\n");
+TCHAR szHTMLTd2Begin[]     = TEXT("<TR><TD NOWRAP><FONT COLOR=\"BLACK\">");
+TCHAR szHTMLTd2End[]       = TEXT("</FONT></TD></TR>\r\n");
 // color idea got from HANDLE(Youri) at wgapatcher.ru :) 1.8
-char htm_style[]      = "<STYLE TYPE = \"text/css\">td{font-family:\"Tahoma\";font-size:9pt}\
+TCHAR szHTML_CSS[]         = TEXT("<STYLE TYPE = \"text/css\">td{font-family:\"Tahoma\";font-size:9pt}\
 tr{font-size:9pt}body{font-size:9pt}\
-.o{background:#E0F0E0}.n{background:#FFFFFF}</STYLE>\r\n";  // 1.8.2 from e0e0e0 to e0f0e0 by Charles
-char htm_BodyBegin[]  = "<BODY BGCOLOR = FFFFFF TEXT = 000000 LINK = C8C8C8>\r\n";
-char htm_BodyOver[]   = "</BODY>\r\n";
-char htm_TableBegin[] = "<TABLE BORDER = 0 WIDTH = 480>\r\n";
-char htm_TableOver[]  = "</TABLE>\r\n";
-char htm_s1[]         = "<span class = o>";
-char htm_s2[]         = "<span class = n>";
-char htm_s3[]         = "</span>\r\n";
-//char htm_website[]    = "<FONT COLOR = C8C8C8>Bug reports to:<A HREF = \"http://sourceforge.net/projects/regshot/\">http://sourceforge.net/projects/regshot/</FONT></A>";
+.o{background:#E0F0E0}.n{background:#FFFFFF}</STYLE>\r\n");  // 1.8.2 from e0e0e0 to e0f0e0 by Charles
+TCHAR szHTMLBodyBegin[]    = TEXT("<BODY BGCOLOR=\"#FFFFFF\" TEXT=\"#000000\" LINK=\"#C8C8C8\">\r\n");
+TCHAR szHTMLBodyEnd[]      = TEXT("</BODY>\r\n");
+TCHAR szHTMLTableBegin[]   = TEXT("<TABLE BORDER=\"0\" WIDTH=\"480\">\r\n");
+TCHAR szHTMLTableEnd[]     = TEXT("</TABLE>\r\n");
+TCHAR szHTMLSpan1[]        = TEXT("<SPAN CLASS=\"o\">");
+TCHAR szHTMLSpan2[]        = TEXT("<SPAN CLASS=\"n\">");
+TCHAR szHTMLSpanEnd[]      = TEXT("</SPAN>");
+TCHAR szHTMLWebSiteBegin[] = TEXT("<FONT COLOR=\"#888888\">Created with <A HREF=\"http://sourceforge.net/projects/regshot/\">");
+TCHAR szHTMLWebSiteEnd[]   = TEXT("</A></FONT><BR>\r\n");
 
 
-//------------------------------------------------------------
-// Several routines to write to output file
-//------------------------------------------------------------
-VOID WriteHead(LPTSTR lpstr, DWORD count, BOOL isHTML)
+// ----------------------------------------------------------------------
+// Several routines to write to an output file
+// ----------------------------------------------------------------------
+
+// ----------------------------------------------------------------------
+VOID WriteTableHead(LPTSTR lpszText, DWORD nCount, BOOL fAsHTML)
 {
-    char lpcount[16];
-    sprintf(lpcount, "%u", count);
+    TCHAR szCount[17];
 
-    if (isHTML == TRUE) {
-        WriteFile(hFile, htm_BR, sizeof(htm_BR) - 1, &NBW, NULL);
-        WriteFile(hFile, htm_TableBegin, sizeof(htm_TableBegin) - 1, &NBW, NULL);
-        WriteFile(hFile, htm_Td1Begin, sizeof(htm_Td1Begin) - 1, &NBW, NULL);
+    szCount[16] = 0;
+    _sntprintf(szCount, 16, TEXT("%u"), nCount);
+
+    if (fAsHTML) {
+        WriteFile(hFile, szHTML_BR, (DWORD)(_tcslen(szHTML_BR) * sizeof(TCHAR)), &NBW, NULL);
+        WriteFile(hFile, szHTMLTableBegin, (DWORD)(_tcslen(szHTMLTableBegin) * sizeof(TCHAR)), &NBW, NULL);
+        WriteFile(hFile, szHTMLTd1Begin, (DWORD)(_tcslen(szHTMLTd1Begin) * sizeof(TCHAR)), &NBW, NULL);
     } else {
-        WriteFile(hFile, txt_line, sizeof(txt_line) - 1, &NBW, NULL);
+        WriteFile(hFile, szTextLine, (DWORD)(_tcslen(szTextLine) * sizeof(TCHAR)), &NBW, NULL);
     }
-    WriteFile(hFile, lpstr, (DWORD)strlen(lpstr), &NBW, NULL);
-    WriteFile(hFile, lpcount, (DWORD)strlen(lpcount), &NBW, NULL);
 
-    if (isHTML == TRUE) {
-        WriteFile(hFile, htm_Td1Over, sizeof(htm_Td1Over) - 1, &NBW, NULL);
-        WriteFile(hFile, htm_TableOver, sizeof(htm_TableOver) - 1, &NBW, NULL);
+    WriteFile(hFile, lpszText, (DWORD)(_tcslen(lpszText) * sizeof(TCHAR)), &NBW, NULL);
+    WriteFile(hFile, szCount, (DWORD)(_tcslen(szCount) * sizeof(TCHAR)), &NBW, NULL);
+
+    if (fAsHTML) {
+        WriteFile(hFile, szHTMLTd1End, (DWORD)(_tcslen(szHTMLTd1End) * sizeof(TCHAR)), &NBW, NULL);
+        WriteFile(hFile, szHTMLTableEnd, (DWORD)(_tcslen(szHTMLTableEnd) * sizeof(TCHAR)), &NBW, NULL);
     } else {
-        WriteFile(hFile, txt_line, sizeof(txt_line) - 1, &NBW, NULL);
+        WriteFile(hFile, szTextLine, (DWORD)(_tcslen(szTextLine) * sizeof(TCHAR)), &NBW, NULL);
     }
 }
 
-
-//------------------------------------------------------------
-VOID WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor)
+// ----------------------------------------------------------------------
+VOID WritePart(LPCOMRESULT lpComResultStart, BOOL fAsHTML, BOOL fUseColor)
 {
-    DWORD   i;
-    size_t  n;
-    size_t  nLen;
-    LPSTR   lpstr;
-    LPCOMRESULT lp;
+    size_t fColor;  // color flip-flop flag
+    size_t nCharsToWrite;
+    size_t nCharsToGo;
+    LPTSTR lpszResult;
+    LPCOMRESULT lpComResult;
 
-    if (isHTML) {
-        WriteFile(hFile, htm_TableBegin, sizeof(htm_TableBegin) - 1, &NBW, NULL);
-        WriteFile(hFile, htm_Td2Begin, sizeof(htm_Td2Begin) - 1, &NBW, NULL);
+    if (fAsHTML) {
+        WriteFile(hFile, szHTMLTableBegin, (DWORD)(_tcslen(szHTMLTableBegin) * sizeof(TCHAR)), &NBW, NULL);
+        WriteFile(hFile, szHTMLTd2Begin, (DWORD)(_tcslen(szHTMLTd2Begin) * sizeof(TCHAR)), &NBW, NULL);
     }
 
-    for (i = 0, lp = lpcomhead; lp != NULL; i++, lp = lp->lpnextresult) {
-        nLen = strlen(lp->lpresult);
-        lpstr = lp->lpresult;
-        if (isHTML) {
-            // 1.8.0
-            if (usecolor && i % 2 == 0) {
-                WriteFile(hFile, htm_s1, sizeof(htm_s1) - 1, &NBW, NULL);
+    fColor = 0;
+    for (lpComResult = lpComResultStart; NULL != lpComResult; lpComResult = lpComResult->lpnextresult) {
+        if (fAsHTML) {
+            // 1.8.0: zebra/flip-flop colors
+            if (fUseColor) {
+                if (0 == fColor) {
+                    WriteFile(hFile, szHTMLSpan1, (DWORD)(_tcslen(szHTMLSpan1) * sizeof(TCHAR)), &NBW, NULL);
+                } else {
+                    WriteFile(hFile, szHTMLSpan2, (DWORD)(_tcslen(szHTMLSpan2) * sizeof(TCHAR)), &NBW, NULL);
+                }
+                fColor = 1 - fColor;
+            }
+        }
+
+        lpszResult = lpComResult->lpresult;
+        for (nCharsToGo = _tcslen(lpszResult); 0 < nCharsToGo;) {
+            nCharsToWrite = nCharsToGo;
+            if (HTMLWRAPLENGTH < nCharsToWrite) {
+                nCharsToWrite = HTMLWRAPLENGTH;
+            }
+
+            WriteFile(hFile, lpszResult, (DWORD)(nCharsToWrite * sizeof(TCHAR)), &NBW, NULL);
+            lpszResult += nCharsToWrite;
+            nCharsToGo -= nCharsToWrite;
+
+            if (0 == nCharsToGo) {
+                break;  // skip newline
+            }
+
+            if (fAsHTML) {
+                WriteFile(hFile, szHTML_BR, (DWORD)(_tcslen(szHTML_BR) * sizeof(TCHAR)), &NBW, NULL);
             } else {
-                WriteFile(hFile, htm_s2, sizeof(htm_s2) - 1, &NBW, NULL);
+                WriteFile(hFile, szCRLF, (DWORD)(_tcslen(szCRLF) * sizeof(TCHAR)), &NBW, NULL);
             }
         }
 
-        for (n = 0; nLen > 0;) {
-            nLen < HTMLWRAPLENGTH ? (n = nLen) : (n = HTMLWRAPLENGTH);
-
-            WriteFile(hFile, lpstr, (DWORD)n, &NBW, NULL);
-            lpstr = lpstr + n;
-            nLen = nLen - n;
-            //WriteFile(hFile,lp->lpresult,strlen(lp->lpresult),&NBW,NULL);
-            if (isHTML) {
-                WriteFile(hFile, htm_BR, sizeof(htm_BR) - 1, &NBW, NULL);
+        if (fAsHTML) {
+            if (fUseColor) {
+                WriteFile(hFile, szHTMLSpanEnd, (DWORD)(_tcslen(szHTMLSpanEnd) * sizeof(TCHAR)), &NBW, NULL);
             }
-            //else
-            //    WriteFile(hFile,szCRLF,sizeof(szCRLF) - 1,&NBW,NULL);
-            // for some reason, txt doesn't wrap anymore since 1.50e, check below!
-        }
-
-        if (isHTML) {
-            if (usecolor) {
-                WriteFile(hFile, htm_s3, sizeof(htm_s3) - 1, &NBW, NULL);
-            }
+            WriteFile(hFile, szHTML_BR, (DWORD)(_tcslen(szHTML_BR) * sizeof(TCHAR)), &NBW, NULL);
         } else {
-            WriteFile(hFile, szCRLF, sizeof(szCRLF) - 1, &NBW, NULL); // this!
+            WriteFile(hFile, szCRLF, (DWORD)(_tcslen(szCRLF) * sizeof(TCHAR)), &NBW, NULL);
         }
-
-
     }
 
-    if (isHTML) {
-        WriteFile(hFile, htm_Td2Over, sizeof(htm_Td2Over) - 1, &NBW, NULL);
-        WriteFile(hFile, htm_TableOver, sizeof(htm_TableOver) - 1, &NBW, NULL);
+    if (fAsHTML) {
+        WriteFile(hFile, szHTMLTd2End, (DWORD)(_tcslen(szHTMLTd2End) * sizeof(TCHAR)), &NBW, NULL);
+        WriteFile(hFile, szHTMLTableEnd, (DWORD)(_tcslen(szHTMLTableEnd) * sizeof(TCHAR)), &NBW, NULL);
     }
-
 }
 
-
-//------------------------------------------------------------
-VOID WriteTitle(LPSTR lph, LPSTR lpb, BOOL isHTML)
+// ----------------------------------------------------------------------
+VOID WriteTitle(LPTSTR lpszTitle, LPTSTR lpszValue, BOOL fAsHTML)
 {
-    if (isHTML) {
-        WriteFile(hFile, htm_TableBegin, sizeof(htm_TableBegin) - 1, &NBW, NULL);
-        WriteFile(hFile, htm_Td1Begin, sizeof(htm_Td1Begin) - 1, &NBW, NULL);
+    if (fAsHTML) {
+        WriteFile(hFile, szHTMLTableBegin, (DWORD)(_tcslen(szHTMLTableBegin) * sizeof(TCHAR)), &NBW, NULL);
+        WriteFile(hFile, szHTMLTd1Begin, (DWORD)(_tcslen(szHTMLTd1Begin) * sizeof(TCHAR)), &NBW, NULL);
     }
-    WriteFile(hFile, lph, (DWORD)strlen(lph), &NBW, NULL);
-    WriteFile(hFile, lpb, (DWORD)strlen(lpb), &NBW, NULL);
 
-    if (isHTML) {
-        WriteFile(hFile, htm_Td1Over, sizeof(htm_Td1Over) - 1, &NBW, NULL);
-        WriteFile(hFile, htm_TableOver, sizeof(htm_TableOver) - 1, &NBW, NULL);
+    WriteFile(hFile, lpszTitle, (DWORD)(_tcslen(lpszTitle) * sizeof(TCHAR)), &NBW, NULL);
+    WriteFile(hFile, lpszValue, (DWORD)(_tcslen(lpszValue) * sizeof(TCHAR)), &NBW, NULL);
+
+    if (fAsHTML) {
+        WriteFile(hFile, szHTMLTd1End, (DWORD)(_tcslen(szHTMLTd1End) * sizeof(TCHAR)), &NBW, NULL);
+        WriteFile(hFile, szHTMLTableEnd, (DWORD)(_tcslen(szHTMLTableEnd) * sizeof(TCHAR)), &NBW, NULL);
     } else {
-        WriteFile(hFile, szCRLF, sizeof(szCRLF) - 1, &NBW, NULL);
+        WriteFile(hFile, szCRLF, (DWORD)(_tcslen(szCRLF) * sizeof(TCHAR)), &NBW, NULL);
     }
 }
 
-
-// 1.8.0
-VOID WriteHtmlbegin(void)
+// ----------------------------------------------------------------------
+VOID WriteHTMLBegin(void)
 {
-    WriteFile(hFile, htm_HTMLbegin, sizeof(htm_HTMLbegin) - 1, &NBW, NULL);
-    WriteFile(hFile, htm_HEADbegin, sizeof(htm_HEADbegin) - 1, &NBW, NULL);
-    WriteFile(hFile, htm_style, sizeof(htm_style) - 1, &NBW, NULL);
-    WriteFile(hFile, htm_HEADover, sizeof(htm_HEADover) - 1, &NBW, NULL);
-    WriteFile(hFile, htm_BodyBegin, sizeof(htm_BodyBegin) - 1, &NBW, NULL);
+    WriteFile(hFile, szHTMLBegin, (DWORD)(_tcslen(szHTMLBegin) * sizeof(TCHAR)), &NBW, NULL);
+    WriteFile(hFile, szHTMLHeadBegin, (DWORD)(_tcslen(szHTMLHeadBegin) * sizeof(TCHAR)), &NBW, NULL);
+    WriteFile(hFile, szHTML_CType, (DWORD)(_tcslen(szHTML_CType) * sizeof(TCHAR)), &NBW, NULL);
+    WriteFile(hFile, szHTML_CSS, (DWORD)(_tcslen(szHTML_CSS) * sizeof(TCHAR)), &NBW, NULL);
+    WriteFile(hFile, szHTMLHeadEnd, (DWORD)(_tcslen(szHTMLHeadEnd) * sizeof(TCHAR)), &NBW, NULL);
+    WriteFile(hFile, szHTMLBodyBegin, (DWORD)(_tcslen(szHTMLBodyBegin) * sizeof(TCHAR)), &NBW, NULL);
+
+    WriteFile(hFile, szHTMLWebSiteBegin, (DWORD)(_tcslen(szHTMLWebSiteBegin) * sizeof(TCHAR)), &NBW, NULL);
+    WriteFile(hFile, lpszProgramName, (DWORD)(_tcslen(lpszProgramName) * sizeof(TCHAR)), &NBW, NULL);
+    WriteFile(hFile, szHTMLWebSiteEnd, (DWORD)(_tcslen(szHTMLWebSiteEnd) * sizeof(TCHAR)), &NBW, NULL);
 }
 
-
-VOID WriteHtmlover(void)
+// ----------------------------------------------------------------------
+VOID WriteHTMLEnd(void)
 {
-    //WriteFile(hFile,htm_website,sizeof(htm_website) - 1,&NBW,NULL); // omit at 1.8
-    WriteFile(hFile, htm_BodyOver, sizeof(htm_BodyOver) - 1, &NBW, NULL);
-    WriteFile(hFile, htm_HTMLover, sizeof(htm_HTMLover) - 1, &NBW, NULL);
+    WriteFile(hFile, szHTMLBodyEnd, (DWORD)(_tcslen(szHTMLBodyEnd) * sizeof(TCHAR)), &NBW, NULL);
+    WriteFile(hFile, szHTMLEnd, (DWORD)(_tcslen(szHTMLEnd) * sizeof(TCHAR)), &NBW, NULL);
 }
 
-
-VOID WriteHtmlbr(void)
+// ----------------------------------------------------------------------
+VOID WriteHTML_BR(void)
 {
-    WriteFile(hFile, htm_BR, sizeof(htm_BR) - 1, &NBW, NULL);
+    WriteFile(hFile, szHTML_BR, (DWORD)(_tcslen(szHTML_BR) * sizeof(TCHAR)), &NBW, NULL);
 }

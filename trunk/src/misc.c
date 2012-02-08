@@ -34,8 +34,6 @@ VOID ErrMsg(LPCSTR note)
 // Routine to debug
 //-------------------------------------------------------------
 #ifdef DEBUGLOG
-extern char *szCRLF;
-
 VOID DebugLog(LPSTR filename, LPSTR lpstr, HWND hDlg, BOOL bisCR)
 {
     DWORD   length;
@@ -56,7 +54,7 @@ VOID DebugLog(LPSTR filename, LPSTR lpstr, HWND hDlg, BOOL bisCR)
                 //ErrMsg(asLangTexts[iszTextErrorWriteFile].lpString);
             }
             if (bisCR == TRUE) {
-                WriteFile(hFile, szCRLF, sizeof(szCRLF) - 1, &NBW, NULL);
+                WriteFile(hFile, szCRLF, (DWORD)(_tcslen(szCRLF) * sizeof(TCHAR)), &NBW, NULL);
             }
         }
     }

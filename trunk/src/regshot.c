@@ -59,9 +59,6 @@ size_t nSourceSize;
 #define MAX_SIGNATURE_LENGTH 12
 #define REGSHOT_READ_BLOCK_SIZE 8192
 
-extern char *str_prgname;   // be careful of extern ref! Must be the same when declaring them, otherwise pointer will mis-point!
-extern char szCRLF[];
-
 
 //-------------------------------------------------------------
 // Routine to get whole key name from KEYCONTENT
@@ -593,7 +590,7 @@ VOID *CompareFirstSubKey(LPKEYCONTENT lpHeadKC1, LPKEYCONTENT lpHeadKC2)
 //------------------------------------------------------------
 BOOL CompareShots(LPREGSHOT lpShot1, LPREGSHOT lpShot2)
 {
-    BOOL    isHTML;
+    BOOL    fAsHTML;
     BOOL    bshot2isnewer;
     //BOOL    bSaveWithCommentName;
     LPSTR   lpstrcomp;
@@ -671,10 +668,10 @@ BOOL CompareShots(LPREGSHOT lpShot1, LPREGSHOT lpShot2)
     SendDlgItemMessage(hWnd, IDC_PBCOMPARE, PBM_SETPOS, (WPARAM)MAXPBPOSITION, (LPARAM)0);
 
     if (SendMessage(GetDlgItem(hWnd, IDC_RADIO1), BM_GETCHECK, (WPARAM)0, (LPARAM)0) == 1) {
-        isHTML = FALSE;
+        fAsHTML = FALSE;
         lpExt = ".txt";
     } else {
-        isHTML = TRUE;
+        fAsHTML = TRUE;
         lpExt = ".htm";
     }
 
@@ -729,16 +726,16 @@ BOOL CompareShots(LPREGSHOT lpShot1, LPREGSHOT lpShot2)
 
     }
 
-    if (isHTML == TRUE) {
-        WriteHtmlbegin();
+    if (fAsHTML == TRUE) {
+        WriteHTMLBegin();
+    } else {
+        WriteFile(hFile, lpszProgramName, (DWORD)(_tcslen(lpszProgramName) * sizeof(TCHAR)), &NBW, NULL);
+        WriteFile(hFile, szCRLF, (DWORD)(_tcslen(szCRLF) * sizeof(TCHAR)), &NBW, NULL);
     }
-
-    WriteFile(hFile, str_prgname, (DWORD)strlen(str_prgname), &NBW, NULL);
-    WriteFile(hFile, szCRLF, (DWORD)strlen(szCRLF), &NBW, NULL);
 
     //_asm int 3;
     GetDlgItemText(hWnd, IDC_EDITCOMMENT, lpstrcomp, COMMENTLENGTH);
-    WriteTitle(asLangTexts[iszTextComments].lpString, lpstrcomp, isHTML);
+    WriteTitle(asLangTexts[iszTextComments].lpString, lpstrcomp, fAsHTML);
 
 
     sprintf(lpstrcomp, "%d%s%d%s%d %02d%s%02d%s%02d %s %d%s%d%s%d %02d%s%02d%s%02d",
@@ -757,7 +754,7 @@ BOOL CompareShots(LPREGSHOT lpShot1, LPREGSHOT lpShot2)
 
            );
 
-    WriteTitle(asLangTexts[iszTextDateTime].lpString, lpstrcomp, isHTML);
+    WriteTitle(asLangTexts[iszTextDateTime].lpString, lpstrcomp, fAsHTML);
 
 
     *lpstrcomp = 0x00;    //ZeroMemory(lpstrcomp,buffersize);
@@ -769,7 +766,7 @@ BOOL CompareShots(LPREGSHOT lpShot1, LPREGSHOT lpShot2)
     if (NULL != lpShot2->computername) {
         strcat(lpstrcomp, lpShot2->computername);
     }
-    WriteTitle(asLangTexts[iszTextComputer].lpString, lpstrcomp, isHTML);
+    WriteTitle(asLangTexts[iszTextComputer].lpString, lpstrcomp, fAsHTML);
 
     *lpstrcomp = 0x00;    //ZeroMemory(lpstrcomp,buffersize);
 
@@ -781,73 +778,73 @@ BOOL CompareShots(LPREGSHOT lpShot1, LPREGSHOT lpShot2)
         strcat(lpstrcomp, lpShot2->username);
     }
 
-    WriteTitle(asLangTexts[iszTextUsername].lpString, lpstrcomp, isHTML);
+    WriteTitle(asLangTexts[iszTextUsername].lpString, lpstrcomp, fAsHTML);
 
     MYFREE(lpstrcomp);
 
     // Write keydel part
     if (nKEYDEL != 0) {
-        WriteHead(asLangTexts[iszTextKeyDel].lpString, nKEYDEL, isHTML);
-        WritePart(lpKEYDELHEAD, isHTML, FALSE);
+        WriteTableHead(asLangTexts[iszTextKeyDel].lpString, nKEYDEL, fAsHTML);
+        WritePart(lpKEYDELHEAD, fAsHTML, FALSE);
     }
     // Write keyadd part
     if (nKEYADD != 0) {
-        WriteHead(asLangTexts[iszTextKeyAdd].lpString, nKEYADD, isHTML);
-        WritePart(lpKEYADDHEAD, isHTML, FALSE);
+        WriteTableHead(asLangTexts[iszTextKeyAdd].lpString, nKEYADD, fAsHTML);
+        WritePart(lpKEYADDHEAD, fAsHTML, FALSE);
     }
     // Write valdel part
     if (nVALDEL != 0) {
-        WriteHead(asLangTexts[iszTextValDel].lpString, nVALDEL, isHTML);
-        WritePart(lpVALDELHEAD, isHTML, FALSE);
+        WriteTableHead(asLangTexts[iszTextValDel].lpString, nVALDEL, fAsHTML);
+        WritePart(lpVALDELHEAD, fAsHTML, FALSE);
     }
     // Write valadd part
     if (nVALADD != 0) {
-        WriteHead(asLangTexts[iszTextValAdd].lpString, nVALADD, isHTML);
-        WritePart(lpVALADDHEAD, isHTML, FALSE);
+        WriteTableHead(asLangTexts[iszTextValAdd].lpString, nVALADD, fAsHTML);
+        WritePart(lpVALADDHEAD, fAsHTML, FALSE);
     }
     // Write valmodi part
     if (nVALMODI != 0) {
-        WriteHead(asLangTexts[iszTextValModi].lpString, nVALMODI, isHTML);
-        WritePart(lpVALMODIHEAD, isHTML, TRUE);
+        WriteTableHead(asLangTexts[iszTextValModi].lpString, nVALMODI, fAsHTML);
+        WritePart(lpVALMODIHEAD, fAsHTML, TRUE);
     }
     // Write file add part
     if (nFILEADD != 0) {
-        WriteHead(asLangTexts[iszTextFileAdd].lpString, nFILEADD, isHTML);
-        WritePart(lpFILEADDHEAD, isHTML, FALSE);
+        WriteTableHead(asLangTexts[iszTextFileAdd].lpString, nFILEADD, fAsHTML);
+        WritePart(lpFILEADDHEAD, fAsHTML, FALSE);
     }
     // Write file del part
     if (nFILEDEL != 0) {
-        WriteHead(asLangTexts[iszTextFileDel].lpString, nFILEDEL, isHTML);
-        WritePart(lpFILEDELHEAD, isHTML, FALSE);
+        WriteTableHead(asLangTexts[iszTextFileDel].lpString, nFILEDEL, fAsHTML);
+        WritePart(lpFILEDELHEAD, fAsHTML, FALSE);
     }
     // Write file modi part
     if (nFILEMODI != 0) {
-        WriteHead(asLangTexts[iszTextFileModi].lpString, nFILEMODI, isHTML);
-        WritePart(lpFILEMODIHEAD, isHTML, FALSE);
+        WriteTableHead(asLangTexts[iszTextFileModi].lpString, nFILEMODI, fAsHTML);
+        WritePart(lpFILEMODIHEAD, fAsHTML, FALSE);
     }
     // Write directory add part
     if (nDIRADD != 0) {
-        WriteHead(asLangTexts[iszTextDirAdd].lpString, nDIRADD, isHTML);
-        WritePart(lpDIRADDHEAD, isHTML, FALSE);
+        WriteTableHead(asLangTexts[iszTextDirAdd].lpString, nDIRADD, fAsHTML);
+        WritePart(lpDIRADDHEAD, fAsHTML, FALSE);
     }
     // Write directory del part
     if (nDIRDEL != 0) {
-        WriteHead(asLangTexts[iszTextDirDel].lpString, nDIRDEL, isHTML);
-        WritePart(lpDIRDELHEAD, isHTML, FALSE);
+        WriteTableHead(asLangTexts[iszTextDirDel].lpString, nDIRDEL, fAsHTML);
+        WritePart(lpDIRDELHEAD, fAsHTML, FALSE);
     }
     // Write directory modi part
     if (nDIRMODI != 0) {
-        WriteHead(asLangTexts[iszTextDirModi].lpString, nDIRMODI, isHTML);
-        WritePart(lpDIRMODIHEAD, isHTML, FALSE);
+        WriteTableHead(asLangTexts[iszTextDirModi].lpString, nDIRMODI, fAsHTML);
+        WritePart(lpDIRMODIHEAD, fAsHTML, FALSE);
     }
 
     nTotal = nKEYADD + nKEYDEL + nVALADD + nVALDEL + nVALMODI + nFILEADD + nFILEDEL  + nFILEMODI + nDIRADD + nDIRDEL + nDIRMODI;
-    if (isHTML == TRUE) {
-        WriteHtmlbr();
+    if (fAsHTML == TRUE) {
+        WriteHTML_BR();
     }
-    WriteHead(asLangTexts[iszTextTotal].lpString, nTotal, isHTML);
-    if (isHTML == TRUE) {
-        WriteHtmlover();
+    WriteTableHead(asLangTexts[iszTextTotal].lpString, nTotal, fAsHTML);
+    if (fAsHTML == TRUE) {
+        WriteHTMLEnd();
     }
 
 
