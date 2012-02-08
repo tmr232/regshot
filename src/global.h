@@ -87,7 +87,7 @@ typedef long LONG_PTR;
 #define REFRESHINTERVAL 110          // Define progress refresh rate
 #define MAXPBPOSITION   100          // Define progress bar length
 #define COMMENTLENGTH   50           // Define commentfield length on the MainForm
-#define HTMLWRAPLENGTH  1000         // Define html out put wrap length
+#define HTMLWRAPLENGTH  1000         // Define html output wrap length
 #define MAXAMOUNTOFFILE 10000        // Define out put file counts
 #define EXTDIRLEN       MAX_PATH * 4 // Define searching directory field length
 #define OLD_COMPUTERNAMELEN 64       // Define COMPUTER name length, do not change
@@ -499,15 +499,15 @@ VOID    InitProgressBar(VOID);
 VOID    CompareFirstSubFile(LPFILECONTENT lpHead1, LPFILECONTENT lpHead2);
 BOOL    ReplaceInValidFileName(LPSTR lpf);
 VOID    ErrMsg(LPCSTR note);
-VOID    WriteHead(LPTSTR lpstr, DWORD count, BOOL isHTML);
-VOID    WritePart(LPCOMRESULT lpcomhead, BOOL isHTML, BOOL usecolor);
-VOID    WriteTitle(LPSTR lph, LPSTR lpb, BOOL isHTML);
+VOID    WriteTableHead(LPTSTR lpszText, DWORD nCount, BOOL fAsHTML);
+VOID    WritePart(LPCOMRESULT lpComResultStart, BOOL fAsHTML, BOOL fUseColor);
+VOID    WriteTitle(LPTSTR lpszTitle, LPTSTR lpszValue, BOOL fAsHTML);
+VOID    WriteHTMLBegin(void);
+VOID    WriteHTMLEnd(void);
+VOID    WriteHTML_BR(void);
 VOID    ClearHeadFileMatchTag(LPHEADFILE lpHF);
 VOID    FindDirChain(LPHEADFILE lpHF, LPSTR lpDir, size_t nMaxLen);
 BOOL    DirChainMatch(LPHEADFILE lphf1, LPHEADFILE lphf2);
-VOID    WriteHtmlbegin(void);
-VOID    WriteHtmlover(void);
-VOID    WriteHtmlbr(void);
 VOID    GetAllSubFile(BOOL needbrother, DWORD typedir, DWORD typefile, LPDWORD lpcountdir, LPDWORD lpcountfile, LPFILECONTENT lpFileContent);
 LPFILECONTENT SearchDirChain(LPSTR lpname, LPHEADFILE lpHF);
 
@@ -586,6 +586,10 @@ extern char LOCALMACHINESTRING[];
 extern char LOCALMACHINESTRING_LONG[];
 extern char USERSSTRING[];
 extern char USERSSTRING_LONG[];
+
+extern TCHAR szCRLF[];
+
+extern TCHAR *lpszProgramName;
 
 #ifndef _UNICODE
 extern TCHAR szEmpty[];
