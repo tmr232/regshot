@@ -690,7 +690,7 @@ BOOL CompareShots(LPREGSHOT lpShot1, LPREGSHOT lpShot2)
     strcpy(lpDestFileName, lpOutputpath);
 
     //bSaveWithCommentName = TRUE;
-    if (ReplaceInValidFileName(lpstrcomp)) {
+    if (ReplaceInvalidFileNameChars(lpstrcomp)) {
         strcat(lpDestFileName, lpstrcomp);
     } else {
         strcat(lpDestFileName, szDefResPre);
@@ -959,6 +959,10 @@ VOID GetRegistrySnap(HKEY hRegKey, LPKEYCONTENT lpFatherKC)
     LPKEYCONTENT    lpKCLast;
     LPVALUECONTENT  lpVCLast;
 
+#ifdef DEBUGLOG
+    LPTSTR lpszDebugMsg;
+#endif
+
     lpKCLast = NULL;
     lpVCLast = NULL;
 
@@ -1010,8 +1014,8 @@ VOID GetRegistrySnap(HKEY hRegKey, LPKEYCONTENT lpFatherKC)
         }
 
 #ifdef DEBUGLOG
-        DebugLog("debug_trytogetvalue.log", "trying:", hWnd, FALSE);
-        DebugLog("debug_trytogetvalue.log", lpValueName, hWnd, TRUE);
+        DebugLog(szDebugTryToGetValueLog, TEXT("trying: "), FALSE);
+        DebugLog(szDebugTryToGetValueLog, lpValueName, TRUE);
 #endif
 
         lpVC = MYALLOC0(sizeof(VALUECONTENT));
@@ -1037,15 +1041,19 @@ VOID GetRegistrySnap(HKEY hRegKey, LPKEYCONTENT lpFatherKC)
         nGettingValue++;
 
 #ifdef DEBUGLOG
-        lstrdb1 = MYALLOC0(100);
-        sprintf(lstrdb1, "LGVN:%08d LGVD:%08d VN:%08d VD:%08d", LengthOfLongestValueName, LengthOfLongestValueData, LengthOfValueName, LengthOfValueData);
-        DebugLog("debug_valuenamedata.log", lstrdb1, hWnd, TRUE);
-        DebugLog("debug_valuenamedata.log", GetWholeValueName(lpVC), hWnd, FALSE);
-        DebugLog("debug_valuenamedata.log", GetWholeValueData(lpVC), hWnd, TRUE);
-        //DebugLog("debug_valuenamedata.log",":",hWnd,FALSE);
-        //DebugLog("debug_valuenamedata.log",lpValueData,hWnd,TRUE);
-        MYFREE(lstrdb1);
+        lpszDebugMsg = MYALLOC0((REGSHOT_DEBUG_MESSAGE_LENGTH + 1) * sizeof(TCHAR));
+        lpszDebugMsg[REGSHOT_DEBUG_MESSAGE_LENGTH] = 0;  // safety NULL char
+        _sntprintf(lpszDebugMsg, REGSHOT_DEBUG_MESSAGE_LENGTH, TEXT("LGVN:%08d LGVD:%08d VN:%08d VD:%08d"), LengthOfLongestValueName, LengthOfLongestValueData, LengthOfValueName, LengthOfValueData);
+        DebugLog(szDebugValueNameDataLog, lpszDebugMsg, TRUE);
+        MYFREE(lpszDebugMsg);
 
+        lpszDebugMsg = GetWholeValueName(lpVC);
+        DebugLog(szDebugValueNameDataLog, lpszDebugMsg, FALSE);
+        MYFREE(lpszDebugMsg);
+
+        lpszDebugMsg = GetWholeValueData(lpVC);
+        DebugLog(szDebugValueNameDataLog, lpszDebugMsg, TRUE);
+        MYFREE(lpszDebugMsg);
 #endif
     }
 
@@ -1078,15 +1086,17 @@ VOID GetRegistrySnap(HKEY hRegKey, LPKEYCONTENT lpFatherKC)
         lpKC->lpKeyName = MYALLOC(strlen(lpKeyName) + 1);
         strcpy(lpKC->lpKeyName, lpKeyName);
         lpKC->lpFatherKC = lpFatherKC;
-        //DebugLog("debug_getkey.log",lpKeyName,hWnd,TRUE);
 
 #ifdef DEBUGLOG
-        lstrdb1 = MYALLOC0(100);
-        sprintf(lstrdb1, "LGKN:%08d KN:%08d", LengthOfLongestSubkeyName, LengthOfKeyName);
-        DebugLog("debug_key.log", lstrdb1, hWnd, TRUE);
-        DebugLog("debug_key.log", GetWholeKeyName(lpKC), hWnd, TRUE);
-        MYFREE(lstrdb1);
+        lpszDebugMsg = MYALLOC0((REGSHOT_DEBUG_MESSAGE_LENGTH + 1) * sizeof(TCHAR));
+        lpszDebugMsg[REGSHOT_DEBUG_MESSAGE_LENGTH] = 0;  // safety NULL char
+        _sntprintf(lpszDebugMsg, REGSHOT_DEBUG_MESSAGE_LENGTH, TEXT("LGKN:%08d KN:%08d"), LengthOfLongestSubkeyName, LengthOfKeyName);
+        DebugLog(szDebugKeyLog, lpszDebugMsg, TRUE);
+        MYFREE(lpszDebugMsg);
 
+        lpszDebugMsg = GetWholeKeyName(lpKC);
+        DebugLog(szDebugKeyLog, lpszDebugMsg, TRUE);
+        MYFREE(lpszDebugMsg);
 #endif
 
         nGettingKey++;
