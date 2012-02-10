@@ -21,70 +21,91 @@
 #include "global.h"
 
 
-//-------------------------------------------------------------
+// ----------------------------------------------------------------------
 // Show error message
-//-------------------------------------------------------------
-VOID ErrMsg(LPCSTR note)
+// ----------------------------------------------------------------------
+VOID ErrMsg(LPTSTR lpszErrMsg)
 {
-    MessageBox(hWnd, note, asLangTexts[iszTextError].lpString, MB_ICONHAND);
+    MessageBox(hWnd, lpszErrMsg, asLangTexts[iszTextError].lpString, MB_ICONHAND);
 }
 
 
-//-------------------------------------------------------------
-// Routine to debug
-//-------------------------------------------------------------
 #ifdef DEBUGLOG
-VOID DebugLog(LPSTR filename, LPSTR lpstr, HWND hDlg, BOOL bisCR)
+// debug log files
+TCHAR szDebugTryToGetValueLog[] = TEXT("debug_trytogetvalue.log");
+TCHAR szDebugValueNameDataLog[] = TEXT("debug_valuenamedata.log");
+TCHAR szDebugKeyLog[] = TEXT("debug_key.log");
+
+// ----------------------------------------------------------------------
+// Write message to debug log file
+// ----------------------------------------------------------------------
+VOID DebugLog(LPTSTR lpszFileName, LPTSTR lpszDbgMsg, BOOL fAddCRLF)
 {
-    DWORD   length;
-    DWORD   nPos;
+    size_t nLen;
+    DWORD nPos;
 
-    hFile = CreateFile(filename, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (hFile == INVALID_HANDLE_VALUE) {
+    hFile = CreateFile(lpszFileName, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (INVALID_HANDLE_VALUE == hFile) {
         ErrMsg(asLangTexts[iszTextErrorCreateFile].lpString);
-    } else {
-        nPos = SetFilePointer(hFile, 0, NULL, FILE_END);
-        if (nPos == 0xFFFFFFFF) {
-            ErrMsg(asLangTexts[iszTextErrorMoveFP].lpString);
-        } else {
+        return;
+    }
 
-            length = strlen(lpstr);
-            WriteFile(hFile, lpstr, length, &NBW, NULL);
-            if (NBW != length) {
-                //ErrMsg(asLangTexts[iszTextErrorWriteFile].lpString);
-            }
-            if (bisCR == TRUE) {
-                WriteFile(hFile, szCRLF, (DWORD)(_tcslen(szCRLF) * sizeof(TCHAR)), &NBW, NULL);
-            }
+    nPos = SetFilePointer(hFile, 0, NULL, FILE_END);
+    if (0xFFFFFFFF == nPos) {
+        ErrMsg(asLangTexts[iszTextErrorMoveFP].lpString);
+    } else {
+        nLen = _tcslen(lpszDbgMsg) * sizeof(TCHAR);
+        WriteFile(hFile, lpszDbgMsg, (DWORD)nLen, &NBW, NULL);
+        if (NBW != nLen) {
+            //ErrMsg(asLangTexts[iszTextErrorWriteFile].lpString);
+        }
+        if (fAddCRLF) {
+            WriteFile(hFile, szCRLF, (DWORD)(_tcslen(szCRLF) * sizeof(TCHAR)), &NBW, NULL);
         }
     }
+
     CloseHandle(hFile);
 }
 #endif
 
 
-//------------------------------------------------------------
-// Routine to replace invalid chars in comment fields
-//------------------------------------------------------------
-BOOL ReplaceInValidFileName(LPSTR lpf)
+// ----------------------------------------------------------------------
+// Replace invalid chars for a file name
+// ----------------------------------------------------------------------
+TCHAR szInvalid[] = TEXT("\\/:*?\"<>|");  // 1.8.2
+
+BOOL ReplaceInvalidFileNameChars(LPTSTR lpszFileName)
 {
-    char lpInvalid[] = "\\/:*?\"<>|"; // 1.8.2
-    DWORD   i, j;
-    size_t  nLen;
-    BOOL    bLegal = FALSE;
-    nLen = strlen(lpf);
+    size_t nInvalidLen;
+    size_t nFileNameLen;
+    size_t i, j;
+    BOOL fFileNameIsLegal;
+    BOOL fCharIsValid;
 
-    for (i = 0; i < nLen; i++) {
-        for (j = 0; j < sizeof(lpInvalid) - 1; j++) { // changed at 1.8.2 from 9 to sizeof()-1
-            if (*(lpf + i) == *(lpInvalid + j)) {
-                *(lpf + i) = '-';                     // 0x2D; check for invalid chars and replace it (return FALSE;)
-            } else if (*(lpf + i) != 0x20 && *(lpf + i) != 0x09) { // At least one non-space, non-tab char needed!
-                bLegal = TRUE;
+    nInvalidLen = _tcslen(szInvalid);
+    nFileNameLen = _tcslen(lpszFileName);
+
+    fFileNameIsLegal = FALSE;
+    for (i = 0; i < nFileNameLen; i++) {
+        fCharIsValid = TRUE;  // valid chars expected
+
+        if ((TCHAR)'\t' == lpszFileName[i]) {  // replace tab with space
+            lpszFileName[i] = (TCHAR)' ';
+        } else {  // replace invalid char with underscore
+            for (j = 0; j < nInvalidLen; j++) {
+                if (lpszFileName[i] == szInvalid[j]) {
+                    lpszFileName[i] = (TCHAR)'_';
+                    fCharIsValid = FALSE;
+                    break;
+                }
             }
+        }
 
+        if ((fCharIsValid) && ((TCHAR)' ' != lpszFileName[i])) {  // At least one valid non-space char needed
+            fFileNameIsLegal = TRUE;
         }
     }
-    return bLegal;
+    return fFileNameIsLegal;
 }
 
 

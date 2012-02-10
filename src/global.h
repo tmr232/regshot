@@ -46,7 +46,6 @@ typedef long LONG_PTR;
 
 // added in 1.8.2 to gain a slightly faster speed but it is danger!
 #define USEHEAPALLOC_DANGER
-//#define DEBUGLOG
 
 #ifdef USEHEAPALLOC_DANGER
 
@@ -447,10 +446,6 @@ extern LPTSTR lpgrszLangSection;
 //BOOL  bWinNTDetected;
 //UINT  WM_REGSHOT = 0;
 
-#ifdef DEBUGLOG
-LPSTR   lstrdb1;
-#endif
-
 MSG             msg;                // Windows MSG struct
 HWND            hWnd;               // The handle of REGSHOT
 HMENU           hMenu;              // The handles of shortcut menus
@@ -497,8 +492,8 @@ VOID    GetFilesSnap(LPFILECONTENT lpFatherFC);                  // HWND hDlg, f
 LPSTR   GetWholeFileName(LPFILECONTENT lpFileContent);
 VOID    InitProgressBar(VOID);
 VOID    CompareFirstSubFile(LPFILECONTENT lpHead1, LPFILECONTENT lpHead2);
-BOOL    ReplaceInValidFileName(LPSTR lpf);
-VOID    ErrMsg(LPCSTR note);
+BOOL    ReplaceInvalidFileNameChars(LPTSTR lpszFileName);
+VOID    ErrMsg(LPTSTR lpszErrMsg);
 VOID    WriteTableHead(LPTSTR lpszText, DWORD nCount, BOOL fAsHTML);
 VOID    WritePart(LPCOMRESULT lpComResultStart, BOOL fAsHTML, BOOL fUseColor);
 VOID    WriteTitle(LPTSTR lpszTitle, LPTSTR lpszValue, BOOL fAsHTML);
@@ -599,4 +594,14 @@ size_t AdjustBuffer(PVOID *lpBuffer, size_t nCurrentSize, size_t nWantedSize, si
 VOID SaveHeadFile(LPHEADFILE lpHF, DWORD nFPCaller);
 VOID LoadHeadFile(DWORD ofsHeadFile, LPHEADFILE *lplpCaller);
 
-#endif // REGSHOT_GLOBAL_H
+#ifdef DEBUGLOG
+#define REGSHOT_DEBUG_MESSAGE_LENGTH 100
+
+extern TCHAR szDebugTryToGetValueLog[];
+extern TCHAR szDebugValueNameDataLog[];
+extern TCHAR szDebugKeyLog[];
+
+VOID DebugLog(LPTSTR lpszFileName, LPTSTR lpszDbgMsg, BOOL fAddCRLF);
+#endif
+
+#endif  // REGSHOT_GLOBAL_H
