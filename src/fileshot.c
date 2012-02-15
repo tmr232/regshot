@@ -28,6 +28,12 @@
 SAVEFILECONTENT sFC;
 SAVEHEADFILE sHF;
 
+// Some DWORDs used to show the progress bar and etc
+DWORD nGettingFile;
+DWORD nGettingDir;
+DWORD nSavingFile;
+
+
 //-------------------------------------------------------------
 // Routine to get Whole File Name[root dir] from a FILECONTENT
 //-------------------------------------------------------------

@@ -33,6 +33,17 @@ LPTSTR REGSHOTLANGUAGEFILE = TEXT("language.ini");
 REGSHOT Shot1;
 REGSHOT Shot2;
 
+LPSTR lpExtDir;
+LPTSTR lpOutputpath;
+LPTSTR lpLastSaveDir;
+LPTSTR lpLastOpenDir;
+LPSTR lpWindowsDirName;
+LPSTR lpTempPath;
+LPSTR lpStartDir;
+LPSTR lpLanguageIni;  // For language.ini
+LPSTR lpCurrentTranslator;
+LPSTR lpRegshotIni;
+
 
 // this new function added by Youri in 1.8.2, for expanding path in browse dialog
 int CALLBACK SelectBrowseFolder(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData)

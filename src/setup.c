@@ -39,6 +39,10 @@ LPSTR INI_USELONGREGHEAD  = "UseLongRegHead";  // 1.8.1 tianwei for compatible t
 LPTSTR lpgrszRegSkipStrings;
 LPTSTR lpgrszFileSkipStrings;
 
+LPTSTR *lplpRegSkipStrings;
+LPTSTR *lplpFileSkipStrings;
+
+
 BOOL LoadSettingsFromIni(HWND hDlg) // tfx get ini info
 {
     int     i;
@@ -168,8 +172,6 @@ BOOL SaveSettingsToIni(HWND hDlg) // tfx save settings to ini
     if (NULL != lpgrszLangSection) {
         MYFREE(lpgrszLangSection);
     }
-    //MYFREE(lpSnapKey);
-    //MYFREE(lpSnapReturn);
 
     return TRUE;
 }
