@@ -59,6 +59,62 @@ size_t nSourceSize;
 #define MAX_SIGNATURE_LENGTH 12
 #define REGSHOT_READ_BLOCK_SIZE 8192
 
+// Pointers to compare result
+LPCOMRESULT lpKEYADD;
+LPCOMRESULT lpKEYDEL;
+LPCOMRESULT lpVALADD;
+LPCOMRESULT lpVALDEL;
+LPCOMRESULT lpVALMODI;
+LPCOMRESULT lpFILEADD;
+LPCOMRESULT lpFILEDEL;
+LPCOMRESULT lpFILEMODI;
+LPCOMRESULT lpDIRADD;
+LPCOMRESULT lpDIRDEL;
+LPCOMRESULT lpDIRMODI;
+
+LPCOMRESULT lpKEYADDHEAD;
+LPCOMRESULT lpKEYDELHEAD;
+LPCOMRESULT lpVALADDHEAD;
+LPCOMRESULT lpVALDELHEAD;
+LPCOMRESULT lpVALMODIHEAD;
+LPCOMRESULT lpFILEADDHEAD;
+LPCOMRESULT lpFILEDELHEAD;
+LPCOMRESULT lpFILEMODIHEAD;
+LPCOMRESULT lpDIRADDHEAD;
+LPCOMRESULT lpDIRDELHEAD;
+LPCOMRESULT lpDIRMODIHEAD;
+
+// Number of Modifications detected
+DWORD nKEYADD;
+DWORD nKEYDEL;
+DWORD nVALADD;
+DWORD nVALDEL;
+DWORD nVALMODI;
+DWORD nFILEADD;
+DWORD nFILEDEL;
+DWORD nFILEMODI;
+DWORD nDIRADD;
+DWORD nDIRDEL;
+DWORD nDIRMODI;
+
+// Some DWORDs used to show the progress bar and etc
+DWORD nGettingValue;
+DWORD nGettingKey;
+DWORD nComparing;
+DWORD nRegStep;
+DWORD nFileStep;
+DWORD nSavingKey;
+DWORD nGettingTime;
+DWORD nBASETIME;
+DWORD nBASETIME1;
+//DWORD nMask = 0xf7fd;     // not used now, but should be added; TODO: what for?
+DWORD NBW;                // that is: NumberOfBytesWritten;
+
+LPSTR lpKeyName;
+LPSTR lpValueName;
+LPBYTE lpValueData;
+LPBYTE lpValueDataS;
+
 
 //-------------------------------------------------------------
 // Routine to get whole key name from KEYCONTENT
@@ -1459,7 +1515,7 @@ VOID SaveHive(LPREGSHOT lpShot)
 // ----------------------------------------------------------------------
 //
 // ----------------------------------------------------------------------
-size_t AdjustBuffer(PVOID *lpBuffer, size_t nCurrentSize, size_t nWantedSize, size_t nAlign)
+size_t AdjustBuffer(LPVOID *lpBuffer, size_t nCurrentSize, size_t nWantedSize, size_t nAlign)
 {
     if (NULL == *lpBuffer) {
         nCurrentSize = 0;

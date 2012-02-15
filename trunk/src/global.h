@@ -328,123 +328,65 @@ typedef struct  _SAVEHEADFILE SAVEHEADFILE, FAR *LPSAVEHEADFILE;
 #define HEADFILE_VERSION_CURRENT HEADFILE_VERSION_1
 
 
-// Pointers to compare result [see above]
-LPCOMRESULT lpKEYADD;
-LPCOMRESULT lpKEYDEL;
-LPCOMRESULT lpVALADD;
-LPCOMRESULT lpVALDEL;
-LPCOMRESULT lpVALMODI;
-LPCOMRESULT lpFILEADD;
-LPCOMRESULT lpFILEDEL;
-LPCOMRESULT lpFILEMODI;
-LPCOMRESULT lpDIRADD;
-LPCOMRESULT lpDIRDEL;
-LPCOMRESULT lpDIRMODI;
-
-
-LPCOMRESULT lpKEYADDHEAD;
-LPCOMRESULT lpKEYDELHEAD;
-LPCOMRESULT lpVALADDHEAD;
-LPCOMRESULT lpVALDELHEAD;
-LPCOMRESULT lpVALMODIHEAD;
-LPCOMRESULT lpFILEADDHEAD;
-LPCOMRESULT lpFILEDELHEAD;
-LPCOMRESULT lpFILEMODIHEAD;
-LPCOMRESULT lpDIRADDHEAD;
-LPCOMRESULT lpDIRDELHEAD;
-LPCOMRESULT lpDIRMODIHEAD;
-
-
 // Number of Modification detected
-DWORD   nKEYADD;
-DWORD   nKEYDEL;
-DWORD   nVALADD;
-DWORD   nVALDEL;
-DWORD   nVALMODI;
-DWORD   nFILEADD;
-DWORD   nFILEDEL;
-DWORD   nFILEMODI;
-DWORD   nDIRADD;
-DWORD   nDIRDEL;
-DWORD   nDIRMODI;
+extern DWORD nFILEADD;
+extern DWORD nFILEDEL;
+extern DWORD nFILEMODI;
+extern DWORD nDIRADD;
+extern DWORD nDIRDEL;
+extern DWORD nDIRMODI;
 
 
-// Some DWORD used to show the progress bar and etc
-DWORD   nGettingValue;
-DWORD   nGettingKey;
-DWORD   nComparing;
-DWORD   nRegStep;
-DWORD   nFileStep;
-DWORD   nSavingKey;
-DWORD   nGettingTime;
-DWORD   nBASETIME;
-DWORD   nBASETIME1;
-DWORD   nGettingFile;
-DWORD   nGettingDir;
-DWORD   nSavingFile;
-//DWORD   nMask = 0xf7fd;     // not used now, but should be added
-//DWORD   nRegMessageCount = 0;
-DWORD   NBW;                // that is: NumberOfBytesWritten;
+// Some DWORDs used to show the progress bar and etc
+extern DWORD nGettingValue;
+extern DWORD nGettingKey;
+extern DWORD nComparing;
+extern DWORD nRegStep;
+extern DWORD nFileStep;
+extern DWORD nSavingKey;
+extern DWORD nGettingTime;
+extern DWORD nBASETIME;
+extern DWORD nBASETIME1;
+extern DWORD nGettingFile;
+extern DWORD nGettingDir;
+extern DWORD nSavingFile;
+extern DWORD NBW;                // that is: NumberOfBytesWritten;
 
 
 extern REGSHOT Shot1;
 extern REGSHOT Shot2;
 // Pointers to Registry Key
 /*
-LPKEYCONTENT    lpHeadLocalMachine1;    // Pointer to HKEY_LOCAL_MACHINE 1
-LPKEYCONTENT    lpHeadLocalMachine2;    // Pointer to HKEY_LOCAL_MACHINE 2
-LPKEYCONTENT    lpHeadUsers1;           // Pointer to HKEY_USERS 1
-LPKEYCONTENT    lpHeadUsers2;
 LPHEADFILE      lpHeadFile1;            // Pointer to headfile
 LPHEADFILE      lpHeadFile2;
-LPBYTE          lpTempHive1;            // Pointer for loading hive files
-LPBYTE          lpTempHive2;
-LPSTR           lpComputerName1;
-LPSTR           lpComputerName2;
-LPSTR           lpUserName1;
-LPSTR           lpUserName2;
-SYSTEMTIME FAR *lpSystemtime1, * lpSystemtime2;
 */
 
 // Some pointers need to allocate enough space to working
-LPSTR   lpKeyName;   // following used in scan engine
-LPSTR   lpValueName;
-LPBYTE  lpValueData;
-LPBYTE  lpValueDataS;
+extern LPSTR lpKeyName;
+extern LPSTR lpValueName;
+extern LPBYTE lpValueData;
 
 
 #define REGSHOT_MESSAGE_LENGTH 256
 extern LPTSTR lpszMessage;
-LPSTR   lpExtDir;
-LPTSTR  lpOutputpath;
-LPTSTR  lpLastSaveDir;
-LPTSTR  lpLastOpenDir;
+extern LPSTR lpExtDir;
+extern LPTSTR lpOutputpath;
+extern LPTSTR lpLastSaveDir;
+extern LPTSTR lpLastOpenDir;
 extern LPTSTR lpszLanguage;
-LPSTR   lpWindowsDirName;
-LPSTR   lpTempPath;
-LPSTR   lpStartDir;
-LPSTR   lpLanguageIni;  // For language.ini
-LPSTR   lpCurrentTranslator;
-LPSTR   lpRegshotIni;
+extern LPSTR lpWindowsDirName;
+extern LPSTR lpTempPath;
+extern LPSTR lpLanguageIni;  // For language.ini
+extern LPSTR lpCurrentTranslator;
+extern LPSTR lpRegshotIni;
 
-LPTSTR *lplpRegSkipStrings;
-LPTSTR *lplpFileSkipStrings;
+extern LPTSTR *lplpRegSkipStrings;
+extern LPTSTR *lplpFileSkipStrings;
 extern LPTSTR lpgrszLangSection;
-//LPSTR REGSHOTDATFILE = "rgst152.dat";
-//LPSTR   lpProgramDir;   // tfx define
-//LPSTR   lpSnapKey;
-//LPSTR   lpSnapReturn;
-
 
 
 // Former definations used at Dynamic Monitor Engine. Not Used NOW
-//#define DIOCPARAMSSIZE 20      // 4+4+4+8 bytes DIOCParams size!
-//#define MAXLISTBOXLEN  1024
-//#define RING3TDLEN     8       // ring3 td name length
-//LPSTR str_errorini = "Error create Dialog!";
-//INT   tabarray[] = {40,106,426,466};      // the tabstops is the len addup!
-//BOOL  bWinNTDetected;
-//UINT  WM_REGSHOT = 0;
+//extern BOOL  bWinNTDetected;
 
 MSG             msg;                // Windows MSG struct
 HWND            hWnd;               // The handle of REGSHOT
@@ -590,7 +532,7 @@ extern TCHAR *lpszProgramName;
 extern TCHAR szEmpty[];
 #endif
 
-size_t AdjustBuffer(PVOID *lpBuffer, size_t nCurrentSize, size_t nWantedSize, size_t nAlign);
+size_t AdjustBuffer(LPVOID *lpBuffer, size_t nCurrentSize, size_t nWantedSize, size_t nAlign);
 VOID SaveHeadFile(LPHEADFILE lpHF, DWORD nFPCaller);
 VOID LoadHeadFile(DWORD ofsHeadFile, LPHEADFILE *lplpCaller);
 
