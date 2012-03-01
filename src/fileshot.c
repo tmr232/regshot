@@ -160,7 +160,7 @@ VOID GetFilesSnap(LPFILECONTENT lpFatherFC)
         if ((NULL != lpFC->lpFileName)
                 && (0 != strcmp(lpFC->lpFileName, "."))
                 && (0 != strcmp(lpFC->lpFileName, ".."))
-                && !IsInSkipList(lpFC->lpFileName, lplpFileSkipStrings)) {  // tfx
+                && !IsInSkipList(lpFC->lpFileName, lprgszFileSkipStrings)) {  // tfx
             nGettingDir++;
             GetFilesSnap(lpFC);
         }
@@ -185,7 +185,7 @@ VOID GetFilesSnap(LPFILECONTENT lpFatherFC)
             if ((NULL != lpFC->lpFileName)
                     && (0 != strcmp(lpFC->lpFileName, "."))
                     && (0 != strcmp(lpFC->lpFileName, ".."))
-                    && !IsInSkipList(lpFC->lpFileName, lplpFileSkipStrings)) {  // tfx
+                    && !IsInSkipList(lpFC->lpFileName, lprgszFileSkipStrings)) {  // tfx
                 nGettingDir++;
                 GetFilesSnap(lpFC);
             }

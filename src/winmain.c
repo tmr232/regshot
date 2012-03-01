@@ -44,6 +44,18 @@ LPSTR lpLanguageIni;  // For language.ini
 LPSTR lpCurrentTranslator;
 LPSTR lpRegshotIni;
 
+MSG        msg;          // Windows MSG struct
+HWND       hWnd;         // The handle of REGSHOT
+HMENU      hMenu;        // The handles of shortcut menus
+HMENU      hMenuClear;   // The handles of shortcut menus
+BOOL       is1;          // Flag to determine is the 1st shot
+RECT       rect;         // Window RECT
+BROWSEINFO BrowseInfo1;  // BrowseINFO struct
+
+#ifdef USEHEAPALLOC_DANGER
+HANDLE hHeap;  // 1.8.2
+#endif
+
 
 // this new function added by Youri in 1.8.2, for expanding path in browse dialog
 int CALLBACK SelectBrowseFolder(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
@@ -415,7 +427,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     UNREFERENCED_PARAMETER(lpszCmdLine);
     UNREFERENCED_PARAMETER(hPrevInstance);
 
+#ifdef USEHEAPALLOC_DANGER
     hHeap = GetProcessHeap(); // 1.8.2
+#endif
+
     hWnd = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, (DLGPROC)DialogProc);
 
     SetClassLongPtr(hWnd, GCLP_HICON, (LONG_PTR)LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MAINICON)));

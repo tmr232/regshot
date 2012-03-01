@@ -39,8 +39,10 @@ LPSTR INI_USELONGREGHEAD  = "UseLongRegHead";  // 1.8.1 tianwei for compatible t
 LPTSTR lpgrszRegSkipStrings;
 LPTSTR lpgrszFileSkipStrings;
 
-LPTSTR *lplpRegSkipStrings;
-LPTSTR *lplpFileSkipStrings;
+LPTSTR *lprgszRegSkipStrings;
+LPTSTR *lprgszFileSkipStrings;
+
+BOOL bUseLongRegHead;  // 1.8.1 for compatibility with 1.61e5 and undoreg1.46
 
 
 BOOL LoadSettingsFromIni(HWND hDlg) // tfx get ini info
@@ -54,7 +56,7 @@ BOOL LoadSettingsFromIni(HWND hDlg) // tfx get ini info
 
     szIniKey[16] = 0;  // saftey NULL char
 
-    lplpRegSkipStrings = MYALLOC0(MAX_INI_SKIPITEMS * sizeof(LPTSTR));
+    lprgszRegSkipStrings = MYALLOC0(MAX_INI_SKIPITEMS * sizeof(LPTSTR));
     lpgrszRegSkipStrings = MYALLOC0(MAX_INI_SECTION_CHARS * sizeof(TCHAR));
     cchSection = GetPrivateProfileSection(INI_SKIPREGKEY, lpgrszRegSkipStrings, MAX_INI_SECTION_CHARS, lpRegshotIni);
     if (0 < cchSection) {
@@ -62,7 +64,7 @@ BOOL LoadSettingsFromIni(HWND hDlg) // tfx get ini info
             _sntprintf(szIniKey, 16, TEXT("%d%s"), i, TEXT("="));
             lpReturn = FindKeyInIniSection(lpgrszRegSkipStrings, szIniKey, cchSection, _tcslen(szIniKey));
             if (NULL != lpReturn) {
-                *(lplpRegSkipStrings + i) = lpReturn;
+                *(lprgszRegSkipStrings + i) = lpReturn;
                 //dwSnapFiles++;
             } else {
                 break;
@@ -70,7 +72,7 @@ BOOL LoadSettingsFromIni(HWND hDlg) // tfx get ini info
         }
     }
 
-    lplpFileSkipStrings = MYALLOC0(MAX_INI_SKIPITEMS * sizeof(LPTSTR));
+    lprgszFileSkipStrings = MYALLOC0(MAX_INI_SKIPITEMS * sizeof(LPTSTR));
     lpgrszFileSkipStrings = MYALLOC0(MAX_INI_SECTION_CHARS * sizeof(TCHAR));
     cchSection = GetPrivateProfileSection(INI_SKIPDIR, lpgrszFileSkipStrings, MAX_INI_SECTION_CHARS, lpRegshotIni);
     if (0 < cchSection) {
@@ -78,7 +80,7 @@ BOOL LoadSettingsFromIni(HWND hDlg) // tfx get ini info
             _sntprintf(szIniKey, 16, TEXT("%d%s"), i, TEXT("="));
             lpReturn = FindKeyInIniSection(lpgrszFileSkipStrings, szIniKey, cchSection, _tcslen(szIniKey));
             if (NULL != lpReturn) {
-                *(lplpFileSkipStrings + i) = lpReturn;
+                *(lprgszFileSkipStrings + i) = lpReturn;
                 //dwSnapFiles++;
             } else {
                 break;
@@ -177,12 +179,13 @@ BOOL SaveSettingsToIni(HWND hDlg) // tfx save settings to ini
 }
 
 
-BOOL IsInSkipList(LPTSTR lpStr, LPTSTR *lpSkipList)  // tfx skip the list
+BOOL IsInSkipList(LPTSTR lpszString, LPTSTR lpszSkipList[])  // tfx skip the list
 {
     int i;
+
     // todo: it seems bypass null item. But the getsetting is get all. Is it safe without the null thing? tianwei
-    for (i = 0; (*(lpSkipList + i)) != NULL && i <= MAX_INI_SKIPITEMS - 1; i++) {
-        if (_stricmp(lpStr, (*(lpSkipList + i))) == 0) {
+    for (i = 0; (MAX_INI_SKIPITEMS > i) && (NULL != lpszSkipList[i]); i++) {
+        if (0 == _tcsicmp(lpszString, lpszSkipList[i])) {
             return TRUE;
         }
     }
