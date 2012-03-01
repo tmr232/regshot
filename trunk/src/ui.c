@@ -20,18 +20,14 @@
 */
 
 #include "global.h"
-#include "LMCons.h"  // for UNLEN define
-
-
-char USERSSTRING_LONG[]        = "HKEY_USERS";   // 1.6 using long name, so in 1.8.1 add an option
-char USERSSTRING[]             = "HKU";          // in regshot.ini, "UseLongRegHead" to control this
-char LOCALMACHINESTRING[]      = "HKLM";
-char LOCALMACHINESTRING_LONG[] = "HKEY_LOCAL_MACHINE";
 
 LPTSTR lpszMessage;
 
+HCURSOR hHourGlass;   // Handle of cursor
+HCURSOR hSaveCursor;  // Handle of cursor
 
-void ShowHideCounters(int nCmdShow) // 1.8.2
+
+VOID ShowHideCounters(int nCmdShow)  // 1.8.2
 {
     ShowWindow(GetDlgItem(hWnd, IDC_TEXTCOUNT1), nCmdShow);
     ShowWindow(GetDlgItem(hWnd, IDC_TEXTCOUNT2), nCmdShow);
@@ -39,7 +35,6 @@ void ShowHideCounters(int nCmdShow) // 1.8.2
 }
 
 
-//////////////////////////////////////////////////////////////////
 VOID InitProgressBar(VOID)
 {
     // The following are not so good, but they work
@@ -98,19 +93,19 @@ VOID UI_BeforeShot(DWORD nID)
 //--------------------------------------------------
 VOID UI_AfterShot(VOID)
 {
-    DWORD iddef;
+    DWORD nIDDef;
 
-    if (Shot1.lpHKLM == NULL) {
-        iddef = IDC_1STSHOT;
-    } else if (Shot2.lpHKLM == NULL) {
-        iddef = IDC_2NDSHOT;
+    if (NULL == Shot1.lpHKLM) {
+        nIDDef = IDC_1STSHOT;
+    } else if (NULL == Shot2.lpHKLM) {
+        nIDDef = IDC_2NDSHOT;
     } else {
-        iddef = IDC_COMPARE;
+        nIDDef = IDC_COMPARE;
     }
     EnableWindow(GetDlgItem(hWnd, IDC_CLEAR1), TRUE);
-    EnableWindow(GetDlgItem(hWnd, iddef), TRUE);
-    SendMessage(hWnd, DM_SETDEFID, (WPARAM)iddef, (LPARAM)0);
-    SetFocus(GetDlgItem(hWnd, iddef));
+    EnableWindow(GetDlgItem(hWnd, nIDDef), TRUE);
+    SendMessage(hWnd, DM_SETDEFID, (WPARAM)nIDDef, (LPARAM)0);
+    SetFocus(GetDlgItem(hWnd, nIDDef));
     SetCursor(hSaveCursor);
     MessageBeep(0xffffffff);
 }
@@ -134,141 +129,34 @@ VOID UI_BeforeClear(VOID)
 //--------------------------------------------------
 VOID UI_AfterClear(VOID)
 {
-    DWORD   iddef = 0;
-    //BOOL    bChk;   // used for file scan disable
+    DWORD nIDDef;
+    //BOOL fChk;  // used for file scan disable
 
-    if (Shot1.lpHKLM == NULL) {
-        iddef = IDC_1STSHOT;
-    } else if (Shot2.lpHKLM == NULL) {
-        iddef = IDC_2NDSHOT;
+    nIDDef = 0;
+    if (NULL == Shot1.lpHKLM) {
+        nIDDef = IDC_1STSHOT;
+    } else if (NULL == Shot2.lpHKLM) {
+        nIDDef = IDC_2NDSHOT;
     }
-    EnableWindow(GetDlgItem(hWnd, iddef), TRUE);
+    EnableWindow(GetDlgItem(hWnd, nIDDef), TRUE);
     EnableWindow(GetDlgItem(hWnd, IDC_COMPARE), FALSE);
 
-    if ((Shot1.lpHKLM == NULL) && (Shot2.lpHKLM == NULL)) {
+    //fChk = FALSE;
+    if ((NULL == Shot1.lpHKLM) && (NULL == Shot2.lpHKLM)) {
         EnableWindow(GetDlgItem(hWnd, IDC_2NDSHOT), FALSE);
         EnableWindow(GetDlgItem(hWnd, IDC_CLEAR1), FALSE);
-        //bChk = TRUE;
+        //fChk = TRUE;
     }
-    //else  // I forgot to comment this out, fixed in 1.8.2
-    //bChk = FALSE;
 
-    //EnableWindow(GetDlgItem(hWnd,IDC_CHECKDIR),bChk); // Not used in 1.8; we only enable chk when clear all
-    //SendMessage(hWnd,WM_COMMAND,(WPARAM)IDC_CHECKDIR,(LPARAM)0);
+    //EnableWindow(GetDlgItem(hWnd, IDC_CHECKDIR), fChk);  // Not used in 1.8; we only enable fChk when clear all
+    //SendMessage(hWnd, WM_COMMAND, (WPARAM)IDC_CHECKDIR, (LPARAM)0);
 
-    SetFocus(GetDlgItem(hWnd, iddef));
-    SendMessage(hWnd, DM_SETDEFID, (WPARAM)iddef, (LPARAM)0);
+    SetFocus(GetDlgItem(hWnd, nIDDef));
+    SendMessage(hWnd, DM_SETDEFID, (WPARAM)nIDDef, (LPARAM)0);
     SetCursor(hSaveCursor);
     MessageBeep(0xffffffff);
 }
 
-
-// -----------------------------
-VOID Shot(LPREGSHOT lpShot)
-{
-    lpShot->lpHKLM = (LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
-    lpShot->lpHKU = (LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
-
-    if (bUseLongRegHead) {  // 1.8.1
-        lpShot->lpHKLM->lpKeyName = MYALLOC(sizeof(LOCALMACHINESTRING_LONG));
-        lpShot->lpHKU->lpKeyName = MYALLOC(sizeof(USERSSTRING_LONG));
-        strcpy(lpShot->lpHKLM->lpKeyName, LOCALMACHINESTRING_LONG);
-        strcpy(lpShot->lpHKU->lpKeyName, USERSSTRING_LONG);
-    } else {
-        lpShot->lpHKLM->lpKeyName = MYALLOC(sizeof(LOCALMACHINESTRING));
-        lpShot->lpHKU->lpKeyName = MYALLOC(sizeof(USERSSTRING));
-        strcpy(lpShot->lpHKLM->lpKeyName, LOCALMACHINESTRING);
-        strcpy(lpShot->lpHKU->lpKeyName, USERSSTRING);
-    }
-
-    nGettingKey   = 2;
-    nGettingValue = 0;
-    nGettingTime  = 0;
-    nGettingFile  = 0;
-    nGettingDir   = 0;
-    nBASETIME  = GetTickCount();
-    nBASETIME1 = nBASETIME;
-    if (is1) {
-        UI_BeforeShot(IDC_1STSHOT);
-    } else {
-        UI_BeforeShot(IDC_2NDSHOT);
-    }
-
-    GetRegistrySnap(HKEY_LOCAL_MACHINE, lpShot->lpHKLM);
-    GetRegistrySnap(HKEY_USERS, lpShot->lpHKU);
-    nGettingTime = GetTickCount();
-    UpdateCounters(asLangTexts[iszTextKey].lpString, asLangTexts[iszTextValue].lpString, nGettingKey, nGettingValue);
-
-    if (SendMessage(GetDlgItem(hWnd, IDC_CHECKDIR), BM_GETCHECK, (WPARAM)0, (LPARAM)0) == 1) {
-        size_t  nLengthofStr;
-        DWORD   i;
-        LPSTR   lpSubExtDir;
-        LPHEADFILE lpHF;
-        LPHEADFILE lpHFTemp;
-
-        GetDlgItemText(hWnd, IDC_EDITDIR, lpExtDir, EXTDIRLEN / 2);
-        nLengthofStr = strlen(lpExtDir);
-
-        lpHF = lpHFTemp = lpShot->lpHF;  // changed in 1.8
-        lpSubExtDir = lpExtDir;
-
-        if (nLengthofStr > 0)
-            for (i = 0; i <= nLengthofStr; i++) {
-                // This is the stupid filename detection routine, [seperate with ";"]
-                if (*(lpExtDir + i) == 0x3b || *(lpExtDir + i) == 0x00) {
-                    *(lpExtDir + i) = 0x00;
-
-                    if (*(lpExtDir + i - 1) == '\\' && i > 0) {
-                        *(lpExtDir + i - 1) = 0x00;
-                    }
-
-                    if (*lpSubExtDir != 0x00) {
-                        size_t  nSubExtDirLen;
-
-                        lpHF = (LPHEADFILE)MYALLOC0(sizeof(HEADFILE));
-                        if (lpShot->lpHF == NULL) {
-                            lpShot->lpHF = lpHF;
-                        } else {
-                            lpHFTemp->lpBrotherHF = lpHF;
-                        }
-
-                        lpHFTemp = lpHF;
-                        lpHF->lpFirstFC = (LPFILECONTENT)MYALLOC0(sizeof(FILECONTENT));
-                        //lpHF->lpfilecontent2 = (LPFILECONTENT)MYALLOC0(sizeof(FILECONTENT));
-
-                        nSubExtDirLen = strlen(lpSubExtDir) + 1;
-                        lpHF->lpFirstFC->lpFileName = MYALLOC(nSubExtDirLen);
-                        //lpHF->lpfilecontent2->lpFileName = MYALLOC(nSubExtDirLen);
-
-                        strcpy(lpHF->lpFirstFC->lpFileName, lpSubExtDir);
-                        //strcpy(lpHF->lpfilecontent2->lpFileName,lpSubExtDir);
-
-                        lpHF->lpFirstFC->fileattr = FILE_ATTRIBUTE_DIRECTORY;
-                        //lpHF->lpfilecontent2->fileattr = FILE_ATTRIBUTE_DIRECTORY;
-
-                        GetFilesSnap(lpHF->lpFirstFC);
-                        nGettingTime = GetTickCount();
-                        UpdateCounters(asLangTexts[iszTextDir].lpString, asLangTexts[iszTextFile].lpString, nGettingDir, nGettingFile);
-                    }
-                    lpSubExtDir = lpExtDir + i + 1;
-                }
-            }
-    }
-
-    lpShot->computername = MYALLOC0((MAX_COMPUTERNAME_LENGTH + 2) * sizeof(TCHAR));
-    ZeroMemory(lpShot->computername, (MAX_COMPUTERNAME_LENGTH + 2) * sizeof(TCHAR));
-    NBW = MAX_COMPUTERNAME_LENGTH + 1;
-    GetComputerName(lpShot->computername, &NBW);
-
-    lpShot->username = MYALLOC0((UNLEN + 2) * sizeof(TCHAR));
-    ZeroMemory(lpShot->username, (UNLEN + 2) * sizeof(TCHAR));
-    NBW = UNLEN + 1;
-    GetUserName(lpShot->username, &NBW);
-
-    GetSystemTime(&lpShot->systemtime);
-
-    UI_AfterShot();
-}
 
 //--------------------------------------------------
 // Show popup shortcut menu

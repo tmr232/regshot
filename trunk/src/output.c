@@ -53,6 +53,8 @@ TCHAR szHTMLSpanEnd[]      = TEXT("</SPAN>");
 TCHAR szHTMLWebSiteBegin[] = TEXT("<FONT COLOR=\"#888888\">Created with <A HREF=\"http://sourceforge.net/projects/regshot/\">");
 TCHAR szHTMLWebSiteEnd[]   = TEXT("</A></FONT><BR>\r\n");
 
+HANDLE hFile;  // Handle of file regshot use
+
 
 // ----------------------------------------------------------------------
 // Several routines to write to an output file

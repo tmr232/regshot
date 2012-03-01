@@ -49,6 +49,8 @@ typedef long LONG_PTR;
 
 #ifdef USEHEAPALLOC_DANGER
 
+extern HANDLE hHeap;
+
 // MSDN doc say use HEAP_NO_SERIALIZE is not good for process heap :( so change fromm 1 to 0 20111216, slower than using 1
 #define MYALLOC(x)  HeapAlloc(hHeap,0,x)
 #define MYALLOC0(x) HeapAlloc(hHeap,8,x) // (HEAP_NO_SERIALIZE|) HEAP_ZERO_MEMORY ,1|8
@@ -380,35 +382,29 @@ extern LPSTR lpLanguageIni;  // For language.ini
 extern LPSTR lpCurrentTranslator;
 extern LPSTR lpRegshotIni;
 
-extern LPTSTR *lplpRegSkipStrings;
-extern LPTSTR *lplpFileSkipStrings;
+extern LPTSTR *lprgszRegSkipStrings;
+extern LPTSTR *lprgszFileSkipStrings;
 extern LPTSTR lpgrszLangSection;
 
 
 // Former definations used at Dynamic Monitor Engine. Not Used NOW
 //extern BOOL  bWinNTDetected;
 
-MSG             msg;                // Windows MSG struct
-HWND            hWnd;               // The handle of REGSHOT
-HMENU           hMenu;              // The handles of shortcut menus
-HMENU           hMenuClear;         // The handles of shortcut menus
-HANDLE          hFile;              // Handle of file regshot use
-HANDLE          hFileWholeReg;      // Handle of file regshot use
-HCURSOR         hHourGlass;         // Handle of cursor
-HCURSOR         hSaveCursor;        // Handle of cursor
-BOOL            is1;                // Flag to determine is the 1st shot
-//BOOL            is1LoadFromHive;    // Flag to determine are shots load from hive files
-//BOOL            is2LoadFromHive;    // Flag to determine are shots load from hive files
-RECT            rect;               // Window RECT
-FILETIME        ftLastWrite;        // Filetime struct
-BROWSEINFO      BrowseInfo1;        // BrowseINFO struct
-BOOL            bUseLongRegHead;    // 1.8.1 for compatibility with 1.61e5 and undoreg1.46
-HANDLE          hHeap;              // 1.8.2
+extern MSG     msg;                // Windows MSG struct
+extern HWND    hWnd;               // The handle of REGSHOT
+extern HMENU   hMenu;              // The handles of shortcut menus
+extern HANDLE  hFile;              // Handle of file regshot use
+extern HANDLE  hFileWholeReg;      // Handle of file regshot use
+extern HCURSOR hSaveCursor;        // Handle of cursor
+extern BOOL    is1;                // Flag to determine is the 1st shot
+//extern BOOL    is1LoadFromHive;  // Flag to determine if shot was loaded from hive file
+//extern BOOL    is2LoadFromHive;  // Flag to determine if shot was loaded from hive file
+extern BOOL    bUseLongRegHead;    // 1.8.1 for compatibility with 1.61e5 and undoreg1.46
 
 VOID    LogToMem(DWORD actiontype, LPDWORD lpcount, LPVOID lp);
 BOOL    LoadSettingsFromIni(HWND hDlg);
 BOOL    SaveSettingsToIni(HWND hDlg);
-BOOL    IsInSkipList(LPTSTR lpStr, LPTSTR *lpSkipList);
+BOOL    IsInSkipList(LPTSTR lpszString, LPTSTR lpszSkipList[]);
 VOID    UpdateCounters(LPTSTR lpszTitle1, LPTSTR lpszTitle2, DWORD nCount1, DWORD nCount2);
 LPTSTR  FindKeyInIniSection(LPTSTR lpgrszSection, LPTSTR lpszSearch, size_t cchSectionLen, size_t cchSearchLen);
 VOID    SetTextsToDefaultLanguage(VOID);
@@ -429,7 +425,6 @@ VOID    FreeAllCompareResults(void);
 VOID    FreeShot(LPREGSHOT lpShot);
 VOID    FreeAllFileHead(LPHEADFILE lpHeadFile);
 VOID    ClearKeyMatchTag(LPKEYCONTENT lpKC);
-VOID    GetRegistrySnap(HKEY hRegKey, LPKEYCONTENT lpFatherKC);  // HWND hDlg, first para deleted in 1.8, return from void * to void
 VOID    GetFilesSnap(LPFILECONTENT lpFatherFC);                  // HWND hDlg, first para deleted in 1.8
 LPSTR   GetWholeFileName(LPFILECONTENT lpFileContent);
 VOID    InitProgressBar(VOID);
@@ -518,11 +513,6 @@ extern LPBYTE lpFileBuffer;
 extern LPTSTR lpStringBuffer;
 extern size_t nStringBufferSize;
 extern size_t nSourceSize;
-
-extern char LOCALMACHINESTRING[];
-extern char LOCALMACHINESTRING_LONG[];
-extern char USERSSTRING[];
-extern char USERSSTRING_LONG[];
 
 extern TCHAR szCRLF[];
 
