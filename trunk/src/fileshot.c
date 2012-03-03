@@ -197,7 +197,7 @@ VOID GetFilesSnap(LPFILECONTENT lpFatherFC)
     FindClose(filehandle);
 
     nGettingTime = GetTickCount();
-    if ((nGettingTime - nBASETIME1) > REFRESHINTERVAL) {
+    if (REFRESHINTERVAL < (nGettingTime - nBASETIME1)) {
         UpdateCounters(asLangTexts[iszTextDir].lpString, asLangTexts[iszTextFile].lpString, nGettingDir, nGettingFile);
     }
 
@@ -556,7 +556,7 @@ VOID LoadFile(DWORD ofsFileContent, LPFILECONTENT lpFatherFC, LPFILECONTENT *lpl
     }
 
     nGettingTime = GetTickCount();
-    if ((nGettingTime - nBASETIME1) > REFRESHINTERVAL) {
+    if (REFRESHINTERVAL < (nGettingTime - nBASETIME1)) {
         UpdateCounters(asLangTexts[iszTextDir].lpString, asLangTexts[iszTextFile].lpString, nGettingDir, nGettingFile);
     }
 

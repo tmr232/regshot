@@ -25,16 +25,16 @@
 #include "global.h"
 
 // 1.8.2 move definition from global.h to this place
-#define MAX_INI_SKIPITEMS    100
+#define MAX_INI_SKIPITEMS 100  // 0..99
 
 // setup based on regshot.ini by tulipfan (tfx)
-LPSTR INI_SETUP           = "Setup";
-LPSTR INI_FLAG            = "Flag";
-LPSTR INI_EXTDIR          = "ExtDir";
-LPSTR INI_OUTDIR          = "OutDir";
-LPSTR INI_SKIPREGKEY      = "SkipRegKey";
-LPSTR INI_SKIPDIR         = "SkipDir";
-LPSTR INI_USELONGREGHEAD  = "UseLongRegHead";  // 1.8.1 tianwei for compatible to undoreg 1.46 again
+LPTSTR INI_SETUP          = TEXT("Setup");
+LPTSTR INI_FLAG           = TEXT("Flag");
+LPTSTR INI_EXTDIR         = TEXT("ExtDir");
+LPTSTR INI_OUTDIR         = TEXT("OutDir");
+LPTSTR INI_SKIPREGKEY     = TEXT("SkipRegKey");
+LPTSTR INI_SKIPDIR        = TEXT("SkipDir");
+LPTSTR INI_USELONGREGHEAD = TEXT("UseLongRegHead");  // 1.8.1 tianwei for compatible to undoreg 1.46 again
 
 LPTSTR lpgrszRegSkipStrings;
 LPTSTR lpgrszFileSkipStrings;
@@ -47,43 +47,39 @@ BOOL bUseLongRegHead;  // 1.8.1 for compatibility with 1.61e5 and undoreg1.46
 
 BOOL LoadSettingsFromIni(HWND hDlg) // tfx get ini info
 {
-    int     i;
-    LPTSTR  lpReturn;
-    BYTE    nFlag;
-    DWORD   cchSection;
-
-    TCHAR   szIniKey[17];
+    int   i;
+    BYTE  nFlag;
+    DWORD cchSection;
+    TCHAR szIniKey[17];
 
     szIniKey[16] = 0;  // saftey NULL char
 
-    lprgszRegSkipStrings = MYALLOC0(MAX_INI_SKIPITEMS * sizeof(LPTSTR));
+    // Get registry skip strings
+    lprgszRegSkipStrings = MYALLOC0((MAX_INI_SKIPITEMS + 1) * sizeof(LPTSTR));
+    lprgszRegSkipStrings[MAX_INI_SKIPITEMS] = NULL;  // saftey NULL pointer
     lpgrszRegSkipStrings = MYALLOC0(MAX_INI_SECTION_CHARS * sizeof(TCHAR));
     cchSection = GetPrivateProfileSection(INI_SKIPREGKEY, lpgrszRegSkipStrings, MAX_INI_SECTION_CHARS, lpRegshotIni);
     if (0 < cchSection) {
-        for (i = 0; i < MAX_INI_SKIPITEMS - 1; i++) {
+        for (i = 0; MAX_INI_SKIPITEMS > i; i++) {
             _sntprintf(szIniKey, 16, TEXT("%d%s"), i, TEXT("="));
-            lpReturn = FindKeyInIniSection(lpgrszRegSkipStrings, szIniKey, cchSection, _tcslen(szIniKey));
-            if (NULL != lpReturn) {
-                *(lprgszRegSkipStrings + i) = lpReturn;
-                //dwSnapFiles++;
-            } else {
-                break;
+            lprgszRegSkipStrings[i] = FindKeyInIniSection(lpgrszRegSkipStrings, szIniKey, cchSection, _tcslen(szIniKey));
+            if (NULL == lprgszRegSkipStrings[i]) {
+                break;  // not found, so do not look any further
             }
         }
     }
 
-    lprgszFileSkipStrings = MYALLOC0(MAX_INI_SKIPITEMS * sizeof(LPTSTR));
+    // Get file skip strings
+    lprgszFileSkipStrings = MYALLOC0((MAX_INI_SKIPITEMS + 1) * sizeof(LPTSTR));
+    lprgszFileSkipStrings[MAX_INI_SKIPITEMS] = NULL;  // saftey NULL pointer
     lpgrszFileSkipStrings = MYALLOC0(MAX_INI_SECTION_CHARS * sizeof(TCHAR));
     cchSection = GetPrivateProfileSection(INI_SKIPDIR, lpgrszFileSkipStrings, MAX_INI_SECTION_CHARS, lpRegshotIni);
     if (0 < cchSection) {
-        for (i = 0; i < MAX_INI_SKIPITEMS - 1; i++) {
+        for (i = 0; MAX_INI_SKIPITEMS > i; i++) {
             _sntprintf(szIniKey, 16, TEXT("%d%s"), i, TEXT("="));
-            lpReturn = FindKeyInIniSection(lpgrszFileSkipStrings, szIniKey, cchSection, _tcslen(szIniKey));
-            if (NULL != lpReturn) {
-                *(lprgszFileSkipStrings + i) = lpReturn;
-                //dwSnapFiles++;
-            } else {
-                break;
+            lprgszFileSkipStrings[i] = FindKeyInIniSection(lpgrszFileSkipStrings, szIniKey, cchSection, _tcslen(szIniKey));
+            if (NULL == lprgszFileSkipStrings[i]) {
+                break;  // not found, so do not look any further
             }
         }
     }
@@ -179,13 +175,13 @@ BOOL SaveSettingsToIni(HWND hDlg) // tfx save settings to ini
 }
 
 
-BOOL IsInSkipList(LPTSTR lpszString, LPTSTR lpszSkipList[])  // tfx skip the list
+BOOL IsInSkipList(LPTSTR lpszString, LPTSTR rgszSkipList[])  // tfx skip the list
 {
     int i;
 
     // todo: it seems bypass null item. But the getsetting is get all. Is it safe without the null thing? tianwei
-    for (i = 0; (MAX_INI_SKIPITEMS > i) && (NULL != lpszSkipList[i]); i++) {
-        if (0 == _tcsicmp(lpszString, lpszSkipList[i])) {
+    for (i = 0; (MAX_INI_SKIPITEMS > i) && (NULL != rgszSkipList[i]); i++) {
+        if (0 == _tcsicmp(lpszString, rgszSkipList[i])) {
             return TRUE;
         }
     }

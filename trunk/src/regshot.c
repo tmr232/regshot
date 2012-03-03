@@ -55,6 +55,8 @@ SAVEVALUECONTENT sVC;
 LPBYTE lpFileBuffer;
 LPTSTR lpStringBuffer;
 size_t nStringBufferSize;
+LPBYTE lpDataBuffer;
+size_t nDataBufferSize;
 size_t nSourceSize;
 
 #define MAX_SIGNATURE_LENGTH 12
@@ -211,102 +213,108 @@ LPTSTR GetWholeValueName(LPVALUECONTENT lpVC)
 }
 
 
-//-------------------------------------------------------------
-// Routine Trans VALUECONTENT.data [which in binary] into strings
+// ----------------------------------------------------------------------
+// Transform VALUECONTENT.data from binary into string
 // Called by GetWholeValueData()
-//-------------------------------------------------------------
-LPSTR TransData(LPVALUECONTENT lpVC, DWORD type)
+// ----------------------------------------------------------------------
+LPTSTR TransData(LPVALUECONTENT lpVC, DWORD type)
 {
-    LPSTR lpValueData = NULL;
-    DWORD c;
-    DWORD size = lpVC->datasize;
+    LPTSTR lpValueData;
+    DWORD nCount;
+    DWORD nSize;
 
-    switch (type) {
-        case REG_SZ:
-            // case REG_EXPAND_SZ: Not used any more, they all included in [default],
-            // because some non-regular value would corrupt this.
-            lpValueData = MYALLOC0(size + 5);    // 5 is enough
-            strcpy(lpValueData, ": \"");
-            if (NULL != lpVC->lpValueData) {
-                strcat(lpValueData, (const char *)lpVC->lpValueData);
-            }
-            strcat(lpValueData, "\"");
-            // wsprintf has a bug that can not print string too long one time!);
-            //wsprintf(lpValueData,"%s%s%s",": \"",lpVC->lpValueData,"\"");
-            break;
-        case REG_MULTI_SZ:
-            // Be sure to add below line outside of following "if",
-            // for that GlobalFree(lp) must had lp already located!
-            lpValueData = MYALLOC0(size + 5);    // 5 is enough
-            for (c = 0; c < size; c++) {
-                if (*((LPBYTE)(lpVC->lpValueData + c)) == 0) {
-                    if (*((LPBYTE)(lpVC->lpValueData + c + 1)) != 0) {
-                        *((LPBYTE)(lpVC->lpValueData + c)) = 0x20;    // ???????
-                    } else {
-                        break;
+    lpValueData = NULL;
+    nSize = lpVC->datasize;
+
+    if (NULL == lpVC->lpValueData) {
+        lpValueData = MYALLOC0(sizeof(szValueDataIsNULL));
+        _tcscpy(lpValueData, szValueDataIsNULL);
+    } else {
+        switch (type) {
+            case REG_SZ:
+                // case REG_EXPAND_SZ: Not used any more, is included in [default], because some non-regular value would corrupt this.
+                lpValueData = MYALLOC0(((3 + 2) * sizeof(TCHAR)) + nSize);  // format  ": \"<string>\"\0"
+                _tcscpy(lpValueData, TEXT(": \""));
+                if (NULL != lpVC->lpValueData) {
+                    _tcscat(lpValueData, (LPTSTR)lpVC->lpValueData);
+                }
+                _tcscat(lpValueData, TEXT("\""));
+                // wsprintf has a bug that can not print string too long one time!);
+                //wsprintf(lpValueData,"%s%s%s",": \"",lpVC->lpValueData,"\"");
+                break;
+            case REG_MULTI_SZ:
+                // Be sure to add below line outside of following "if",
+                // for that GlobalFree(lp) must had lp already located!
+                lpValueData = MYALLOC0(((3 + 2) * sizeof(TCHAR)) + nSize);  // format  ": \"<string>\"\0"
+                nSize /= sizeof(TCHAR);  // convert bytes to chars
+                nSize--;  // account for last NULL char
+                for (nCount = 0; nCount < nSize; nCount++) {
+                    if (0 == ((LPTSTR)lpVC->lpValueData)[nCount]) {        // look for a NULL char before the end of the data
+                        ((LPTSTR)lpVC->lpValueData)[nCount] = (TCHAR)' ';  // then overwrite with space  // TODO: check if works with Unicode
                     }
                 }
-            }
-            //*((LPBYTE)(lpVC->lpValueData + size)) = 0x00;   // for some illegal multisz
-            strcpy(lpValueData, ": '");
-            if (NULL != lpVC->lpValueData) {
-                strcat(lpValueData, (const char *)lpVC->lpValueData);
-            }
-            strcat(lpValueData, "'");
-            //wsprintf(lpValueData,"%s%s%s",": \"",lpVC->lpValueData,"\"");
-            break;
-        case REG_DWORD:
-            // case REG_DWORD_BIG_ENDIAN: Not used any more, they all included in [default]
-            lpValueData = MYALLOC0(sizeof(DWORD) * 2 + 5); // 13 is enough
-            if (NULL != lpVC->lpValueData) {
-                sprintf(lpValueData, "%s%08X", ": 0x", *(LPDWORD)(lpVC->lpValueData));
-            }
-            break;
-        default:
-            lpValueData = MYALLOC0(3 * (size + 1)); // 3*(size + 1) is enough
-            *lpValueData = 0x3a;
-            // for the resttype lengthofvaluedata doesn't contains the 0!
-            for (c = 0; c < size; c++) {
-                sprintf(lpValueData + 3 * c + 1, " %02X", *(lpVC->lpValueData + c));
-            }
+                _tcscpy(lpValueData, TEXT(": \""));
+                if (NULL != lpVC->lpValueData) {
+                    _tcscat(lpValueData, (LPTSTR)lpVC->lpValueData);
+                }
+                _tcscat(lpValueData, TEXT("\""));
+                //wsprintf(lpValueData,"%s%s%s",": \"",lpVC->lpValueData,"\"");
+                break;
+            case REG_DWORD:
+                // case REG_DWORD_BIG_ENDIAN: Not used any more, they all included in [default]
+                lpValueData = MYALLOC0((4 + 8 + 1) * sizeof(TCHAR));  // format  ": 0xXXXXXXXX\0"
+                _tcscpy(lpValueData, TEXT(": "));
+                if (NULL != lpVC->lpValueData) {
+                    _stprintf(lpValueData + 2, TEXT("%s%08X"), TEXT("0x"), *(LPDWORD)(lpVC->lpValueData));
+                }
+                break;
+            default:
+                lpValueData = MYALLOC0((2 + (nSize * 3) + 1) * sizeof(TCHAR));  // format ": [ xx][ xx]...[ xx]\0"
+                _tcscpy(lpValueData, TEXT(": "));
+                // for the resttype lengthofvaluedata doesn't contains the 0!
+                for (nCount = 0; nCount < nSize; nCount++) {
+                    _stprintf(lpValueData + (2 + (nCount * 3)), TEXT(" %02X"), *(lpVC->lpValueData + nCount));
+                }
+        }
     }
 
     return lpValueData;
 }
 
 
-//-------------------------------------------------------------
-// Routine to get whole value data from VALUECONTENT
-//-------------------------------------------------------------
-LPSTR GetWholeValueData(LPVALUECONTENT lpVC)
+// ----------------------------------------------------------------------
+// Get value data from VALUECONTENT as string
+// ----------------------------------------------------------------------
+LPTSTR GetWholeValueData(LPVALUECONTENT lpVC)
 {
-    LPSTR lpValueData = NULL;
-    DWORD c;
-    DWORD size = lpVC->datasize;
+    LPTSTR lpValueData;
+    DWORD nCount;
+    DWORD nSize;
 
-    if (NULL != lpVC->lpValueData) { //fix a bug at 20111228
+    lpValueData = NULL;
+    nSize = lpVC->datasize;
 
+    if (NULL == lpVC->lpValueData) {
+        lpValueData = MYALLOC0(sizeof(szValueDataIsNULL));
+        _tcscpy(lpValueData, szValueDataIsNULL);
+    } else {
         switch (lpVC->typecode) {
             case REG_SZ:
             case REG_EXPAND_SZ:
-                //if (lpVC->lpValueData != NULL) {
-                if (size == (DWORD)strlen((const char *)(lpVC->lpValueData)) + 1) {
+                if ((DWORD)((_tcslen((LPTSTR)lpVC->lpValueData) + 1) * sizeof(TCHAR)) == nSize) {
                     lpValueData = TransData(lpVC, REG_SZ);
                 } else {
                     lpValueData = TransData(lpVC, REG_BINARY);
                 }
-                //} else {
-                //    lpValueData = TransData(lpVC, REG_SZ);
-                //}
                 break;
             case REG_MULTI_SZ:
-                if (*((LPBYTE)(lpVC->lpValueData)) != 0x00) {
-                    for (c = 0;; c++) {
-                        if (*((LPWORD)(lpVC->lpValueData + c)) == 0) {
+                if (0 != ((LPTSTR)lpVC->lpValueData)[0]) {
+                    for (nCount = 0; ; nCount++) {
+                        if (0 == ((LPTSTR)lpVC->lpValueData)[nCount]) {
                             break;
                         }
                     }
-                    if (size == c + 2) {
+                    if (((nCount + 1) * sizeof(TCHAR)) == nSize) {
                         lpValueData = TransData(lpVC, REG_MULTI_SZ);
                     } else {
                         lpValueData = TransData(lpVC, REG_BINARY);
@@ -317,7 +325,7 @@ LPSTR GetWholeValueData(LPVALUECONTENT lpVC)
                 break;
             case REG_DWORD:
             case REG_DWORD_BIG_ENDIAN:
-                if (size == sizeof(DWORD)) {
+                if (sizeof(DWORD) == nSize) {
                     lpValueData = TransData(lpVC, REG_DWORD);
                 } else {
                     lpValueData = TransData(lpVC, REG_BINARY);
@@ -326,10 +334,8 @@ LPSTR GetWholeValueData(LPVALUECONTENT lpVC)
             default :
                 lpValueData = TransData(lpVC, REG_BINARY);
         }
-    } else {
-        lpValueData = MYALLOC0(sizeof(szValueDataIsNULL));
-        strcpy(lpValueData, szValueDataIsNULL);
     }
+
     return lpValueData;
 }
 
@@ -1003,208 +1009,287 @@ VOID FreeShot(LPREGSHOT lpShot)
 }
 
 
-//------------------------------------------------------------
-// Registry shot engine
-//------------------------------------------------------------
-VOID GetRegistrySnap(HKEY hRegKey, LPKEYCONTENT lpFatherKC)
+// ----------------------------------------------------------------------
+// Get registry snap shot
+// ----------------------------------------------------------------------
+LPKEYCONTENT GetRegistrySnap(HKEY hRegKey, LPTSTR lpszRegKeyName, LPKEYCONTENT lpFatherKC, LPKEYCONTENT *lplpCaller)
 {
-    HKEY    hRegSubKey;
-    DWORD   i;
-    DWORD   NTr;
-    DWORD   TypeCode;
-    DWORD   LengthOfKeyName;
-    DWORD   LengthOfValueName;
-    DWORD   LengthOfValueData;
-    DWORD   LengthOfLongestValueName;
-    DWORD   LengthOfLongestValueData;
-    DWORD   LengthOfLongestSubkeyName;
-    //LPSTR   lpValueName;
-    //LPBYTE  lpValueData;
-    LPKEYCONTENT    lpKC;
-    LPVALUECONTENT  lpVC;
-    LPKEYCONTENT    lpKCLast;
-    LPVALUECONTENT  lpVCLast;
+    LPKEYCONTENT lpKC;
+    DWORD nSubKeys;
+    DWORD nMaxSubKeyNameLen;
 
-#ifdef DEBUGLOG
-    LPTSTR lpszDebugMsg;
-#endif
+    // Process registry key itself, then key values with data, then sub keys (see msdn.microsoft.com/en-us/library/windows/desktop/ms724256.aspx)
 
-    lpKCLast = NULL;
-    lpVCLast = NULL;
+    // Extra local block to reduce stack usage due to recursive calls
+    {
+        LPTSTR lpszFullRegKeyName;
+        DWORD nValues;
+        DWORD nMaxValueNameLen;
+        DWORD nMaxValueDataLen;
 
-    // To detemine MAX length
-    if (RegQueryInfoKey(
-                hRegKey,
-                NULL,                       // lpClassName_nouse,
-                NULL,                       // &nClassName_nouse_length,
-                NULL,
-                NULL,                       // &NumberOfSubkeys,
-                &LengthOfLongestSubkeyName, // chars
-                NULL,                       // &nClassName_nouse_longestlength,
-                NULL,                       // &NumberOfValue,
-                &LengthOfLongestValueName,  // chars
-                &LengthOfLongestValueData,  // bytes
-                NULL,                       // &nSecurity_length_nouse,
-                NULL                        // &ftLastWrite
-            ) != ERROR_SUCCESS) {
-        return ;
-    }
-    // Comment out in beta1V5 20120102, v4 modified these to *4 + 4, which is not right
-    // But not so sure to use global and pass chars, because once several years ago, in win2000, I encounter some problem.
-    //LengthOfLongestSubkeyName = LengthOfLongestSubkeyName * 2 + 3;   // msdn says it is in unicode characters,right now maybe not large than that.old version use *2+3
-    //LengthOfLongestValueName  = LengthOfLongestValueName * 2 + 3;
-    LengthOfLongestSubkeyName++;
-    LengthOfLongestValueName++;
-    LengthOfLongestValueData++;  //use +1 maybe too careful. but since the real memory allocate is based on return of another call,it is just be here.
-    if (LengthOfLongestValueData >= ESTIMATE_VALUEDATA_LENGTH) {
-        lpValueDataS = lpValueData;
-        lpValueData = MYALLOC(LengthOfLongestValueData);
-    }
-    //lpValueName = MYALLOC(LengthOfLongestValueName);
-
-
-    // Get Values
-    for (i = 0;; i++) {
-        *(LPBYTE)lpValueName = (BYTE)0x00;    // That's the bug in 2000! thanks zhangl@digiark.com!
-        *(LPBYTE)lpValueData = (BYTE)0x00;
-        //DebugBreak();
-        LengthOfValueName = LengthOfLongestValueName;
-        LengthOfValueData = LengthOfLongestValueData;
-        NTr = RegEnumValue(hRegKey, i, lpValueName, &LengthOfValueName, NULL, &TypeCode, lpValueData, &LengthOfValueData);
-        if (NTr == ERROR_NO_MORE_ITEMS) {
-            break;
-        } else {
-            if (NTr != ERROR_SUCCESS) {
-                continue;
-            }
-        }
-
-#ifdef DEBUGLOG
-        DebugLog(szDebugTryToGetValueLog, TEXT("trying: "), FALSE);
-        DebugLog(szDebugTryToGetValueLog, lpValueName, TRUE);
-#endif
-
-        lpVC = MYALLOC0(sizeof(VALUECONTENT));
-        // I had done if (i == 0) in 1.50b- ! thanks fisttk@21cn.com and non-standard
-        //if (lpFatherKC->lpFirstVC == NULL) {
-        if (lpVCLast == NULL) {
-            lpFatherKC->lpFirstVC = lpVC;
-        } else {
-            lpVCLast->lpBrotherVC = lpVC;
-        }
-        lpVCLast = lpVC;
-        lpVC->typecode = TypeCode;
-        lpVC->datasize = LengthOfValueData;
-        lpVC->lpFatherKC = lpFatherKC;
-        lpVC->lpValueName = MYALLOC(strlen(lpValueName) + 1);
-        strcpy(lpVC->lpValueName, lpValueName);
-
-        if (LengthOfValueData != 0) {
-            lpVC->lpValueData = MYALLOC(LengthOfValueData);
-            CopyMemory(lpVC->lpValueData, lpValueData, LengthOfValueData);
-            //*(lpVC->lpValueData + LengthOfValueData) = 0x00;
-        }
-        nGettingValue++;
-
-#ifdef DEBUGLOG
-        lpszDebugMsg = MYALLOC0((REGSHOT_DEBUG_MESSAGE_LENGTH + 1) * sizeof(TCHAR));
-        lpszDebugMsg[REGSHOT_DEBUG_MESSAGE_LENGTH] = 0;  // safety NULL char
-        _sntprintf(lpszDebugMsg, REGSHOT_DEBUG_MESSAGE_LENGTH, TEXT("LGVN:%08d LGVD:%08d VN:%08d VD:%08d"), LengthOfLongestValueName, LengthOfLongestValueData, LengthOfValueName, LengthOfValueData);
-        DebugLog(szDebugValueNameDataLog, lpszDebugMsg, TRUE);
-        MYFREE(lpszDebugMsg);
-
-        lpszDebugMsg = GetWholeValueName(lpVC);
-        DebugLog(szDebugValueNameDataLog, lpszDebugMsg, FALSE);
-        MYFREE(lpszDebugMsg);
-
-        lpszDebugMsg = GetWholeValueData(lpVC);
-        DebugLog(szDebugValueNameDataLog, lpszDebugMsg, TRUE);
-        MYFREE(lpszDebugMsg);
-#endif
-    }
-
-    //MYFREE(lpValueName);
-    if (LengthOfLongestValueData >= ESTIMATE_VALUEDATA_LENGTH) {
-        MYFREE(lpValueData);
-        lpValueData = lpValueDataS;
-    }
-
-
-    for (i = 0;; i++) {
-        LengthOfKeyName = LengthOfLongestSubkeyName;
-        *(LPBYTE)lpKeyName = (BYTE)0x00;
-        NTr = RegEnumKeyEx(hRegKey, i, lpKeyName, &LengthOfKeyName, NULL, NULL, NULL, &ftLastWrite);
-        if (NTr == ERROR_NO_MORE_ITEMS) {
-            break;
-        } else {
-            if (NTr != ERROR_SUCCESS) {
-                continue;
-            }
-        }
+        // Create new key content
+        // put in a separate var for later use
         lpKC = MYALLOC0(sizeof(KEYCONTENT));
-        //if (lpFatherKC->lpFirstSubKC == NULL) {
-        if (lpKCLast == NULL) {
-            lpFatherKC->lpFirstSubKC = lpKC;
-        } else {
-            lpKCLast->lpBrotherKC = lpKC;
+        ZeroMemory(lpKC, sizeof(KEYCONTENT));
+
+        // Write pointer to current key into caller's pointer
+        if (NULL != lplpCaller) {
+            *lplpCaller = lpKC;
         }
-        lpKCLast = lpKC;
-        lpKC->lpKeyName = MYALLOC(strlen(lpKeyName) + 1);
-        strcpy(lpKC->lpKeyName, lpKeyName);
+
+        // Set father of current key
         lpKC->lpFatherKC = lpFatherKC;
 
-#ifdef DEBUGLOG
-        lpszDebugMsg = MYALLOC0((REGSHOT_DEBUG_MESSAGE_LENGTH + 1) * sizeof(TCHAR));
-        lpszDebugMsg[REGSHOT_DEBUG_MESSAGE_LENGTH] = 0;  // safety NULL char
-        _sntprintf(lpszDebugMsg, REGSHOT_DEBUG_MESSAGE_LENGTH, TEXT("LGKN:%08d KN:%08d"), LengthOfLongestSubkeyName, LengthOfKeyName);
-        DebugLog(szDebugKeyLog, lpszDebugMsg, TRUE);
-        MYFREE(lpszDebugMsg);
+        // Set key name
+        lpKC->lpKeyName = lpszRegKeyName;
 
-        lpszDebugMsg = GetWholeKeyName(lpKC);
-        DebugLog(szDebugKeyLog, lpszDebugMsg, TRUE);
-        MYFREE(lpszDebugMsg);
-#endif
+        // Check if key is to be excluded
+        lpszFullRegKeyName = GetWholeKeyName(lpKC);
+        if (IsInSkipList(lpszFullRegKeyName, lprgszRegSkipStrings)) {
+            MYFREE(lpszFullRegKeyName);
+            FreeAllKeyContent(lpKC);
+            return NULL;
+        }
+        MYFREE(lpszFullRegKeyName);
 
         nGettingKey++;
 
-        if (RegOpenKeyEx(hRegKey, lpKeyName, 0, KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS, &hRegSubKey) != ERROR_SUCCESS) {
-            continue;
-        }
-        if (IsInSkipList(lpKeyName, lprgszRegSkipStrings)) {
-            // tfx
-            RegCloseKey(hRegSubKey);  // 1.8.2 seperate
-            continue;
+        // Examine key for values and sub keys, get counts and also maximum lengths of names plus value data
+        if (ERROR_SUCCESS != RegQueryInfoKey(
+                    hRegKey,             // key handle
+                    NULL,                // LPTSTR lpClass
+                    NULL,                // LPDWORD lpcClass
+                    NULL,                // LPDWORD lpReserved
+                    &nSubKeys,           // LPDWORD lpcSubKeys (count)
+                    &nMaxSubKeyNameLen,  // LPDWORD lpcMaxSubKeyLen (in chars/TCHARs *not* incl. NULL char)
+                    NULL,                // LPDWORD lpcMaxClassLen (in chars *not* incl. NULL char)
+                    &nValues,            // LPDWORD lpcValues (count)
+                    &nMaxValueNameLen,   // LPDWORD lpcMaxValueNameLen (in chars/TCHARs *not* incl. NULL char)
+                    &nMaxValueDataLen,   // LPDWORD lpcMaxValueLen (count in bytes)
+                    NULL,                // LPDWORD lpcbSecurityDescriptor (count in bytes)
+                    NULL                 // PFILETIME lpftLastWriteTime
+                )) {
+            return NULL;
         }
 
-        GetRegistrySnap(hRegSubKey, lpKC);
-        RegCloseKey(hRegSubKey);
-    }
+        // Copy the registry values of the current key
+        if (0 < nValues) {
+            LPVALUECONTENT lpVC;
+            LPVALUECONTENT *lplpVCPrev;
+            DWORD i;
+            DWORD nRetCode;
+            DWORD nValueNameLen;
+            DWORD nValueType;
+            DWORD nValueDataLen;
+#ifdef DEBUGLOG
+            LPTSTR lpszDebugMsg;
+#endif
+
+            // Account for NULL char
+            if (0 < nMaxValueNameLen) {
+                nMaxValueNameLen++;
+            }
+
+            // Get buffer for maximum value name length
+            nSourceSize = nMaxValueNameLen * sizeof(TCHAR);
+            nStringBufferSize = AdjustBuffer(&lpStringBuffer, nStringBufferSize, nSourceSize, REGSHOT_BUFFER_BLOCK_BYTES);
+
+            // Get buffer for maximum value data length
+            nSourceSize = nMaxValueDataLen;
+            nDataBufferSize = AdjustBuffer(&lpDataBuffer, nDataBufferSize, nSourceSize, REGSHOT_BUFFER_BLOCK_BYTES);
+
+            // Get registry key values
+            lplpVCPrev = &lpKC->lpFirstVC;
+            for (i = 0; ; i++) {
+                // Enumerate value
+                nValueNameLen = nMaxValueNameLen;
+                nValueDataLen = nMaxValueDataLen;
+                nRetCode = RegEnumValue(hRegKey, i,
+                                        lpStringBuffer,
+                                        &nValueNameLen,   // in chars/TCHARs; out: *not* incl. NULL char
+                                        NULL,             // LPDWORD lpReserved
+                                        &nValueType,
+                                        lpDataBuffer,
+                                        &nValueDataLen);  // in bytes
+                if (ERROR_NO_MORE_ITEMS == nRetCode) {
+                    break;
+                }
+                if (ERROR_SUCCESS != nRetCode) {
+                    // TODO: protocol issue in some way, do not silently ignore
+                    continue;
+                }
+                lpStringBuffer[nValueNameLen] = 0;
+
+#ifdef DEBUGLOG
+                DebugLog(szDebugTryToGetValueLog, TEXT("trying: "), FALSE);
+                DebugLog(szDebugTryToGetValueLog, lpStringBuffer, TRUE);
+#endif
+
+                // Create new value content
+                lpVC = MYALLOC0(sizeof(VALUECONTENT));
+                ZeroMemory(lpVC, sizeof(VALUECONTENT));
+
+                // Write pointer to current value into previous value's next value pointer
+                if (NULL != lplpVCPrev) {
+                    *lplpVCPrev = lpVC;
+                }
+                lplpVCPrev = &lpVC->lpBrotherVC;
+
+                // Set father key to current key
+                lpVC->lpFatherKC = lpKC;
+
+                // Copy values
+                lpVC->typecode = nValueType;
+                lpVC->datasize = nValueDataLen;
+
+                // Copy value name
+                if (0 < nValueNameLen) {
+                    lpVC->lpValueName = MYALLOC((nValueNameLen + 1) * sizeof(TCHAR));
+                    _tcscpy(lpVC->lpValueName, lpStringBuffer);
+                }
+
+                // Copy value data
+                if (0 < nValueDataLen) {  // otherwise leave it NULL
+                    lpVC->lpValueData = MYALLOC0(nValueDataLen);
+                    CopyMemory(lpVC->lpValueData, lpDataBuffer, nValueDataLen);
+                }
+
+                nGettingValue++;
+
+#ifdef DEBUGLOG
+                lpszDebugMsg = MYALLOC0((REGSHOT_DEBUG_MESSAGE_LENGTH + 1) * sizeof(TCHAR));
+                lpszDebugMsg[REGSHOT_DEBUG_MESSAGE_LENGTH] = 0;  // safety NULL char
+                _sntprintf(lpszDebugMsg, REGSHOT_DEBUG_MESSAGE_LENGTH, TEXT("LGVN:%08d LGVD:%08d VN:%08d VD:%08d"), nMaxValueNameLen, nMaxValueDataLen, nValueNameLen, nValueDataLen);
+                DebugLog(szDebugValueNameDataLog, lpszDebugMsg, TRUE);
+                MYFREE(lpszDebugMsg);
+
+                lpszDebugMsg = GetWholeValueName(lpVC);
+                DebugLog(szDebugValueNameDataLog, lpszDebugMsg, FALSE);
+                MYFREE(lpszDebugMsg);
+
+                lpszDebugMsg = GetWholeValueData(lpVC);
+                DebugLog(szDebugValueNameDataLog, lpszDebugMsg, TRUE);
+                MYFREE(lpszDebugMsg);
+#endif
+            }
+        }
+    }  // End of extra local block
 
     nGettingTime = GetTickCount();
-    if ((nGettingTime - nBASETIME1) > REFRESHINTERVAL) {
+    if (REFRESHINTERVAL < (nGettingTime - nBASETIME1)) {
         UpdateCounters(asLangTexts[iszTextKey].lpString, asLangTexts[iszTextValue].lpString, nGettingKey, nGettingValue);
     }
 
-    return ;
+    // Process sub keys
+    if (0 < nSubKeys) {
+        LPKEYCONTENT lpKCSub;
+        LPKEYCONTENT *lplpKCPrev;
+        DWORD i;
+        LPTSTR lpszRegSubKeyName;
+        HKEY hRegSubKey;
+
+        // Account for NULL char
+        if (0 < nMaxSubKeyNameLen) {
+            nMaxSubKeyNameLen++;
+        }
+
+        // Get buffer for maximum sub key name length
+        nSourceSize = nMaxSubKeyNameLen * sizeof(TCHAR);
+        nStringBufferSize = AdjustBuffer(&lpStringBuffer, nStringBufferSize, nSourceSize, REGSHOT_BUFFER_BLOCK_BYTES);
+
+        // Get registry sub keys
+        lplpKCPrev = &lpKC->lpFirstSubKC;
+        for (i = 0; ; i++) {
+            // Extra local block to reduce stack usage due to recursive calls
+            {
+                DWORD nSubKeyNameLen;
+                DWORD nRetCode;
+#ifdef DEBUGLOG
+                LPTSTR lpszDebugMsg;
+#endif
+
+                // Enumerate sub key
+                nSubKeyNameLen = nMaxSubKeyNameLen;
+                nRetCode = RegEnumKeyEx(hRegKey, i,
+                                        lpStringBuffer,
+                                        &nSubKeyNameLen,  // in chars/TCHARs; out: *not* incl. NULL char
+                                        NULL,             // LPDWORD lpReserved
+                                        NULL,             // LPTSTR lpClass
+                                        NULL,             // LPDWORD lpcClass
+                                        NULL);            // PFILETIME lpftLastWriteTime
+                if (ERROR_NO_MORE_ITEMS == nRetCode) {
+                    break;
+                }
+                if (ERROR_SUCCESS != nRetCode) {
+                    // TODO: protocol issue in some way, do not silently ignore
+                    continue;
+                }
+                lpStringBuffer[nSubKeyNameLen] = 0;
+
+                // Copy sub key name
+                lpszRegSubKeyName = NULL;
+                if (0 < nSubKeyNameLen) {
+                    lpszRegSubKeyName = MYALLOC((nSubKeyNameLen + 1) * sizeof(TCHAR));
+                    _tcscpy(lpszRegSubKeyName, lpStringBuffer);
+                }
+
+#ifdef DEBUGLOG
+                lpszDebugMsg = MYALLOC0((REGSHOT_DEBUG_MESSAGE_LENGTH + 1) * sizeof(TCHAR));
+                lpszDebugMsg[REGSHOT_DEBUG_MESSAGE_LENGTH] = 0;  // safety NULL char
+                _sntprintf(lpszDebugMsg, REGSHOT_DEBUG_MESSAGE_LENGTH, TEXT("LGKN:%08d KN:%08d"), nMaxSubKeyNameLen, nSubKeyNameLen);
+                DebugLog(szDebugKeyLog, lpszDebugMsg, TRUE);
+                MYFREE(lpszDebugMsg);
+
+                lpszDebugMsg = GetWholeKeyName(lpKC);
+                DebugLog(szDebugKeyLog, lpszDebugMsg, FALSE);
+                MYFREE(lpszDebugMsg);
+
+                DebugLog(szDebugKeyLog, TEXT("\\"), FALSE);
+                DebugLog(szDebugKeyLog, lpszRegSubKeyName, TRUE);
+#endif
+            }  // End of extra local block
+
+            if (ERROR_SUCCESS != RegOpenKeyEx(hRegKey, lpszRegSubKeyName, 0, KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS, &hRegSubKey)) {
+                // TODO: protocol issue in some way, do not silently ignore
+                continue;
+            }
+
+            lpKCSub = GetRegistrySnap(hRegSubKey, lpszRegSubKeyName, lpKC, lplpKCPrev);
+            RegCloseKey(hRegSubKey);
+
+            if (NULL != lpKCSub) {
+                lplpKCPrev = &lpKCSub->lpBrotherKC;
+            }
+        }
+    }
+
+    return lpKC;
 }
 
 
 VOID Shot(LPREGSHOT lpShot)
 {
-    lpShot->lpHKLM = (LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
-    lpShot->lpHKU = (LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
+    FreeShot(lpShot);
 
-    if (bUseLongRegHead) {  // 1.8.1
-        lpShot->lpHKLM->lpKeyName = MYALLOC(sizeof(LOCALMACHINESTRING_LONG));
-        lpShot->lpHKU->lpKeyName = MYALLOC(sizeof(USERSSTRING_LONG));
-        strcpy(lpShot->lpHKLM->lpKeyName, LOCALMACHINESTRING_LONG);
-        strcpy(lpShot->lpHKU->lpKeyName, USERSSTRING_LONG);
-    } else {
-        lpShot->lpHKLM->lpKeyName = MYALLOC(sizeof(LOCALMACHINESTRING));
-        lpShot->lpHKU->lpKeyName = MYALLOC(sizeof(USERSSTRING));
-        strcpy(lpShot->lpHKLM->lpKeyName, LOCALMACHINESTRING);
-        strcpy(lpShot->lpHKU->lpKeyName, USERSSTRING);
-    }
+    lpStringBuffer = NULL;
+    lpDataBuffer = NULL;
+
+    /*
+        lpShot->lpHKLM = (LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
+        lpShot->lpHKU = (LPKEYCONTENT)MYALLOC0(sizeof(KEYCONTENT));
+
+        if (bUseLongRegHead) {  // 1.8.1
+            lpShot->lpHKLM->lpKeyName = MYALLOC(sizeof(LOCALMACHINESTRING_LONG));
+            lpShot->lpHKU->lpKeyName = MYALLOC(sizeof(USERSSTRING_LONG));
+            strcpy(lpShot->lpHKLM->lpKeyName, LOCALMACHINESTRING_LONG);
+            strcpy(lpShot->lpHKU->lpKeyName, USERSSTRING_LONG);
+        } else {
+            lpShot->lpHKLM->lpKeyName = MYALLOC(sizeof(LOCALMACHINESTRING));
+            lpShot->lpHKU->lpKeyName = MYALLOC(sizeof(USERSSTRING));
+            strcpy(lpShot->lpHKLM->lpKeyName, LOCALMACHINESTRING);
+            strcpy(lpShot->lpHKU->lpKeyName, USERSSTRING);
+        }
+    */
 
     nGettingKey   = 2;
     nGettingValue = 0;
@@ -1219,8 +1304,9 @@ VOID Shot(LPREGSHOT lpShot)
         UI_BeforeShot(IDC_2NDSHOT);
     }
 
-    GetRegistrySnap(HKEY_LOCAL_MACHINE, lpShot->lpHKLM);
-    GetRegistrySnap(HKEY_USERS, lpShot->lpHKU);
+    GetRegistrySnap(HKEY_LOCAL_MACHINE, LOCALMACHINESTRING_LONG, NULL, &lpShot->lpHKLM);
+    GetRegistrySnap(HKEY_USERS, USERSSTRING_LONG, NULL, &lpShot->lpHKU);
+
     nGettingTime = GetTickCount();
     UpdateCounters(asLangTexts[iszTextKey].lpString, asLangTexts[iszTextValue].lpString, nGettingKey, nGettingValue);
 
@@ -1237,7 +1323,7 @@ VOID Shot(LPREGSHOT lpShot)
         lpHF = lpHFTemp = lpShot->lpHF;  // changed in 1.8
         lpSubExtDir = lpExtDir;
 
-        if (nLengthofStr > 0)
+        if (nLengthofStr > 0) {
             for (i = 0; i <= nLengthofStr; i++) {
                 // This is the stupid filename detection routine, [seperate with ";"]
                 if (*(lpExtDir + i) == 0x3b || *(lpExtDir + i) == 0x00) {
@@ -1278,6 +1364,7 @@ VOID Shot(LPREGSHOT lpShot)
                     lpSubExtDir = lpExtDir + i + 1;
                 }
             }
+        }
     }
 
     lpShot->computername = MYALLOC0((MAX_COMPUTERNAME_LENGTH + 2) * sizeof(TCHAR));
@@ -1293,6 +1380,15 @@ VOID Shot(LPREGSHOT lpShot)
     GetSystemTime(&lpShot->systemtime);
 
     UI_AfterShot();
+
+    if (NULL != lpStringBuffer) {
+        MYFREE(lpStringBuffer);
+        lpStringBuffer = NULL;
+    }
+    if (NULL != lpDataBuffer) {
+        MYFREE(lpDataBuffer);
+        lpDataBuffer = NULL;
+    }
 }
 
 
@@ -1717,10 +1813,10 @@ VOID LoadRegKey(DWORD ofsKeyContent, LPKEYCONTENT lpFatherKC, LPKEYCONTENT *lplp
     // Copy the value contents of the current key
     if (0 != sKC.ofsFirstValue) {
         LPVALUECONTENT lpVC;
-        LPVALUECONTENT lpVCPrev;
+        LPVALUECONTENT *lplpVCPrev;
         DWORD ofsValueContent;
 
-        lpVCPrev = NULL;
+        lplpVCPrev = &lpKC->lpFirstVC;
         for (ofsValueContent = sKC.ofsFirstValue; 0 != ofsValueContent; ofsValueContent = sVC.ofsBrotherValue) {
             // Copy SAVEVALUECONTENT to aligned memory block
             ZeroMemory(&sVC, sizeof(sVC));
@@ -1730,15 +1826,11 @@ VOID LoadRegKey(DWORD ofsKeyContent, LPKEYCONTENT lpFatherKC, LPKEYCONTENT *lplp
             lpVC = MYALLOC0(sizeof(VALUECONTENT));
             ZeroMemory(lpVC, sizeof(VALUECONTENT));
 
-            // Write pointer to current value into key's first value pointer (only once)
-            if (NULL != lpKC->lpFirstVC) {
-                lpKC->lpFirstVC = lpVC;
-            }
             // Write pointer to current value into previous value's next value pointer
-            if (NULL != lpVCPrev) {
-                lpVCPrev->lpBrotherVC = lpVC;
+            if (NULL != lplpVCPrev) {
+                *lplpVCPrev = lpVC;
             }
-            lpVCPrev = lpVC;
+            lplpVCPrev = &lpVC->lpBrotherVC;
 
             // Set father key to current key
             lpVC->lpFatherKC = lpKC;
@@ -1787,7 +1879,7 @@ VOID LoadRegKey(DWORD ofsKeyContent, LPKEYCONTENT lpFatherKC, LPKEYCONTENT *lplp
     ofsBrotherKey = sKC.ofsBrotherKey;
 
     nGettingTime = GetTickCount();
-    if ((nGettingTime - nBASETIME1) > REFRESHINTERVAL) {
+    if (REFRESHINTERVAL < (nGettingTime - nBASETIME1)) {
         UpdateCounters(asLangTexts[iszTextKey].lpString, asLangTexts[iszTextValue].lpString, nGettingKey, nGettingValue);
     }
 
